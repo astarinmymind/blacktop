@@ -1,0 +1,210 @@
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited,
+a:link {
+  color: #000;
+}
+
+.map {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.loader {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -60px;
+  margin-top: -60px;
+}
+
+.neighbour {
+  opacity: 0.3;
+  animation: pulse 1s infinite;
+  animation-timing-function: linear;
+}
+
+.neighbour:hover {
+  opacity: 0.9;
+  animation: none;
+}
+
+.ui {
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tickets img {
+  width: 44px;
+}
+
+.tickets-counter {
+  display: none;
+}
+
+.table {
+  float: right;
+  padding: 15px;
+  text-align: right;
+  font-size: 12px;
+}
+.table-player,
+.table-player-me {
+  padding: 5px;
+  margin-bottom: 2px;
+}
+.table-player-me .table-entry {
+  border-top: 1px solid #000;
+  padding-top: 5px;
+}
+
+.table-point {
+  color: #ed3031;
+  font-weight: bold;
+}
+
+.text {
+  color: #ed3031;
+  position: fixed;
+  z-index: 3;
+  left: 10px;
+  bottom: 10px;
+}
+
+.timer {
+  font-family: serif;
+  font-size: 160px;
+  line-height: 130px;
+  text-shadow: 3px 3px 0px #fff;
+}
+
+.timer.moved {
+  color: #8de2e5;
+}
+
+.pop-message {
+  font-family: "Lucida Console", Monaco, monospace;
+  font-weight: bold;
+  padding: 0px 20px;
+}
+
+.end {
+  color: #000;
+  font-size: 26px;
+  box-shadow: 3px 3px 0px #ed3031;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  background-color: #fff;
+  animation: blinker 0.5s linear infinite;
+}
+
+.marker-name {
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 1px 1px 0px #000;
+  overflow: hidden;
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+
+@keyframes pulse {
+  0%   { opacity: 0.3; }
+  25%   { opacity: 0.2; }
+  75%   { opacity: 0.4; }
+  100%   { opacity: 0.3; }
+}
+
+@media (max-width: 800px) {
+  .tickets img {
+    width: 40px;
+  }
+  .weareverycooldevs {
+    float: right;
+    margin: 2px;
+  }
+  .timer {
+    font-size: 40px;
+    line-height: 30px;
+    text-shadow: 1px 1px 0px #fff;
+  }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .tickets img {
+    width: 20px;
+  }
+  .timer {
+    font-size: 30px;
+    line-height: 20px;
+    text-shadow: 1px 1px 0px #fff;
+  }
+}
+
+@media (max-width: 500px){
+  .timer {
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+
+  .tickets-counter {
+    display: block;
+    color: #ed3031;
+    font-size: 20px;
+    text-shadow: 1px 1px 0px #fff;
+  }
+
+  .tickets-counter span {
+    line-height: 40px;
+    margin-left: 10px;
+  }
+
+  .ticket-img {
+    display: none;
+  }
+
+  .tickets-counter-img {
+    float: left;
+  }
+
+  .tickets-counter {
+    margin-top: 0px;
+  }
+
+  .end {
+    font-size: 16px;
+  }
+
+  .table-player {
+    display: none;
+  }
+
+  .table {
+    padding: 7px;
+    font-size: 14px;
+  }
+
+  .table-player-me .table-entry {
+    border-top: none;
+  }
+
+}
+
