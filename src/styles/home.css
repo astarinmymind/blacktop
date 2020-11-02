@@ -1,5 +1,5 @@
 .home {
-  background-color: #fff;
+  background-color: rgb(14, 14, 14);
   text-align: center;
 }
 
@@ -15,6 +15,14 @@
   position: relative;
 }
 
+.line {
+  justify-content: center;
+}
+
+.line image {
+  width: 50%;
+}
+
 .beta {
   font-size: 20px;
   text-shadow: 1px 1px 0px #fff;
@@ -22,27 +30,21 @@
 }
 
 .manifest {
-  height: 100%;
-  max-width: 450px;
-  position: absolute;
-  left:0;
-  right:0;
-  margin-left:auto;
-  margin-right:auto;
-  cursor: pointer;
-  transition: transform 2s;
+  display: flex;
+  justify-content: left;
 }
 
-.manifest:hover {
+/* .manifest:hover {
   -ms-transform: scale(1.1, 1.1);
   -webkit-transform: scale(1.1, 1.1);
   transform: scale(1.1, 1.1);
-}
+} */
 
 .manifest img {
   margin-top: 20px;
-  height: 100%;
-  width: 100%;
+  margin-left: 20px;
+  height: 30%;
+  width: 30%;
 }
 
 .manifest h1 {
@@ -103,13 +105,14 @@
 
 .home button {
   color: #000;
-  font-family: "Lucida Console", Monaco, monospace;
-  border: 0px solid #fff;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  border: 2px solid rgb(0, 0, 0);
   background-color: #fff;
   font-size: 2.5rem;
   padding: 10px;
-  box-shadow: 3px 3px 0px #ed3031;
   cursor: pointer;
+  margin-left: 20px;
+  margin-bottom: 20px;
 }
 
 .home button:hover {
