@@ -7,19 +7,24 @@
 	existingCardIDs: Array<number>;
 	isFinalRound: boolean;
 	isGameOver: boolean;
-	timer: number;
 	
 	public constructor(io) {
 		this.io = io;
-		this.generateDeck(50);
 		this.isFinalRound = false
 		this.isGameOver = false;
-		this.timer = 10000;
     }
 
-	generateDeck(numberOfCards: number): void {
+	generateMainDeck(numberOfCards: number): void {
 		for (let i = 0; i < numberOfCards; i++) {
 			this.mainDeck.push(this.getRandomCard());
+        }
+	}
+
+	generatePlayerHands(numberOfCards: number): void {
+		for (let p = 0; p < this.players.length; p++) {
+			for (let i = 0; i < numberOfCards; i++) {
+				this.players[p].hand.push(this.getRandomCard());
+            }
         }
     }
 
@@ -33,23 +38,22 @@
 		return card;
 	}
 
-	addPlayer(id: number, name: string): void {
-		const player = new Player(id, name);
-		for (let i = 0; i < 7; i++) {
-			player.hand.push(this.getRandomCard());
-        }
+	connect(socket, name): void {
+		const player = new Player(socket.id, name);
 		this.players.push(player);
-		// return player;
-	}
-
-	connect(socket): void {
-		this.addPlayer(socket.id, socket.name);
+		console.log("Player connected: " + socket.id);
 	}
 
 	disconnect(socket): void {
 		let playerID: number = socket.id;
 		this.players = this.players.filter(p => p.id !== playerID);
 	}
+
+	start(): void {
+		this.generateMainDeck(50);
+		this.generatePlayerHands(7);
+		this.takeGameRound();
+    }
 
 	takeGameRound(): void {
 		if (this.isGameOver)
@@ -77,14 +81,15 @@
 		let card: Card = null;
 		// handle click?
 		// ...
+		// socket emit stuff?
 		// retrieve card
 		this.playCard(player, card);
 
-		// handle click
+		// handle click?
 		// ...		
+		// socket emit stuff?
 		// retrieve cardType
-		this.drawCard(player, card);
-		this.mainDeck.pop();
+		this.drawCard(player, this.mainDeck.shift()); // get first card in main deck
 
 		if (player.pointTotal >= 100) {
 			player.isDead = true;
@@ -105,7 +110,7 @@
         }
 	}
 
-	// TODO: put this function in Game class or elsewhere
+
 	playCard(player: Player, card: Card) {
 		let cardType: string = card.type;
 		// if Player does not want to play a card, cardType is null
@@ -148,15 +153,17 @@
 		else {
 			player.addCard(card);
 		}
+		this.mainDeck = this.mainDeck.filter(c => c.id !== card.id);
 	}
 
-	findPlayerByID(playerID: number): Player {
+	findPlayerByID(socketID: number): Player {
 		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i].id === playerID)
+			if (this.players[i].id === socketID)
 				return this.players[i];
 		}
 		return null;
-    }
+	}
+
 }
 
 // TODO: more Game functions
