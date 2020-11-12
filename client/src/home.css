@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Gloria+Hallelujah&family=Schoolbell&display=swap');
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+  } 
+
+  .line {
+    justify-content: center;
+  }
+  
+  .line img {
+    width: 99%;
+  }
+  
+  .manifest {
+    display: flex;
+    justify-content: left;
+  }
+  
+  .manifest img {
+    margin-top: 20px;
+    margin-left: 20px;
+    height: 30%;
+    width: 30%;
+  }
+  
+  button {
+    color: #000;
+    font-family: 'Architects Daughter', cursive;
+    border: 2px solid rgb(0, 0, 0);
+    background-color: #fff;
+    font-size: 2.5rem;
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 20px;
+  }
+  
+  button:hover {
+    text-decoration: underline;
+  }
+  
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    color: #ffffff;
+    font-family: 'Schoolbell', cursive;
+    font-size: large;
+    text-align: center;
+    white-space: pre-wrap;
+    margin: 0;
+    padding: 0;
+  }
+
+  .columns h1 {
+    color: #ffffff;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 50px;
+    height: 60px;
+    margin-top: 0%;
+  }
+
+  .columns img {
+    width: 80%;
+    vertical-align: center;
+  }

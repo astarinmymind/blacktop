@@ -1,13 +1,14 @@
-import * as React from "react";
+import React from "react";
 
-class Home extends React.Component<{}, {}> {
-  public render() {
+import Home from './home';
+
+class App extends React.Component {
+
+  render() {
     return (
-        <div>
-          <p>Hello</p>
-        </div>
+      <Home />
     );
   }
 }
 
-export default Home;
+export default App;

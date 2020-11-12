@@ -82,27 +82,27 @@ There are three main differences between Nano ID and UUID v4:
 ## Benchmark
 
 ```rust
-$ ./test/benchmark
-nanoid                      655,798 ops/sec
-customAlphabet              635,421 ops/sec
-uid.sync                    375,816 ops/sec
-uuid v4                     396,756 ops/sec
-secure-random-string        366,434 ops/sec
-cuid                        183,998 ops/sec
-shortid                      59,343 ops/sec
+$ node ./test/benchmark.js
+nanoid                    2,280,683 ops/sec
+customAlphabet            1,851,117 ops/sec
+uid.sync                    313,306 ops/sec
+uuid v4                   1,348,425 ops/sec
+secure-random-string        294,161 ops/sec
+cuid                        158,988 ops/sec
+shortid                      37,222 ops/sec
 
 Async:
-async nanoid                101,966 ops/sec
-async customAlphabet        102,471 ops/sec
-async secure-random-string   97,206 ops/sec
-uid                          91,291 ops/sec
+async nanoid                 95,500 ops/sec
+async customAlphabet         93,800 ops/sec
+async secure-random-string   90,316 ops/sec
+uid                          85,583 ops/sec
 
 Non-secure:
-non-secure nanoid         2,754,423 ops/sec
-rndm                      2,437,262 ops/sec
+non-secure nanoid         2,641,654 ops/sec
+rndm                      2,447,086 ops/sec
 ```
 
-Test configuration: Dell XPS 2-in-a 7390, Fedora 32, Node.js 13.11.
+Test configuration: Dell XPS 2-in-1 7390, Fedora 32, Node.js 15.1.
 
 
 ## Tools
@@ -151,7 +151,7 @@ with 21 characters (to have a collision probability similar to UUID v4).
 
 ```js
 import { nanoid } from 'nanoid'
-model.id = nanoid() //=> "Uakgb_J5m9g-0JDMbcJqLJ"
+model.id = nanoid() //=> "V1StGXR8_Z5jdHi6B-myT"
 ```
 
 If you want to reduce the ID size (and increase collisions probability),
