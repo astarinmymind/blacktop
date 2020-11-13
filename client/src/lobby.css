@@ -3,6 +3,7 @@
   html, body {
     margin: 0;
     padding: 0;
+    vertical-align: middle;
   } 
   
   .manifest {
@@ -11,8 +12,8 @@
   }
   
   .manifest img {
-    margin-top: 20px;
-    margin-left: 20px;
+    margin-top: 2%;
+    margin-left: 2%;
     height: 30%;
     width: 30%;
   }
@@ -21,40 +22,54 @@
     width: 100vw;
   }
   
-  button {
+  /* button {
     color: #000;
     font-family: 'Architects Daughter', cursive;
-    border: 0.25vw solid rgb(0, 0, 0);
+    border: 2px solid rgb(0, 0, 0);
     background-color: #fff;
-    font-size: 2.5vw;
-    padding: 1vw;
+    font-size: 2.5rem;
+    padding: 10px;
     cursor: pointer;
     margin-left: 20px;
   }
   
   button:hover {
     text-decoration: underline;
-  }
+  } */
   
   .columns {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     color: #ffffff;
     font-family: 'Schoolbell', cursive;
-    font-size: 1.25vw;
+    font-size: 1.8vw;
     text-align: center;
     white-space: pre-wrap;
+    margin: 0;
+    padding: 0;
   }
 
   .columns h1 {
     color: #ffffff;
     font-family: 'Gloria Hallelujah', cursive;
     font-size: 3vw;
-    height: 3.6vw;
-    margin-top: 0%;
+    margin-top: 0vw;
   }
 
   .columns img {
-    width: 80%;
-    vertical-align: center;
+    width: 20%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    vertical-align: middle;
+    justify-content: left;
+  }
+
+  input {
+    text-align: center;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 3vw;
+  }
+
+  .columns .icon-gallery{
+    cursor: pointer;
   }

@@ -14,13 +14,12 @@ class Home extends React.Component {
                 <div className="manifest">
                     <img src={TestLogo}/>
                 </div>
-                <div className="line">
-                    <img src={ChalkLine}></img>
-                </div>
+                <img src={ChalkLine} />
                 <div style={{display: "flex", justifyContent: "center"}}>
                     <button>Host game</button>
                     <button>Join game</button>
                 </div>
+                <br />
                 <div className="columns">
                     <div>
                     </div>
