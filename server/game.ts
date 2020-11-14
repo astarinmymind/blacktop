@@ -1,4 +1,6 @@
-﻿class Game {
+﻿import Player = require("./player")
+import Card = require("./card")
+class Game {
 	// TODO: figure out the class of IO lol
 	io;
 	players: Array<Player>;
@@ -172,4 +174,4 @@
 	// Player 2 can /ounter with 'nope' instantly.
 
 
-module.exports = Game;
+export = Game;

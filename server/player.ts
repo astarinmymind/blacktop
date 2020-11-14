@@ -1,4 +1,5 @@
-﻿class Player {
+﻿import Card = require("./card")
+class Player {
 	id: number;
 	name: string;
 	hand: Array<Card>;
@@ -21,4 +22,4 @@
 	}
 }
 
-module.exports = Player;
+export = Player;
