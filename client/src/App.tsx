@@ -1,13 +1,14 @@
 import React from "react";
 
-import Home from './home';
-import Lobby from './lobby';
+import Home from './components/home/home';
+import Lobby from './components/lobby/lobby';
+import Game from './components/game/game';
 
 class App extends React.Component {
 
   render() {
     return (
-      <Lobby />
+      <Game />
     );
   }
 }
