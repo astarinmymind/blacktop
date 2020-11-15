@@ -3,5 +3,5 @@ import { IUser } from "./models/IUserInfo";
 
 export interface IStore {
   game: IGame;
-  user: IUser;
+  // user: IUser;
 }

@@ -1,7 +1,6 @@
 import React from "react";
-import Grid from '../grid/grid';
+import Grid from '../gamegrid/gamegrid';
 import Player from '../player/player';
-import './game.css';
 
 interface IProps {
 }
