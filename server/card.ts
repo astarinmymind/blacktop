@@ -1,14 +1,10 @@
 ﻿class Card {
-	id: number;
 	type: string;
 	points: number;
-	imgID: number;
 
-	public constructor(id: number, type: string) {
-		this.id = id;
+	public constructor(type: string) {
 		this.type = type;
 		this.generateCardPoints();
-		this.matchImageID;
 	}
 
 	generateCardPoints() {
@@ -22,10 +18,6 @@
 		}
 		else
 			this.points = 0;
-	}
-
-	matchImageID() {
-		// TODO: match image ID based on type & points
 	}
 }
 
