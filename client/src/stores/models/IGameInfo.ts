@@ -1,5 +1,5 @@
 export interface IGame {
-    cards?: string[];
+    cards: [string, number][]; // array of tuples containing id (string) and points (number)
     // droppedCards?: string[];
     // notification?: string;
     // canStartGame?: boolean;
