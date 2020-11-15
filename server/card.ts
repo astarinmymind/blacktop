@@ -2,7 +2,7 @@
 	type: string;
 	points: number;
 
-	public constructor(id: number, type: string) {
+	public constructor(type: string) {
 		this.type = type;
 		this.generateCardPoints();
 	}

@@ -6,7 +6,6 @@ class Game {
 	players: Array<Player>;
 	existingPlayerIDs: Array<number>;
 	mainDeck: Array<Card>;
-	existingCardIDs: Array<number>;
 	isFinalRound: boolean;
 	isGameOver: boolean;
 	
@@ -33,10 +32,7 @@ class Game {
 	getRandomCard(): Card {
 		let cardTypes: Array<string> = ['nope', 'give', 'steal', 'skip', 'add', 'subtract'];
 		let cardType: string = cardTypes[Math.floor(Math.random() * cardTypes.length)];
-		let cardID: number = 1000 + this.existingCardIDs.length;
-		// keep track of existing card IDs
-		this.existingCardIDs.push(cardID);
-		let card: Card = new Card(cardID, cardType);
+		let card: Card = new Card(cardType);
 		return card;
 	}
 
@@ -91,7 +87,8 @@ class Game {
 		// ...		
 		// socket emit stuff?
 		// retrieve cardType
-		this.drawCard(player, this.mainDeck.shift()); // get first card in main deck
+		this.drawCard(player, this.mainDeck[0]); // get first card in main deck
+		this.mainDeck.shift();
 
 		if (player.pointTotal >= 100) {
 			player.isDead = true;
@@ -155,7 +152,6 @@ class Game {
 		else {
 			player.addCard(card);
 		}
-		this.mainDeck = this.mainDeck.filter(c => c.id !== card.id);
 	}
 
 	findPlayerByID(socketID: number): Player {
@@ -171,7 +167,7 @@ class Game {
 // TODO: more Game functions
 // TODO: add functionality for when a player interrupts another's turn:
 	// for Example, Player 1 plays 'steal a card' from Player 2
-	// Player 2 can /ounter with 'nope' instantly.
+	// Player 2 can counter with 'nope' instantly.
 
 
 export = Game;

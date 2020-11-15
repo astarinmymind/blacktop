@@ -18,7 +18,7 @@ class Player {
     }
 
 	removeCard(card: Card): void {
-		this.hand = this.hand.filter(c => c.id !== card.id);
+		this.hand = this.hand.filter(c => (c.type !== card.type && c.points !== card.points));
 	}
 }
 
