@@ -89,6 +89,7 @@ class Game {
 		// retrieve cardType
 		this.drawCard(player, this.mainDeck[0]); // get first card in main deck
 		this.mainDeck.shift();
+		this.mainDeck.push(this.getRandomCard();
 
 		if (player.pointTotal >= 100) {
 			player.isDead = true;
