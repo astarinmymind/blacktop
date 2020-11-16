@@ -89,7 +89,7 @@ class Game {
 		// retrieve cardType
 		this.drawCard(player, this.mainDeck[0]); // get first card in main deck
 		this.mainDeck.shift();
-		this.mainDeck.push(this.getRandomCard();
+		this.mainDeck.push(this.getRandomCard());
 
 		if (player.pointTotal >= 100) {
 			player.isDead = true;
@@ -128,6 +128,18 @@ class Game {
 			let opponent: Player = null;
 			player.removeCard(selectedCard);
 			opponent.addCard(selectedCard);
+		}
+		else if(cardType === "draw 2 from deck"){
+			this.drawCard(player, this.mainDeck[0]); // get first card in main deck
+			this.mainDeck.shift();
+			this.mainDeck.push(this.getRandomCard());
+			this.drawCard(player, this.mainDeck[0]); // get first card in main deck
+			this.mainDeck.shift();
+			this.mainDeck.push(this.getRandomCard());
+		}
+		else if(cardType === "see the future"){
+			let cardstoDisplay: Array<Card> = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
+			//TODO: use socket to emit ("showCard", cardstoDisplay to player.id )
 		}
 		else if (cardType === 'steal') {
 			// TODO: handle click
