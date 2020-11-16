@@ -16,7 +16,6 @@ class Game extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-                <Grid />
                 <Player />
             </>
         );

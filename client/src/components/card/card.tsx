@@ -1,23 +1,25 @@
-import React from "react";
+import React from "react"
+import { CardStore } from './CardStore'
 
-interface IProps {
-    // id: number; // type of card
-    // onCardClick: (card: any) => void; // handles card click
-    // disable: boolean; // can player use card?
+// define type for context value
+type CardContextValue = {
+    cardStore: CardStore
 }
 
-class Card extends React.Component<IProps> {
-    constructor(props: any) {
-        super(props);
-      }
+// define context 
+const CardContext = React.createContext<CardContextValue>({} as CardContextValue)
 
-    render() {
-        return (
-            <div>
-                <p>renders card</p>
-            </div>
-        );
-    }
-}
+// initialize store
+const cardStore = new CardStore() 
 
-export default Card;
+// export context provider 
+export const CardProvider: React.FC<React.PropsWithChildren<{}>> = ({children}) => {
+    return (
+        <CardContext.Provider value ={{ cardStore }}>
+            {children}
+        </CardContext.Provider>
+    );
+};
+
+// define helper hook
+export const useCardStore = () => React.useContext(CardContext)
