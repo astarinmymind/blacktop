@@ -1,14 +1,8 @@
 import React from "react";
 import Grid from '../gamegrid/gamegrid';
-import Player from '../player/player';
 
-interface IProps {
-}
 
-interface IState {
-}
-
-class Game extends React.Component<IProps, IState> {
+class Game extends React.Component {
     constructor(props: any) {
         super(props);
       }
@@ -16,7 +10,6 @@ class Game extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-                <Player />
             </>
         );
     }

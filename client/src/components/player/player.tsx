@@ -1,23 +1,25 @@
-import React from "react";
+import React from "react"
+import { PlayerStore } from './PlayerStore'
 
-interface IProps {
+// defines type
+type PlayerContextValue = {
+    playerStore: PlayerStore
 }
 
-interface IState {
-}
+// defines context 
+const PlayerContext = React.createContext<PlayerContextValue>({} as PlayerContextValue)
 
-class Player extends React.Component<IProps, IState> {
-    constructor(props: any) {
-        super(props);
-      }
+// initialize store
+const playerStore = new PlayerStore() 
 
-    render() {
-        return (
-            <>
-                <p>list of players</p>
-            </>
-        );
-    }
-}
+// exports context provider 
+export const PlayerProvider: React.FC<React.PropsWithChildren<{}>> = ({children}) => {
+    return (
+        <PlayerContext.Provider value ={{ playerStore }}>
+            {children}
+        </PlayerContext.Provider>
+    );
+};
 
-export default Player;
+// defines helper hook
+export const usePlayerStore = () => React.useContext(PlayerContext)

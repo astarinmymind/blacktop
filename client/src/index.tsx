@@ -7,10 +7,11 @@ import ReactDOM from "react-dom";
 import 'semantic-ui-css/semantic.min.css'
 import App from "./App";
 import { CardProvider } from './components/card/card';
+import { PlayerProvider } from "./components/player/player";
 
 ReactDOM.render(
-    <CardProvider>
+    <PlayerProvider><CardProvider>
         <App />
-    </CardProvider>,
+    </CardProvider></PlayerProvider>,
     document.getElementById("root")
 );
