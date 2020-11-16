@@ -4,7 +4,6 @@ Notes:
 */
 import React from "react";
 import { useObserver } from 'mobx-react-lite'
-import { CardStore } from "./components/card/CardStore";
 import { useCardStore } from './components/card/card'
 
 // import Home from './components/home/home';
@@ -13,16 +12,16 @@ import { useCardStore } from './components/card/card'
 
 function App() {
 
+  // gets store
   const {cardStore} = useCardStore()
   
   return useObserver(() => (
     <>
+      // renders an unordered list of cards
       <ul>
-        {cardStore.cards.map(card => (
-            <li>{card}</li>
-          ))}
+        {cardStore.cards.map(card => (<li>{card}</li>))}
       </ul>
-      <button>Draw Card</button>
+      <button onClick={() => cardStore.addCard('card string', 0)}>Draw Card</button>
     </>
   ));
 }
