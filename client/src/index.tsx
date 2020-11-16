@@ -5,13 +5,13 @@ Note: We wrap App in Provider to pass all store instances to all child component
 import React from "react";
 import ReactDOM from "react-dom";
 import 'semantic-ui-css/semantic.min.css'
-import App from "./App";
+import Game from "./components/game/game";
 import { CardProvider } from './components/card/card';
 import { PlayerProvider } from "./components/player/player";
 
 ReactDOM.render(
     <PlayerProvider><CardProvider>
-        <App />
+        <Game />
     </CardProvider></PlayerProvider>,
     document.getElementById("root")
 );
