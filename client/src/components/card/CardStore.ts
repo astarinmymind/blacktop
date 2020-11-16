@@ -21,7 +21,8 @@ export class CardStore {
     //     getCards().then(cards => this.cards = cards)
     // }
 
-    // pushes tuple onto card array
+    // pushes tuple onto card array 
+    // NOTE: add card will probably have no parameters and simply broadcast event to server
     @action 
     addCard = (type: string, point: number) => {
         var card: [string, number] = [type, point];
