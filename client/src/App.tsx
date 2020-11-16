@@ -1,3 +1,7 @@
+/*
+Notes: 
+  -useObserver: used to observe values from store
+*/
 import React from "react";
 import { useObserver } from 'mobx-react-lite'
 import { CardStore } from "./components/card/CardStore";
