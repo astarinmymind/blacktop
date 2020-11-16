@@ -2,7 +2,6 @@
 
 Context: used when data needs to be accessible by many components at different nesting levels 
 Provider: allows components to subscribe to context changes 
-    - wrap <App/> in provider to pass all store instances to all child components wrapped within
 
 */
 
