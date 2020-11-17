@@ -9,10 +9,14 @@ import Game from "./components/game/game";
 import Lobby from "./components/lobby/lobby";
 import { CardProvider } from './components/card/card';
 import { PlayerProvider } from "./components/player/player";
+import { SocketService } from './SocketService';
+import { ChatContext } from './ChatContext';
+
+const chat = new SocketService();
 
 ReactDOM.render(
     <PlayerProvider><CardProvider>
-        <Lobby />
+        <Game />
     </CardProvider></PlayerProvider>,
     document.getElementById("root")
 );

@@ -6,13 +6,28 @@ Notes:
     - let you group a list of children without adding extra nodes to the DOM
 */
 
-import React from "react";
-import { useState } from "react";
-import { useObserver } from 'mobx-react-lite'
-import { useCardStore } from '../card/card'
 import { CardStore } from "../card/CardStore";
   
-export const Game = () => {
+//export const Game = () => {
+import React, { useState, useEffect } from "react";
+import { useObserver } from 'mobx-react-lite'
+import { useCardStore } from '../card/card'
+import socketIOClient from "socket.io-client";
+
+var id = Math.floor(Math.random() * 100);
+
+const ENDPOINT = "http://127.0.0.1:5000";
+const socket = socketIOClient(ENDPOINT);
+
+function Game() {
+	const [title, setTitle] = useState("");
+	
+	useEffect(() => {
+		socket.on("Title", data => {
+			setTitle(data);
+		});
+	}, []);
+
   // gets store
   const {cardStore} = useCardStore()
 
@@ -25,9 +40,14 @@ export const Game = () => {
       <ul>
         {cardStore.cards.map(card => (<li>{card}</li>))}
       </ul>
+	  <button onClick={ sendId }>{title}</button>
     </>
   ));
 
+}
+
+function sendId() {
+	socket.emit("ID", id);
 }
 
 export default Game;
