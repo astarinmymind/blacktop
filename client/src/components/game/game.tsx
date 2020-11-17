@@ -7,11 +7,12 @@ Notes:
 */
 
 import React from "react";
+import { useState } from "react";
 import { useObserver } from 'mobx-react-lite'
 import { useCardStore } from '../card/card'
-
-function Game() {
-
+import { CardStore } from "../card/CardStore";
+  
+export const Game = () => {
   // gets store
   const {cardStore} = useCardStore()
 
@@ -20,10 +21,10 @@ function Game() {
   return useObserver(() => (
     // renders an unordered list of cards
     <>
+      <button onClick={() => cardStore.addCard('card string', 0)}>Draw Card</button>
       <ul>
         {cardStore.cards.map(card => (<li>{card}</li>))}
       </ul>
-      <button onClick={() => cardStore.addCard('card string', 0)}>Draw Card</button>
     </>
   ));
 

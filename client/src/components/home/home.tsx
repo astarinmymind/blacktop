@@ -1,10 +1,10 @@
 import React from 'react';
 import './home.css';
-import TestLogo from './images/TestLogo.png';
-import TestCard from './images/TestCard.png';
-import ChalkLine from './images/ChalkLine.png';
-import PlushCat from './images/PlushCat.gif';
-import Werewolf from './images/Werewolf.gif';
+import TestLogo from '../../images/TestLogo.png';
+import TestCard from '../../images/TestCard.png';
+import ChalkLine from '../../images/ChalkLine.png';
+import PlushCat from '../../images/PlushCat.gif';
+import Werewolf from '../../images/Werewolf.gif';
 
 class Home extends React.Component {
 

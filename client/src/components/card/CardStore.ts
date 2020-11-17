@@ -7,10 +7,14 @@ Mobx:
         - @action: marks method as modifying state 
 */
 
-import { observable, action } from 'mobx'
+import { observable, action, makeObservable } from 'mobx'
 
 export class CardStore {
     
+    constructor() {
+        makeObservable(this);
+    }
+
     // array of tuples containing id (string) and points (number)
     @observable cards: [string, number][] = []
 
