@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './home.css';
 import TestLogo from '../../images/TestLogo.png';
@@ -6,6 +6,10 @@ import TestCard from '../../images/TestCard.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import PlushCat from '../../images/PlushCat.gif';
 import Werewolf from '../../images/Werewolf.gif';
+import socketIOClient from "socket.io-client";
+
+const ENDPOINT = "http://127.0.0.1:5000";
+const socket = socketIOClient(ENDPOINT);
 
 class Home extends React.Component {
 
@@ -17,7 +21,7 @@ class Home extends React.Component {
                 </div>
                 <img src={ChalkLine} />
                 <Link to="/lobby" style={{display: "flex", justifyContent: "center"}}>
-                    <button>Host game</button>
+                    <button onClick={ makeLobby }>Host game</button>
                     <button>Join game</button>
                 </Link>
                 <br />
@@ -70,6 +74,12 @@ class Home extends React.Component {
             </div>
         );
     }
+}
+
+function makeLobby() 
+{
+	var lobbyId = Math.floor(100000 + Math.random() * 900000);
+	socket.emit("makeLobby", lobbyId);
 }
 
 export default Home;

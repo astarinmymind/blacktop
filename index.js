@@ -17,6 +17,8 @@ const title = 'Dont Draw Card'
 
 var SOCKET_LIST = {};
 
+var LOBBY_LIST = {};
+
 socketIo.on("connection", (socket) => {
 	socket.id = Math.random() * 100;
 	SOCKET_LIST[socket.id] = socket;
@@ -36,7 +38,21 @@ socketIo.on("connection", (socket) => {
 		var socket = SOCKET_LIST[i];
 		console.log(socket.id);
 	}
-		//console.log('id: ' + id);
+	});
+	
+	socket.on('makeLobby', (id) => {
+		console.log(id);
+		var players = {socket};
+		LOBBY_LIST[id] = {id, players };
+		for (var i in LOBBY_LIST)
+		{
+			console.log(LOBBY_LIST[i].id);
+			for (var k in LOBBY_LIST[i].players)
+			{
+				console.log(LOBBY_LIST[i].players[k].id);
+			}
+			console.log('----------');
+		}
 	});
 });
 
