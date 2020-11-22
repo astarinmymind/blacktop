@@ -2,7 +2,8 @@ import { observable, action, makeObservable } from 'mobx'
 import { CardStore } from '../card/CardStore';
 
 class Player {
-    id: number;
+    playerId: number;
+    lobbyId: number;
     name: string;
     icon: any;
     hand: CardStore;
@@ -10,7 +11,8 @@ class Player {
     isDead: boolean;
     
     constructor() {
-        this.id = 123456;
+        this.playerId = 431;
+        this.lobbyId = 123456;
         this.name = "";
         this.icon = null;
         this.hand = new CardStore();
@@ -21,10 +23,10 @@ class Player {
 
 export class PlayerStore {
 
-    constructor() {
-        makeObservable(this);
-    }
-    
+    // constructor() {
+    //     makeObservable(this);
+    // }
+
     // array of Player Objects
     @observable players: Player[] = []
 
@@ -36,14 +38,14 @@ export class PlayerStore {
     }
 
     @action
-    setName = (event: any) => {
-        console.log(event.target.value + " goes to " + this.players[0].name);
-        this.players[0].name = event.target.value;
+    setName = (newName: string, index: number) => {
+        console.log(newName + " goes to " + this.players[index].name);
+        this.players[index].name = newName;
     }
 
     @action
-    setIcon = (newIcon: any) => {
+    setIcon = (newIcon: any, index: number) => {
         console.log(newIcon + " goes to " + this.players[0].icon);
-        this.players[0].icon = newIcon;
+        this.players[index].icon = newIcon;
     }
 }

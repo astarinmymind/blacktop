@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import './home.css';
 import TestLogo from '../../images/TestLogo.png';
 import TestCard from '../../images/TestCard.png';
@@ -15,10 +16,10 @@ class Home extends React.Component {
                     <img src={TestLogo}/>
                 </div>
                 <img src={ChalkLine} />
-                <div style={{display: "flex", justifyContent: "center"}}>
+                <Link to="/lobby" style={{display: "flex", justifyContent: "center"}}>
                     <button>Host game</button>
                     <button>Join game</button>
-                </div>
+                </Link>
                 <br />
                 <div className="columns">
                     <div>
