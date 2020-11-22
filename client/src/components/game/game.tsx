@@ -39,12 +39,12 @@ function Game() {
   
   return useObserver(() => (
     // renders an unordered list of cards
+    //button with the variable grabbed from the server
     <>
       <button onClick={() => cardStore.addCard('card string', 0)}>Draw Card</button>
       <ul>
         {cardStore.cards.map(card => (<li>{card}</li>))}
-      </ul>\
-	  //button with the variable grabbed from the server
+      </ul>
 	  <button onClick={ sendId }>{title}</button>
     </>
   ));

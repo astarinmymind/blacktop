@@ -15,18 +15,28 @@ let interval;
 
 const title = 'Dont Draw Card'
 
+var SOCKET_LIST = {};
+
 socketIo.on("connection", (socket) => {
-	console.log("New Client connected");
+	socket.id = Math.random() * 100;
+	SOCKET_LIST[socket.id] = socket;
+	console.log("New Client connected: " + 	socket.id);
 	if (interval) {
 		clearInterval(interval);
 	}
 	interval = setInterval(() => getApiAndEmit(socket), 100);
 	socket.on("disconnect", () => {
-		console.log("Client disconnected");
+		delete SOCKET_LIST[socket.id];
+		console.log("Client disconnected: " +  socket.id);
 		clearInterval(interval);
 	});
 	socket.on('ID', (id) => {
-		console.log('id: ' + id);
+	for (var i in SOCKET_LIST)
+	{
+		var socket = SOCKET_LIST[i];
+		console.log(socket.id);
+	}
+		//console.log('id: ' + id);
 	});
 });
 

@@ -16,7 +16,7 @@ const chat = new SocketService();
 
 ReactDOM.render(
     <PlayerProvider><CardProvider>
-        <Game />
+        <Lobby />
     </CardProvider></PlayerProvider>,
     document.getElementById("root")
 );
