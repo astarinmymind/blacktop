@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useObserver } from 'mobx-react-lite'
 import { Link } from "react-router-dom";
 import './home.css';
 import TestLogo from '../../images/TestLogo.png';
@@ -6,15 +7,16 @@ import TestCard from '../../images/TestCard.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import PlushCat from '../../images/PlushCat.gif';
 import Werewolf from '../../images/Werewolf.gif';
-import socketIOClient from "socket.io-client";
+import GameService from '../../services/GameService';
+import { usePlayerStore } from '../player/player'
 
-const ENDPOINT = "http://127.0.0.1:5000";
-const socket = socketIOClient(ENDPOINT);
 
-class Home extends React.Component {
+const gs = new GameService();
 
-    render() {
-        return (
+
+export const Home = () => { 
+	const {playerStore} = usePlayerStore();
+    return useObserver(() => (
             <div style={{backgroundColor: "rgb(14, 14, 14)"}}>
                 <div className="manifest">
                     <img src={TestLogo}/>
@@ -72,14 +74,14 @@ class Home extends React.Component {
                     </div>
                 </div>
             </div>
-        );
-    }
+    ));
+	function makeLobby() 
+	{
+		var lobbyId = Math.floor(100000 + Math.random() * 900000);
+		gs.socket.emit("makeLobby", lobbyId);
+		playerStore.lobbyId = lobbyId;
+	}
 }
 
-function makeLobby() 
-{
-	var lobbyId = Math.floor(100000 + Math.random() * 900000);
-	socket.emit("makeLobby", lobbyId);
-}
 
 export default Home;

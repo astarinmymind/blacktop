@@ -41,18 +41,46 @@ socketIo.on("connection", (socket) => {
 	});
 	
 	socket.on('makeLobby', (id) => {
-		console.log(id);
-		var players = {socket};
-		LOBBY_LIST[id] = {id, players };
+		//console.log(id);
+		var name = "";
+		var players = {};
+		players[0] = [socket, name];
+		LOBBY_LIST[id] = {id, players};
 		for (var i in LOBBY_LIST)
 		{
 			console.log(LOBBY_LIST[i].id);
 			for (var k in LOBBY_LIST[i].players)
 			{
-				console.log(LOBBY_LIST[i].players[k].id);
+				console.log(LOBBY_LIST[i].players[k][0].id);
 			}
 			console.log('----------');
 		}
+	});
+	
+	socket.on('playerName', (data) =>
+	{
+		var pack = {};
+		for (var i in LOBBY_LIST[data[1]].players)
+		{
+			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
+			{
+				LOBBY_LIST[data[1]].players[i][1] = data[0];
+				//console.log(LOBBY_LIST[data[1]].players[i][2]);
+			}
+			pack[i] = LOBBY_LIST[data[1]].players[i][1];
+		}
+		for (var i in LOBBY_LIST[data[1]].players)
+		{
+			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
+			{
+				console.log(LOBBY_LIST[data[1]].players[i][0].id);
+				socket.emit('updateNames', pack);
+			}
+			else {
+			socket.to(LOBBY_LIST[data[1]].players[i][0].id).emit('updateNames', pack);
+			}
+		}
+		//console.log('name: ' + data[0] + ' / lobby id: ' + data[1]);
 	});
 });
 

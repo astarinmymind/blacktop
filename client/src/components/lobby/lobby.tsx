@@ -16,20 +16,20 @@ import Tangerine from '../../images/Tangerine.gif';
 import Werewolf from '../../images/Werewolf.gif';
 import src from '*.avif';
 import { TabPane } from 'semantic-ui-react';
+import GameService from '../../services/GameService';
+
+const gs = new GameService();
 
 export const Lobby = () => {
     // gets store
-    const {playerStore} = usePlayerStore();
-  
-    console.log(playerStore);
-    
-    playerStore.addPlayer();
+	const {playerStore} = usePlayerStore();
     const index: number = playerStore.players.length - 1;
 
     const [name, setName] = React.useState("");
     const updateName = (event: React.ChangeEvent<HTMLInputElement>) => { 
+		sendName(event.target.value);
         setName(event.target.value);
-        playerStore.setName(event.target.value, 0);
+        //playerStore.setName(event.target.value, 0);
     }
 
     const [icon, setIcon] = React.useState();
@@ -84,20 +84,38 @@ export const Lobby = () => {
                 <div>
                     <div>
                         {playerStore.players.map((element, i) => {
-                            return(
+                            /*return(
                                 <>
                                     <br />
                                     <img key={i} src={element.icon}/>
                                     {element.name}
                                     <br />
                                 </>
-                            );
+                            );*/
                         })}
                     </div>
                 </div>
             </div>
         </div>
     ));
+	function sendName(value) {
+		var pack = [ value, playerStore.lobbyId ];
+		gs.socket.emit("playerName", pack);
+	}
+	
+	function setNames(data) {
+	for (var i in data)
+	{
+		playerStore.players[i].name = data[i];
+	}
+}
+	
 };
+
+gs.socket.on("updateNames", function(data) {
+	console.log('hit');
+	setNames(data);
+});
+
 
 export default Lobby;

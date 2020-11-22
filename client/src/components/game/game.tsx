@@ -12,25 +12,14 @@ import { CardStore } from "../card/CardStore";
 import React, { useState, useEffect } from "react";
 import { useObserver } from 'mobx-react-lite'
 import { useCardStore } from '../card/card'
-import socketIOClient from "socket.io-client";
 
 //Just a random ID i used to test that each client was different
 var id = Math.floor(Math.random() * 100);
 
 //address of the server
-const ENDPOINT = "http://127.0.0.1:5000";
-const socket = socketIOClient(ENDPOINT);
 
 function Game() {
 	//this is syntax I use to set variables, setTitle being the way to change them
-	const [title, setTitle] = useState("");
-	
-	useEffect(() => {
-		//grabbing the data from the server
-		socket.on("Title", data => {
-			setTitle(data);
-		});
-	}, []);
 
   // gets store
   const {cardStore} = useCardStore()
@@ -45,7 +34,6 @@ function Game() {
       <ul>
         {cardStore.cards.map(card => (<li>{card}</li>))}
       </ul>
-	  <button onClick={ sendId }>{title}</button>
     </>
   ));
 
@@ -53,7 +41,7 @@ function Game() {
 
 function sendId() {
 	//sending the ID to the server so you can print it
-	socket.emit("ID", id);
+	//socket.emit("ID", id);
 }
 
 export default Game;
