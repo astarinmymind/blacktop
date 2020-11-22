@@ -27,9 +27,15 @@ export const Lobby = () => {
     const index: number = playerStore.players.length - 1;
 
     const [name, setName] = React.useState("");
-    const updateInput = (event: React.ChangeEvent<HTMLInputElement>) => { 
+    const updateName = (event: React.ChangeEvent<HTMLInputElement>) => { 
         setName(event.target.value);
         playerStore.setName(event.target.value, 0);
+    }
+
+    const [icon, setIcon] = React.useState();
+    const updateIcon = (newIcon: any, index: number) => { 
+        setIcon(newIcon);
+        playerStore.setIcon(newIcon, 0);
     }
 
     return useObserver(() => (
@@ -52,26 +58,26 @@ export const Lobby = () => {
                         maxLength={12} 
                         placeholder="Type name here" 
                         value={name}
-                        onChange={updateInput}
+                        onChange={updateName}
                     />
                     <div className="icon-gallery">
                         <>
-                            <img alt="" src={Brickshay} onClick={() => playerStore.setIcon(Brickshay, index)}/>
-                            <img alt="" src={Dragon} onClick={() => playerStore.setIcon(Dragon, index)}/>
-                            <img alt="" src={Frog} onClick={() => playerStore.setIcon(Frog, index)}/>
-                            <img alt="" src={Goblin} onClick={() => playerStore.setIcon(Goblin, index)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay, index)}/>
+                            <img alt="" src={Dragon} onClick={() => updateIcon(Dragon, index)}/>
+                            <img alt="" src={Frog} onClick={() => updateIcon(Frog, index)}/>
+                            <img alt="" src={Goblin} onClick={() => updateIcon(Goblin, index)}/>
                         </>
                         <>
-                            <img alt="" src={Monkey} onClick={() => playerStore.setIcon(Monkey, index)}/>
-                            <img alt="" src={PlushCat} onClick={() => playerStore.setIcon(PlushCat, index)}/>
-                            <img alt="" src={Seagull} onClick={() => playerStore.setIcon(Seagull, index)}/>
-                            <img alt="" src={Tangerine} onClick={() => playerStore.setIcon(Tangerine, index)}/>
+                            <img alt="" src={Monkey} onClick={() => updateIcon(Monkey, index)}/>
+                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat, index)}/>
+                            <img alt="" src={Seagull} onClick={() => updateIcon(Seagull, index)}/>
+                            <img alt="" src={Tangerine} onClick={() => updateIcon(Tangerine, index)}/>
                         </>
                         <>
-                            <img alt="" src={Werewolf} onClick={() => playerStore.setIcon(Werewolf, index)}/>
-                            <img alt="" src={Brickshay} onClick={() => playerStore.setIcon(Brickshay, index)}/>
-                            <img alt="" src={PlushCat} onClick={() => playerStore.setIcon(PlushCat, index)}/>
-                            <img alt="" src={Brickshay} onClick={() => playerStore.setIcon(Brickshay, index)}/>
+                            <img alt="" src={Werewolf} onClick={() => updateIcon(Werewolf, index)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay, index)}/>
+                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat, index)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay, index)}/>
                         </>
                     </div>
                 </div>
