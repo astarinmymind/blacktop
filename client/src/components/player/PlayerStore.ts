@@ -12,7 +12,6 @@ class Player {
     
     constructor() {
         this.playerId = 431;
-        this.lobbyId = 123456;
         this.name = "";
         this.icon = null;
         this.hand = new CardStore();
@@ -29,6 +28,8 @@ export class PlayerStore {
 
     // array of Player Objects
     @observable players: Player[] = []
+
+    @observable lobbyId: number
 
     // pushes player onto player array 
     // NOTE: temporary parameters
