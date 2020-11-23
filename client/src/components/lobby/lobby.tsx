@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
 import './lobby.css';
@@ -37,6 +37,13 @@ export const Lobby = () => {
         setIcon(newIcon);
         playerStore.setIcon(newIcon, 0);
     }
+	
+	useEffect(() => {
+		gs.socket.on("updateNames", function(data) {
+			console.log('hit');
+			setNames(data);
+		});
+    }, []);
 
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
@@ -104,18 +111,15 @@ export const Lobby = () => {
 	}
 	
 	function setNames(data) {
-	for (var i in data)
-	{
-		playerStore.players[i].name = data[i];
+		
+		for (var i in data)
+		{
+			playerStore.players[i].name = data[i];
+		}
 	}
-}
-	
 };
 
-gs.socket.on("updateNames", function(data) {
-	console.log('hit');
-	setNames(data);
-});
+
 
 
 export default Lobby;
