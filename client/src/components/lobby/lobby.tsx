@@ -29,20 +29,35 @@ export const Lobby = () => {
     const updateName = (event: React.ChangeEvent<HTMLInputElement>) => { 
 		sendName(event.target.value);
         setName(event.target.value);
-        //playerStore.setName(event.target.value, 0);
     }
 
     const [icon, setIcon] = React.useState();
     const updateIcon = (newIcon: any, index: number) => { 
         setIcon(newIcon);
-        playerStore.setIcon(newIcon, 0);
     }
-	
-	useEffect(() => {
-		gs.socket.on("updateNames", function(data) {
-			console.log('hit');
-			setNames(data);
-		});
+
+	function sendName(value) {
+		var pack = [ value, playerStore.lobbyId ];
+		gs.socket.emit("playerName", pack);
+	}
+
+    const [dummy, setDummy] = React.useState({});
+    useEffect(() => {
+        gs.socket.on("updateNames", function(data) {
+            playerStore.players = [];
+            Object.keys(data).forEach(key => {
+                console.log("added player");
+                playerStore.addPlayer();
+            });
+            
+            Object.entries(data).forEach(entry => {
+                const [key, value] = entry;
+                playerStore.setName(value, parseInt(key));
+                // this.setIcon(newPlayers[i].icon, i);
+            });
+
+            setDummy({}); // Needed because Lobby doesn't re-render automatically after above change(s)
+        })
     }, []);
 
     return useObserver(() => (
@@ -90,46 +105,19 @@ export const Lobby = () => {
                 </div>
                 <div>
                     <div>
-                        {playerStore.players.map((element, i) => {
-                            /*return(
-                                <>
-                                    <br />
-                                    <img key={i} src={element.icon}/>
-                                    {element.name}
-                                    <br />
-                                </>
-                            );*/
-                        })}
+                        {playerStore.getPlayers().map((element, i) => 
+                            <li key={i}>
+                                <br />
+                                <img src={Dragon/*element.icon*/}/>
+                                {element.name}
+                                <br />
+                            </li>
+                        )}
                     </div>
                 </div>
             </div>
         </div>
     ));
-	function sendName(value) {
-		var pack = [ value, playerStore.lobbyId ];
-		gs.socket.emit("playerName", pack);
-	}
-	
-	function setNames(data) {
-		
-		for (var i in data)
-		{
-			playerStore.players[i].name = data[i];
-		}
-	}
 };
-
-<<<<<<< HEAD
-
-=======
-gs.socket.on("updateNames", function(data) {
-	const SetPlayers = () => {
-        const {playerStore} = usePlayerStore();
-        playerStore.setPlayers(data);
-    }
-    SetPlayers();
-});
->>>>>>> 290615140af6b721a6222a8b9b85a939ace21bb5
-
 
 export default Lobby;

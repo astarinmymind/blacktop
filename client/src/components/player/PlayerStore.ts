@@ -21,25 +21,24 @@ class Player {
 }
 
 export class PlayerStore {
-
-    // constructor() {
-    //     makeObservable(this);
-    // }
-
     // array of Player Objects
-    @observable players: Player[] = []
+    players: Player[] = []
 
-    @observable lobbyId: number = 0
+    @observable lobbyId: number = 0;
+
+    @action 
+    getPlayers = () => {
+        return this.players;
+    }
 
     // pushes player onto player array 
-    // NOTE: temporary parameters
     @action 
     addPlayer = () => {
         this.players.push(new Player());
     }
 
     @action
-    setName = (newName: string, index: number) => {
+    setName = (newName: any, index: number) => {
         console.log(newName + " goes to " + this.players[index].name);
         this.players[index].name = newName;
     }
@@ -48,17 +47,5 @@ export class PlayerStore {
     setIcon = (newIcon: any, index: number) => {
         //console.log(newIcon + " goes to " + this.players[0].icon);
        // this.players[index].icon = newIcon;
-    }
-
-    @action
-    setPlayers = (newPlayers: any) => {
-        for (let i = this.players.length; i < newPlayers.length; i++) {
-            this.addPlayer();
-        }
-        
-        for (let i = 0; i < newPlayers.length; i++) {
-            this.setName(newPlayers[i].name, i);
-            // this.setIcon(newPlayers[i].icon, i);
-        }
     }
 }
