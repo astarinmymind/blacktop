@@ -49,4 +49,16 @@ export class PlayerStore {
         //console.log(newIcon + " goes to " + this.players[0].icon);
        // this.players[index].icon = newIcon;
     }
+
+    @action
+    setPlayers = (newPlayers: any) => {
+        for (let i = this.players.length; i < newPlayers.length; i++) {
+            this.addPlayer();
+        }
+        
+        for (let i = 0; i < newPlayers.length; i++) {
+            this.setName(newPlayers[i].name, i);
+            // this.setIcon(newPlayers[i].icon, i);
+        }
+    }
 }

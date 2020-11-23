@@ -119,7 +119,17 @@ export const Lobby = () => {
 	}
 };
 
+<<<<<<< HEAD
 
+=======
+gs.socket.on("updateNames", function(data) {
+	const SetPlayers = () => {
+        const {playerStore} = usePlayerStore();
+        playerStore.setPlayers(data);
+    }
+    SetPlayers();
+});
+>>>>>>> 290615140af6b721a6222a8b9b85a939ace21bb5
 
 
 export default Lobby;
