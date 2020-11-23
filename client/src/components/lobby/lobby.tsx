@@ -113,8 +113,11 @@ export const Lobby = () => {
 };
 
 gs.socket.on("updateNames", function(data) {
-	console.log('hit');
-	setNames(data);
+	const SetPlayers = () => {
+        const {playerStore} = usePlayerStore();
+        playerStore.setPlayers(data);
+    }
+    SetPlayers();
 });
 
 
