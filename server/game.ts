@@ -30,7 +30,7 @@ class Game {
     }
 
 	getRandomCard(): Card {
-		let cardTypes: Array<string> = ['nope', 'give', 'steal', 'skip', 'add', 'subtract'];
+		let cardTypes: Array<string> = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', "draw 2 from deck", "see the future"];
 		let cardType: string = cardTypes[Math.floor(Math.random() * cardTypes.length)];
 		let card: Card = new Card(cardType);
 		return card;
@@ -116,7 +116,12 @@ class Game {
 		// if Player does not want to play a card, cardType is null
 		if (cardType == null)
 			return;
-		if (cardType === 'nope') {
+		//Socket emit that the player played this card
+		let nopePlayed: boolean = this.listenForNope();
+		if(nopePlayed){
+			player.removeCard(card)
+			return;
+			//socket emit that someone said nope
 			// TODO
 			// special case as nope card can be used at random times
 		}
@@ -173,6 +178,12 @@ class Game {
 				return this.players[i];
 		}
 		return null;
+	}
+	listenForNope(){
+	//if someone emits a nope event within 6 seconds
+		//return true
+	//else
+		return false;
 	}
 
 }
