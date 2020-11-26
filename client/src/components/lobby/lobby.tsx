@@ -73,7 +73,7 @@ export const Lobby = () => {
                     <h1>Icon: </h1>
                 </div>
                 <div>
-                    <h1>Random code here!</h1>
+                    <h1>{playerStore.lobbyId}</h1>
                     <input 
                         name="name" 
                         type="text" 

@@ -15,17 +15,43 @@ const gs = new GameService();
 
 
 export const Home = () => { 
-	const {playerStore} = usePlayerStore();
+    const {playerStore} = usePlayerStore();
+    
+    const [lobbyId, setLobbyId] = React.useState("");
+    const updateLobbyId = (event: React.ChangeEvent<HTMLInputElement>) => { 
+        const re = /^[0-9\b]+$/;
+
+        // if value is not blank, then test the regex
+
+        if (event.target.value === '' || re.test(event.target.value)) {
+            setLobbyId(event.target.value);
+        }
+    }
+
+    function sendLobbyId(value) {
+		var pack = [ value, playerStore.lobbyId ];
+		gs.socket.emit("lobbyId", pack);
+		playerStore.lobbyId = parseInt(lobbyId);
+	}
+
     return useObserver(() => (
             <div style={{backgroundColor: "rgb(14, 14, 14)"}}>
                 <div className="manifest">
-                    <img src={TestLogo}/>
+                    <img src={ TestLogo }/>
                 </div>
                 <img src={ChalkLine} />
                 <Link to="/lobby" style={{display: "flex", justifyContent: "center"}}>
                     <button onClick={ makeLobby }>Host game</button>
-                    <button>Join game</button>
                 </Link>
+                <input 
+                        name="lobbyId" 
+                        type="text" 
+                        maxLength={6} 
+                        placeholder="Lobby code" 
+                        value={ lobbyId }
+                        onChange={ updateLobbyId }
+                />
+                <button onClick={ sendLobbyId }>Join game</button>
                 <br />
                 <div className="columns">
                     <div>
