@@ -57,6 +57,18 @@ socketIo.on("connection", (socket) => {
 		}
 	});
 	
+	socket.on('joinLobby', (id) => {
+		console.log(id);
+		var name = "";
+		for (var i in LOBBY_LIST)
+		{
+			if (LOBBY_LIST[i].id == id)
+			{
+				LOBBY_LIST[i].players[1] = [socket, name];
+			}
+		}
+	});
+	
 	socket.on('playerName', (data) =>
 	{
 		var pack = {};

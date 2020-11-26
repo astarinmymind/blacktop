@@ -28,9 +28,8 @@ export const Home = () => {
         }
     }
 
-    function sendLobbyId(value) {
-		var pack = [ value, playerStore.lobbyId ];
-		gs.socket.emit("lobbyId", pack);
+    function sendLobbyId() {
+		gs.socket.emit("joinLobby", lobbyId);
 		playerStore.lobbyId = parseInt(lobbyId);
 	}
 
