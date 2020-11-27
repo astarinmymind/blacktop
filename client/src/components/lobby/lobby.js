@@ -14,7 +14,7 @@ import PlushCat from '../../images/PlushCat.gif';
 import Seagull from '../../images/Seagull.gif';
 import Tangerine from '../../images/Tangerine.gif';
 import Werewolf from '../../images/Werewolf.gif';
-import src from '*.avif';
+// import src from '*.avif';
 import { TabPane } from 'semantic-ui-react';
 import GameService from '../../services/GameService';
 
@@ -23,21 +23,22 @@ const gs = new GameService();
 export const Lobby = () => {
     // gets store
 	const {playerStore} = usePlayerStore();
-    const index: number = playerStore.players.length - 1;
+    const index = playerStore.players.length - 1;
 
     const [name, setName] = React.useState("");
-    const updateName = (event: React.ChangeEvent<HTMLInputElement>) => { 
-		sendName(event.target.value);
+    const updateName = (event) => { 
+		sendPlayer(event.target.value, icon);
         setName(event.target.value);
     }
 
-    const [icon, setIcon] = React.useState();
-    const updateIcon = (newIcon: any, index: number) => { 
+    const [icon, setIcon] = React.useState(Brickshay);
+    const updateIcon = (newIcon) => { 
+		sendPlayer(name, newIcon);
         setIcon(newIcon);
     }
 
-	function sendName(value) {
-		var pack = [ value, playerStore.lobbyId ];
+	function sendPlayer(newName, newIcon) {
+		var pack = [ newName, playerStore.lobbyId, newIcon ];
 		gs.socket.emit("playerName", pack);
 	}
 
@@ -52,8 +53,8 @@ export const Lobby = () => {
             
             Object.entries(data).forEach(entry => {
                 const [key, value] = entry;
-                playerStore.setName(value, parseInt(key));
-                // this.setIcon(newPlayers[i].icon, i);
+                playerStore.setName(value[0], parseInt(key));
+                playerStore.setIcon(value[1], parseInt(key));
             });
 
             setDummy({}); // Needed because Lobby doesn't re-render automatically after above change(s)
@@ -84,31 +85,31 @@ export const Lobby = () => {
                     />
                     <div className="icon-gallery">
                         <>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay, index)}/>
-                            <img alt="" src={Dragon} onClick={() => updateIcon(Dragon, index)}/>
-                            <img alt="" src={Frog} onClick={() => updateIcon(Frog, index)}/>
-                            <img alt="" src={Goblin} onClick={() => updateIcon(Goblin, index)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay)}/>
+                            <img alt="" src={Dragon} onClick={() => updateIcon(Dragon)}/>
+                            <img alt="" src={Frog} onClick={() => updateIcon(Frog)}/>
+                            <img alt="" src={Goblin} onClick={() => updateIcon(Goblin)}/>
                         </>
                         <>
-                            <img alt="" src={Monkey} onClick={() => updateIcon(Monkey, index)}/>
-                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat, index)}/>
-                            <img alt="" src={Seagull} onClick={() => updateIcon(Seagull, index)}/>
-                            <img alt="" src={Tangerine} onClick={() => updateIcon(Tangerine, index)}/>
+                            <img alt="" src={Monkey} onClick={() => updateIcon(Monkey)}/>
+                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat)}/>
+                            <img alt="" src={Seagull} onClick={() => updateIcon(Seagull)}/>
+                            <img alt="" src={Tangerine} onClick={() => updateIcon(Tangerine)}/>
                         </>
                         <>
-                            <img alt="" src={Werewolf} onClick={() => updateIcon(Werewolf, index)}/>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay, index)}/>
-                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat, index)}/>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay, index)}/>
+                            <img alt="" src={Werewolf} onClick={() => updateIcon(Werewolf)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay)}/>
+                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay)}/>
                         </>
                     </div>
                 </div>
                 <div>
                     <div>
                         {playerStore.getPlayers().map((element, i) => 
-                            <li key={i}>
+                            <li style={{ listStyleType: "none" }} key={i}>
                                 <br />
-                                <img src={Dragon/*element.icon*/}/>
+                                <img src={element.icon}/>
                                 {element.name}
                                 <br />
                             </li>

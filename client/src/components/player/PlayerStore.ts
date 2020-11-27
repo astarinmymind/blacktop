@@ -5,7 +5,7 @@ class Player {
     //playerId: number;
     //lobbyId: number = 0;
     name: string;
-    //icon: any;
+    icon: any;
     //hand: CardStore;
     //pointTotal: number;
    // isDead: boolean;
@@ -45,7 +45,7 @@ export class PlayerStore {
 
     @action
     setIcon = (newIcon: any, index: number) => {
-        //console.log(newIcon + " goes to " + this.players[0].icon);
-       // this.players[index].icon = newIcon;
+        console.log(newIcon + " goes to " + this.players[0].icon);
+       this.players[index].icon = newIcon;
     }
 }
