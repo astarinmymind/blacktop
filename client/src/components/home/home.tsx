@@ -31,7 +31,13 @@ export const Home = () => {
     function sendLobbyId() {
 		gs.socket.emit("joinLobby", lobbyId);
 		playerStore.lobbyId = parseInt(lobbyId);
-	}
+    }
+    
+    useEffect(() => {
+        gs.socket.on("lobbyWrong", function(data) {
+            alert("Please enter a valid six-digit lobby code!")
+        })
+    }, []);
 
     return useObserver(() => (
             <div style={{backgroundColor: "rgb(14, 14, 14)"}}>
@@ -39,18 +45,21 @@ export const Home = () => {
                     <img src={ TestLogo }/>
                 </div>
                 <img src={ChalkLine} />
-                <Link to="/lobby" style={{display: "flex", justifyContent: "center"}}>
+                <Link to="/lobby" style={{ display: "flex", justifyContent: "center" }}>
                     <button onClick={ makeLobby }>Host game</button>
+                    <button onClick={ sendLobbyId }>Join game</button>
                 </Link>
-                <input 
-                        name="lobbyId" 
-                        type="text" 
-                        maxLength={6} 
-                        placeholder="Lobby code" 
-                        value={ lobbyId }
-                        onChange={ updateLobbyId }
-                />
-                <button onClick={ sendLobbyId }>Join game</button>
+                <br />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <input 
+                            name="lobbyId" 
+                            type="text" 
+                            maxLength={6} 
+                            placeholder="Lobby code" 
+                            value={ lobbyId }
+                            onChange={ updateLobbyId }
+                    />
+                </div>
                 <br />
                 <div className="columns">
                     <div>
