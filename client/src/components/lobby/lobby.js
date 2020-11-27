@@ -101,6 +101,10 @@ export const Lobby = () => {
         })
     }, []);
 
+    React.useEffect(() => {
+        gs.socket.emit("anything");
+      }, []);
+
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
             <div className="manifest">
