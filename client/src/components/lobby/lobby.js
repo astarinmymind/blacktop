@@ -27,14 +27,14 @@ export const Lobby = () => {
 
     const [name, setName] = React.useState("");
     const updateName = (event) => { 
-		sendPlayer(event.target.value, icon);
+		sendPlayer(event.target.value, iconId);
         setName(event.target.value);
     }
 
-    const [icon, setIcon] = React.useState(Brickshay);
-    const updateIcon = (newIcon) => { 
-		sendPlayer(name, newIcon);
-        setIcon(newIcon);
+    const [iconId, setIconId] = React.useState(Brickshay);
+    const updateIcon = (newIconId) => { 
+		sendPlayer(name, newIconId);
+        setIconId(newIconId);
     }
 
 	function sendPlayer(newName, newIcon) {
@@ -54,7 +54,47 @@ export const Lobby = () => {
             Object.entries(data).forEach(entry => {
                 const [key, value] = entry;
                 playerStore.setName(value[0], parseInt(key));
-                playerStore.setIcon(value[1], parseInt(key));
+
+                let newIcon;
+                switch (value[1]) {
+                    case 1:
+                        newIcon = Dragon;
+                        break;
+                    case 2:
+                        newIcon = Frog;
+                        break;
+                    case 3:
+                        newIcon = Goblin;
+                        break;
+                    case 4:
+                        newIcon = Monkey;
+                        break;
+                    case 5:
+                        newIcon = PlushCat;
+                        break;
+                    case 6:
+                        newIcon = Seagull;
+                        break;
+                    case 7:
+                        newIcon = Tangerine;
+                        break;
+                    case 8:
+                        newIcon = Werewolf;
+                        break;
+                    case 9:
+                        newIcon = Dragon;
+                        break;
+                    case 10:
+                        newIcon = Dragon;
+                        break;
+                    case 11:
+                        newIcon = Dragon;
+                        break;
+                    default:
+                        newIcon = Brickshay;
+                        break;
+                }
+                playerStore.setIcon(newIcon, parseInt(key));
             });
 
             setDummy({}); // Needed because Lobby doesn't re-render automatically after above change(s)
@@ -85,22 +125,22 @@ export const Lobby = () => {
                     />
                     <div className="icon-gallery">
                         <>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay)}/>
-                            <img alt="" src={Dragon} onClick={() => updateIcon(Dragon)}/>
-                            <img alt="" src={Frog} onClick={() => updateIcon(Frog)}/>
-                            <img alt="" src={Goblin} onClick={() => updateIcon(Goblin)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(0)}/>
+                            <img alt="" src={Dragon} onClick={() => updateIcon(1)}/>
+                            <img alt="" src={Frog} onClick={() => updateIcon(2)}/>
+                            <img alt="" src={Goblin} onClick={() => updateIcon(3)}/>
                         </>
                         <>
-                            <img alt="" src={Monkey} onClick={() => updateIcon(Monkey)}/>
-                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat)}/>
-                            <img alt="" src={Seagull} onClick={() => updateIcon(Seagull)}/>
-                            <img alt="" src={Tangerine} onClick={() => updateIcon(Tangerine)}/>
+                            <img alt="" src={Monkey} onClick={() => updateIcon(4)}/>
+                            <img alt="" src={PlushCat} onClick={() => updateIcon(5)}/>
+                            <img alt="" src={Seagull} onClick={() => updateIcon(6)}/>
+                            <img alt="" src={Tangerine} onClick={() => updateIcon(7)}/>
                         </>
                         <>
-                            <img alt="" src={Werewolf} onClick={() => updateIcon(Werewolf)}/>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay)}/>
-                            <img alt="" src={PlushCat} onClick={() => updateIcon(PlushCat)}/>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(Brickshay)}/>
+                            <img alt="" src={Werewolf} onClick={() => updateIcon(8)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(9)}/>
+                            <img alt="" src={PlushCat} onClick={() => updateIcon(10)}/>
+                            <img alt="" src={Brickshay} onClick={() => updateIcon(11)}/>
                         </>
                     </div>
                 </div>

@@ -33,18 +33,18 @@ socketIo.on("connection", (socket) => {
 		clearInterval(interval);
 	});
 	socket.on('ID', (id) => {
-	for (var i in SOCKET_LIST)
-	{
-		var socket = SOCKET_LIST[i];
-		console.log(socket.id);
-	}
+		for (var i in SOCKET_LIST)
+		{
+			var socket = SOCKET_LIST[i];
+			console.log(socket.id);
+		}
 	});
 	
 	socket.on('makeLobby', (id) => {
 		//console.log(id);
 		var name = "";
 		var players = {};
-		players[0] = [socket, name, ""];
+		players[0] = [socket, name, 0];
 		LOBBY_LIST[id] = {id, players};
 		for (var i in LOBBY_LIST)
 		{
@@ -64,7 +64,7 @@ socketIo.on("connection", (socket) => {
 		{
 			if (LOBBY_LIST[i].id == id)
 			{
-				LOBBY_LIST[i].players[1] = [socket, name, ""];
+				LOBBY_LIST[i].players[1] = [socket, name, 0];
 			}
 		}
 	});
