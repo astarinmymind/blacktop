@@ -42,7 +42,7 @@ socketIo.on("connection", (socket) => {
 	
 	socket.on('makeLobby', (id) => {
 		//console.log(id);
-		var name = "test";
+		var name = "";
 		var players = {};
 		players[0] = [socket, name, 0];
 		LOBBY_LIST[id] = {id, players};
@@ -55,12 +55,6 @@ socketIo.on("connection", (socket) => {
 			}
 			console.log('----------');
 		}
-		var pack = {};
-		for (var i in LOBBY_LIST[id].players)
-		{
-			pack[i] = [LOBBY_LIST[id].players[i][1], LOBBY_LIST[id].players[i][2]];
-		}
-		socket.emit('updateNames', pack);
 	});
 	
 	socket.on('joinLobby', (id) => {
@@ -71,19 +65,29 @@ socketIo.on("connection", (socket) => {
 			if (LOBBY_LIST[i].id == id)
 			{
 				LOBBY_LIST[i].players[1] = [socket, name, 0];
+			}
+		}
+	});
+	
+	socket.on('validId', (id) => {
+		var hit = false;
+		for (var i in LOBBY_LIST)
+		{
+			if (LOBBY_LIST[i].id == id)
+			{
 				hit = true;
 			}
 		}
+		socket.emit('valID', hit);
+	});
+	
+	socket.on('enterLobby', (id) => {
 		var pack = {};
 		for (var i in LOBBY_LIST[id].players)
 		{
 			pack[i] = [LOBBY_LIST[id].players[i][1], LOBBY_LIST[id].players[i][2]];
 		}
 		socket.emit('updateNames', pack);
-	});
-	
-	socket.on('getLobbies', () => {
-		socket.emit('allLobbies', LOBBY_LIST);
 	});
 	
 	socket.on('playerName', (data) =>

@@ -102,7 +102,7 @@ export const Lobby = () => {
     }, []);
 
     React.useEffect(() => {
-        gs.socket.emit("anything");
+        gs.socket.emit("enterLobby", playerStore.lobbyId);
       }, []);
 
     return useObserver(() => (
