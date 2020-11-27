@@ -16,10 +16,6 @@
     height: 30%;
     width: 30%;
   }
-
-  img {
-    width: 100vw;
-  }
   
   button {
     color: #000;
@@ -35,8 +31,12 @@
   button:hover {
     text-decoration: underline;
   }
+
+  input {
+    margin-left: 10vw;
+  }
   
-  .columns {
+  .home-columns {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     color: #ffffff;
@@ -46,7 +46,7 @@
     white-space: pre-wrap;
   }
 
-  .columns h1 {
+  .home-columns h1 {
     color: #ffffff;
     font-family: 'Gloria Hallelujah', cursive;
     font-size: 3vw;
@@ -54,7 +54,7 @@
     margin-top: 0%;
   }
 
-  .columns img {
+  .home-columns img {
     width: 80%;
     vertical-align: center;
   }

@@ -23,7 +23,6 @@ const gs = new GameService();
 export const Lobby = () => {
     // gets store
 	const {playerStore} = usePlayerStore();
-    const index = playerStore.players.length - 1;
 
     const [name, setName] = React.useState("");
     const updateName = (event) => { 
@@ -111,7 +110,7 @@ export const Lobby = () => {
                 <img alt="" src={TestLogo}/>
             </div>
             <img src={ChalkLine} />
-            <div className="columns">
+            <div className="lobby-columns">
                 <div style={{textAlign: "right"}}>
                     <h1>Game Code: </h1>
                     <h1>Name: </h1>
