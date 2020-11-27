@@ -20,7 +20,7 @@ var SOCKET_LIST = {};
 var LOBBY_LIST = {};
 
 socketIo.on("connection", (socket) => {
-	socket.id = Math.random() * 100;
+	//socket.id = Math.random() * 100;
 	SOCKET_LIST[socket.id] = socket;
 	console.log("New Client connected: " + 	socket.id);
 	if (interval) {
@@ -85,7 +85,6 @@ socketIo.on("connection", (socket) => {
 		{
 			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
 			{
-				console.log(LOBBY_LIST[data[1]].players[i][0].id);
 				socket.emit('updateNames', pack);
 			}
 			else {
