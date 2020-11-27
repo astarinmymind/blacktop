@@ -44,7 +44,7 @@ socketIo.on("connection", (socket) => {
 		//console.log(id);
 		var name = "";
 		var players = {};
-		players[0] = [socket, name];
+		players[0] = [socket, name, ""];
 		LOBBY_LIST[id] = {id, players};
 		for (var i in LOBBY_LIST)
 		{
@@ -64,7 +64,7 @@ socketIo.on("connection", (socket) => {
 		{
 			if (LOBBY_LIST[i].id == id)
 			{
-				LOBBY_LIST[i].players[1] = [socket, name];
+				LOBBY_LIST[i].players[1] = [socket, name, ""];
 			}
 		}
 	});
@@ -77,6 +77,7 @@ socketIo.on("connection", (socket) => {
 			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
 			{
 				LOBBY_LIST[data[1]].players[i][1] = data[0];
+				LOBBY_LIST[data[1]].players[i][2] = data[2];
 				//console.log(LOBBY_LIST[data[1]].players[i][2]);
 			}
 			pack[i] = LOBBY_LIST[data[1]].players[i][1];
