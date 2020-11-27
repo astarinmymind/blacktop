@@ -1,5 +1,8 @@
 ﻿import Player = require("./player")
 import Card = require("./card")
+//A Game must have a unique id to prevent conflicts on the database. I suggest making the id equal to gameRooms.length()
+//and then pushing the created game onto gameRooms.
+//This way, the index of a game in gameRooms will be equal to it's id, which will be equal to it's ID in the database
 class Game {
 	// TODO: figure out the class of IO lol
 	io;
@@ -8,12 +11,24 @@ class Game {
 	mainDeck: Array<Card>;
 	isFinalRound: boolean;
 	isGameOver: boolean;
+	id: number;
 	
-	public constructor(io) {
+	public constructor(io, id) {
 		this.io = io;
 		this.isFinalRound = false
 		this.isGameOver = false;
-    }
+		this.players = [];
+		this.existingPlayerIDs = [];
+		this.mainDeck = [];
+		this.id = id;
+	}
+
+	toFirestore(){
+		var temp =  Object.assign({},this)
+		temp.players = temp.players.map(p => p.toFirestore());
+		temp.mainDeck = temp.mainDeck.map(d => d.toFirestore());
+		return temp;
+	}
 
 	generateMainDeck(numberOfCards: number): void {
 		for (let i = 0; i < numberOfCards; i++) {

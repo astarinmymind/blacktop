@@ -4,7 +4,11 @@
 
 	public constructor(type: string) {
 		this.type = type;
+		this.points = 0;
 		this.generateCardPoints();
+	}
+	toFirestore(){
+		return Object.assign({},this);
 	}
 
 	generateCardPoints() {

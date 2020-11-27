@@ -11,6 +11,12 @@ class Player {
 		this.name = name;
 		this.pointTotal = 0;
 		this.isDead = false;
+		this.hand = [];
+	}
+	toFirestore(){
+		var temp = Object.assign({},this);
+		temp.hand = temp.hand.map(h => h.toFirestore());
+		return temp;
 	}
 
 	addCard(card: Card): void {

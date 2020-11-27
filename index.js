@@ -4,6 +4,17 @@ const options = {
 	cors : true,
 	origins:["http://127.0.0.1:3000"],
 };
+
+
+// Initialize Cloud Firestore through Firebase
+const firebase = require('firebase/app');
+firebase.initializeApp({
+    apiKey: "AIzaSyB5kr10op2T-z9PGWggHFuU-XlfS0_rQE8",
+    authDomain: "sample-game-database.firebaseapp.com",
+    projectId: "sample-game-database"
+});
+//End of Firebase stuff
+
 const app = express();
 const socketIo = require("socket.io")(http, options);
 const port = 5000;
