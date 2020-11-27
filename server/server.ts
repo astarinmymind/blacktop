@@ -1,5 +1,6 @@
 ﻿const express = require('express');
 const app = express();
+import Game = require('./game');
 
 /*
 const webpack = require('webpack');
@@ -40,7 +41,8 @@ io.on('connection', function (socket) {
     socket.on('join', function (playerName: string) {
         let game: Game;
         if (gameRooms.length === 0) {
-            game = new Game(io);
+            game = new Game(io, gameRooms.length());
+            addtoDatabase(game);
             gameRooms.push(game);
         } else {
             game = gameRooms[gameRooms.length - 1];
