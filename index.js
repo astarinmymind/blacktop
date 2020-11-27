@@ -80,7 +80,7 @@ socketIo.on("connection", (socket) => {
 				LOBBY_LIST[data[1]].players[i][2] = data[2];
 				//console.log(LOBBY_LIST[data[1]].players[i][2]);
 			}
-			pack[i] = LOBBY_LIST[data[1]].players[i][1];
+			pack[i] = [LOBBY_LIST[data[1]].players[i][1], LOBBY_LIST[data[1]].players[i][2]];
 		}
 		for (var i in LOBBY_LIST[data[1]].players)
 		{
