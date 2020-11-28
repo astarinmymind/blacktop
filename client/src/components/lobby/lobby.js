@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
+import { Link } from "react-router-dom";
 import './lobby.css';
 import TestLogo from '../../images/TestLogo.png';
 import TestCard from '../../images/TestCard.png';
@@ -149,7 +150,7 @@ export const Lobby = () => {
                 </div>
                 <div>
                     <div>
-                        {playerStore.getPlayers().map((element, i) => 
+                        {playerStore.players.map((element, i) => 
                             <li style={{ listStyleType: "none" }} key={i}>
                                 <br />
                                 <img src={element.icon}/>
@@ -158,6 +159,9 @@ export const Lobby = () => {
                             </li>
                         )}
                     </div>
+                    <Link to="/game">
+                        <button onClick="">Start game</button>
+                    </Link>
                 </div>
             </div>
         </div>
