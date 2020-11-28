@@ -1,28 +1,27 @@
 ﻿class Card {
-	type: string;
-	points: number;
+	type;
+	points;
 
-	public constructor(type: string) {
+	public constructor(type) {
 		this.type = type;
 		this.points = 0;
 		this.generateCardPoints();
 	}
-	toFirestore(){
+
+	toFirestore() {
 		return Object.assign({},this);
 	}
 
 	generateCardPoints() {
 		if (this.type === 'add') {
-			let points: number = Math.floor(Math.random() * 20);
-			this.points = points;
+			this.points = Math.floor(Math.random() * 20);
 		}
 		else if (this.type === 'subtract') {
-			let points: number = -1 * Math.floor(Math.random() * 20);
-			this.points = points;
+			this.points = -1 * Math.floor(Math.random() * 20);
 		}
 		else
 			this.points = 0;
 	}
 }
 
-export = Card;
+export default Card;
