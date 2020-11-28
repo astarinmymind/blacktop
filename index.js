@@ -126,6 +126,20 @@ socketIo.on("connection", (socket) => {
 		}
 		//console.log('name: ' + data[0] + ' / lobby id: ' + data[1]);
 	});
+	
+	socket.on("gameStarted",  (id) =>
+	{
+		for (var i in LOBBY_LIST[id])
+		{
+			if (LOBBY_LIST[id].players[i][0].id == socket.id)
+			{
+				socket.emit('startGame', 0);
+			}
+			else {
+				socket.to(LOBBY_LIST[id].players[i][0].id).emit('startGame', 0);
+			}
+		}
+	}
 });
 
 const getApiAndEmit = socket => {
