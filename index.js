@@ -1,11 +1,10 @@
 const express = require('express');
+const Game = require("./server/game.ts");
 const http = require("http").createServer();
 const options = {
 	cors : true,
 	origins:["http://127.0.0.1:3000"],
 };
-
-
 // Initialize Cloud Firestore through Firebase
 const firebase = require('firebase/app');
 firebase.initializeApp({
@@ -56,7 +55,7 @@ socketIo.on("connection", (socket) => {
 		var name = "";
 		var players = {};
 		players[0] = [socket, name, 0];
-		LOBBY_LIST[id] = {id, players};
+		LOBBY_LIST[id] = {id, players, game};
 		for (var i in LOBBY_LIST)
 		{
 			console.log(LOBBY_LIST[i].id);
@@ -139,7 +138,7 @@ socketIo.on("connection", (socket) => {
 				socket.to(LOBBY_LIST[id].players[i][0].id).emit('startGame', 0);
 			}
 		}
-	}
+	});
 });
 
 const getApiAndEmit = socket => {

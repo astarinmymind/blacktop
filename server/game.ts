@@ -1,25 +1,25 @@
 ﻿// Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
-//const firebase = require('firebase/app');
-import firebase from '../node_modules/firebase/app';
+const firebase = require('firebase/app');
+//import firebase from '../node_modules/firebase/app';
 // Add the Firebase products that you want to use
-import auth = require('firebase/auth');
-import store = require('firebase/firestore');
+const auth = require('firebase/auth');
+const store = require('firebase/firestore');
 //Other classes
-import Player = require("./player")
-import Card = require("./card")
+const Player = require("./player")
+const Card = require("./card")
 //A Game must have a unique id to prevent conflicts on the database. I suggest making the id equal to gameRooms.length()
 //and then pushing the created game onto gameRooms.
 //This way, the index of a game in gameRooms will be equal to it's id, which will be equal to it's ID in the database
 class Game {
 	// TODO: figure out the class of IO lol
 	io;
-	players: Array<Player>;
-	existingPlayerIDs: Array<number>;
-	mainDeck: Array<Card>;
-	isFinalRound: boolean;
-	isGameOver: boolean;
-	id: number;
+	players;
+	existingPlayerIDs;
+	mainDeck;
+	isFinalRound;
+	isGameOver;
+	id;
 	
 	public constructor(io, id) {
 		this.io = io;
