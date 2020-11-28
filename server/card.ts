@@ -2,7 +2,7 @@
 	type;
 	points;
 
-	public constructor(type) {
+	constructor(type) {
 		this.type = type;
 		this.points = 0;
 		this.generateCardPoints();
@@ -24,4 +24,4 @@
 	}
 }
 
-export default Card;
+module.exports = Card;

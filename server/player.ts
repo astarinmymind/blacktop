@@ -1,4 +1,4 @@
-﻿import Card = require("./card")
+﻿const Card = require("./card")
 class Player {
 	id;
 	name;
@@ -6,7 +6,7 @@ class Player {
 	pointTotal;
 	isDead;
 
-	public constructor(id, name) {
+	constructor(id, name) {
 		this.id = id;
 		this.name = name;
 		this.pointTotal = 0;
@@ -29,4 +29,4 @@ class Player {
 	}
 }
 
-export default Player;
+module.exports = Player;
