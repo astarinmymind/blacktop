@@ -10,7 +10,7 @@ const firebase = require('firebase/app');
 firebase.initializeApp({
     apiKey: "AIzaSyB5kr10op2T-z9PGWggHFuU-XlfS0_rQE8",
     authDomain: "sample-game-database.firebaseapp.com",
-    projectId: "sample-game-database"
+    projectId: "sample-game-database",
 });
 //End of Firebase stuff
 
