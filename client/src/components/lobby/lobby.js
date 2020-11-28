@@ -105,6 +105,12 @@ export const Lobby = () => {
         gs.socket.emit("enterLobby", playerStore.lobbyId);
       }, []);
 
+    // emits socket event that player has pressed start game
+    function startGame() 
+    {
+        gs.socket.emit("gameStarted", playerStore.lobbyId);
+    }
+
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
             <div className="manifest">
@@ -160,7 +166,7 @@ export const Lobby = () => {
                         )}
                     </div>
                     <Link to="/game">
-                        <button onClick="">Start game</button>
+                        <button onClick={startGame}>Start game</button>
                     </Link>
                 </div>
             </div>

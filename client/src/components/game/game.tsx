@@ -10,6 +10,7 @@ import { CardStore } from "../card/CardStore";
   
 //export const Game = () => {
 import React, { useState, useEffect } from "react";
+import { usePlayerStore } from '../player/player'
 import { useObserver } from 'mobx-react-lite'
 import { useCardStore } from '../card/card'
 
@@ -23,6 +24,7 @@ function Game() {
 
   // gets store
   const {cardStore} = useCardStore()
+  const {playerStore} = usePlayerStore();
 
   console.log(cardStore)
   
