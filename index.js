@@ -27,6 +27,7 @@ const title = 'Dont Draw Card'
 
 var SOCKET_LIST = {};
 
+//Initilization of Lobby List
 var LOBBY_LIST = {};
 
 socketIo.on("connection", (socket) => {
@@ -50,12 +51,22 @@ socketIo.on("connection", (socket) => {
 		}
 	});
 	
+	
+	//Player has created a lobby
 	socket.on('makeLobby', (id) => {
 		//console.log(id);
 		var name = "";
+		
+		//Initilization of player list for this lobby
 		var players = {};
+		
+		//Initilization of first player
 		players[0] = [socket, name, 0];
+		
+		//Creates this 
+		//Lobby id:Lobby ID players: list of Player game: Instance of Game-TODO
 		LOBBY_LIST[id] = {id, players, game};
+		//Console.log every Lobby and every player in a lobby for Debugging
 		for (var i in LOBBY_LIST)
 		{
 			console.log(LOBBY_LIST[i].id);
@@ -67,18 +78,23 @@ socketIo.on("connection", (socket) => {
 		}
 	});
 	
+	//A player has joined a lobby
 	socket.on('joinLobby', (id) => {
 		console.log(id);
 		var name = "";
+		
+		//Search through all Lobbies to find the lobby to join
 		for (var i in LOBBY_LIST)
 		{
 			if (LOBBY_LIST[i].id == id)
 			{
+				//Adds the player to the lobby
 				LOBBY_LIST[i].players[1] = [socket, name, 0];
 			}
 		}
 	});
 	
+	//Debug function
 	socket.on('validId', (id) => {
 		var hit = false;
 		for (var i in LOBBY_LIST)
@@ -91,6 +107,8 @@ socketIo.on("connection", (socket) => {
 		socket.emit('valID', hit);
 	});
 	
+	//Sends the list of player names to the player to display
+	//called on entering a lobby
 	socket.on('enterLobby', (id) => {
 		var pack = {};
 		for (var i in LOBBY_LIST[id].players)
@@ -100,21 +118,31 @@ socketIo.on("connection", (socket) => {
 		socket.emit('updateNames', pack);
 	});
 	
+	//Called when a player updates their name or icon
 	socket.on('playerName', (data) =>
 	{
+		//package that will be sent to every player
 		var pack = {};
+		
+		//Search through this lobby 
 		for (var i in LOBBY_LIST[data[1]].players)
 		{
+			//if this player is the player that updated their name
 			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
 			{
+				//update their name information
 				LOBBY_LIST[data[1]].players[i][1] = data[0];
 				LOBBY_LIST[data[1]].players[i][2] = data[2];
 				//console.log(LOBBY_LIST[data[1]].players[i][2]);
 			}
+			//add this players info to pack
 			pack[i] = [LOBBY_LIST[data[1]].players[i][1], LOBBY_LIST[data[1]].players[i][2]];
 		}
+		//Search through this lobby
 		for (var i in LOBBY_LIST[data[1]].players)
 		{
+			//this if-else statement sends the package of player names
+			//to every player for display purposes
 			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
 			{
 				socket.emit('updateNames', pack);
