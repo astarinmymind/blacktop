@@ -14,6 +14,7 @@ import { usePlayerStore } from '../player/player'
 import { useObserver } from 'mobx-react-lite'
 import card from '../card/card'
 // import { useCardStore } from '../card/card'
+import './game.css'
 
 import GameService from '../../services/GameService';
 
@@ -56,13 +57,39 @@ function Game() {
   return useObserver(() => (
     // renders an unordered list of cards
     //button with the variable grabbed from the server
-    <>
-      <button onClick={drawCard}>Draw Card</button>
-      <button onClick={playCard}>Play Card</button>
+    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
+      <div className="game-columns">
+        <div>
+          <img src={playerStore.getPlayers()[0].icon} className="flip-img"/>
+          <h1>{playerStore.getPlayers()[0].name}</h1>
+          <div>
+            <button onClick={() => drawCard}>Draw Card</button>
+          </div>
+          <div>
+            <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
+          </div>
+        </div>
+        <div>
+          <h1>Drag card here to play it</h1>
+        </div>
+        <div>
+          {playerStore.getPlayers().map((element, i) => 
+              <li style={{ listStyleType: "none" }} key={i}>
+                  <br />
+                  <img src={element.icon}/>
+                  {element.name}
+                  <br />
+              </li>
+          )}
+        </div>
+      </div>
+      <div className="hand">
+        {/* {playerStore.getPlayerHand().map(card => (<li>{card}</li>))} */}
+      </div>
       <ul>
-        {playerStore.playerHand.map(card => (<li>{card}</li>))}
+        {playerStore.getPlayerHand().map(card => (<li>{card}</li>))}
       </ul>
-    </>
+    </div>
   ));
 
 }
