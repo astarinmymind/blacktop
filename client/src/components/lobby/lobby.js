@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import './lobby.css';
 import TestLogo from '../../images/TestLogo.png';
 import ChalkLine from '../../images/ChalkLine.png';
@@ -107,6 +107,7 @@ export const Lobby = () => {
     function startGame() 
     {
         gs.socket.emit("gameStarted", playerStore.lobbyId);
+        console.log(playerStore.lobbyId);
     }
 
     const [starting, setStarting] = React.useState({});
@@ -114,7 +115,9 @@ export const Lobby = () => {
         gs.socket.on("startGame", function(data) {
             console.log("hello");
             console.log(window.location.pathname);
+            console.log(playerStore.getPlayers());
             window.location.pathname = '/game';
+            console.log(playerStore.getPlayers());
         })
     }, []);
 
@@ -174,8 +177,8 @@ export const Lobby = () => {
                     </div>
                     <br />
                     <br />
-                    <Link to="/game">
-                        <button onClick={startGame}>Start game</button>
+                    <Link to={{ pathname: '/game', state:{ consent:'true'} }} >
+                        <button onClick={startGame}>Enter game</button>
                     </Link>
                 </div>
             </div>
