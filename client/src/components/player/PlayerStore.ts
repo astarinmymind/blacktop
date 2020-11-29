@@ -1,16 +1,6 @@
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action } from 'mobx'
 // import { CardStore } from '../card/CardStore';
 import Card from '../card/card';
-
-import Brickshay from '../../images/Brickshay.gif';
-import Dragon from '../../images/Dragon.gif';
-import Frog from '../../images/Frog.gif';
-import Goblin from '../../images/Goblin.gif';
-import Monkey from '../../images/Monkey.gif';
-import PlushCat from '../../images/PlushCat.gif';
-import Seagull from '../../images/Seagull.gif';
-import Tangerine from '../../images/Tangerine.gif';
-import Werewolf from '../../images/Werewolf.gif';
 
 class Player {
     //playerId: number;

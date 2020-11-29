@@ -60,11 +60,12 @@ function Game() {
     <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
       <div className="game-columns">
         <div>
-          <img src={playerStore.getPlayers()[0].icon} className="flip-img"/>
+          <img src={playerStore.getPlayers()[0].icon} className="flip-img" alt="Current Player" />
           <h1>{playerStore.getPlayers()[0].name}</h1>
           <div>
             <button onClick={() => drawCard}>Draw Card</button>
           </div>
+          <br />
           <div>
             <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
           </div>
@@ -72,7 +73,7 @@ function Game() {
         <div>
           <h1>Drag card here to play it</h1>
         </div>
-        <div>
+        <div className="list">
           {playerStore.getPlayers().map((element, i) => 
               <li style={{ listStyleType: "none" }} key={i}>
                   <br />
@@ -82,9 +83,6 @@ function Game() {
               </li>
           )}
         </div>
-      </div>
-      <div className="hand">
-        {/* {playerStore.getPlayerHand().map(card => (<li>{card}</li>))} */}
       </div>
       <ul>
         {playerStore.getPlayerHand().map(card => (<li>{card}</li>))}

@@ -60,10 +60,9 @@
     justify-content: left;
   }
 
-  .lobby-columns list-img {
-    display: flex;
-    vertical-align: middle;
-    justify-content: left;
+  .lobby-columns .list {
+    text-align: left;
+    margin-left: 1vw;
   }
 
   input {

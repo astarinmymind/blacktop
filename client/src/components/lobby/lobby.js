@@ -4,7 +4,6 @@ import { usePlayerStore } from '../player/player'
 import { Link } from "react-router-dom";
 import './lobby.css';
 import TestLogo from '../../images/TestLogo.png';
-import TestCard from '../../images/TestCard.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import Brickshay from '../../images/Brickshay.gif';
 import Dragon from '../../images/Dragon.gif';
@@ -16,7 +15,6 @@ import Seagull from '../../images/Seagull.gif';
 import Tangerine from '../../images/Tangerine.gif';
 import Werewolf from '../../images/Werewolf.gif';
 // import src from '*.avif';
-import { TabPane } from 'semantic-ui-react';
 import GameService from '../../services/GameService';
 
 const gs = new GameService();
@@ -155,11 +153,11 @@ export const Lobby = () => {
                     </div>
                 </div>
                 <div>
-                    <div className="list-img">
+                    <div className="list">
                         {playerStore.getPlayers().map((element, i) => 
                             <li style={{ listStyleType: "none" }} key={i}>
                                 <br />
-                                <img src={element.icon}/>
+                                <img src={element.icon} alt={`Player ${i+1}`} />
                                 {element.name}
                                 <br />
                             </li>
