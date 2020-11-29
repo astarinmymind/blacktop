@@ -135,12 +135,13 @@ socketIo.on("connection", (socket) => {
 			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id) //LOBBY_LIST[data[1]].players[i].id == socket.id
 			{
 				//update their name information
-				LOBBY_LIST[data[1]].players[i][1] = data[0]; // LOBBY_LIST[data[1]].players[i].name = 
-				LOBBY_LIST[data[1]].players[i][2] = data[2]; // LOBBY_LIST[data[1]].players[i].name = 
+				LOBBY_LIST[data[1]].players[i][1] = data[0]; // LOBBY_LIST[data[1]].players[i].icon = data[0]
+				LOBBY_LIST[data[1]].players[i][2] = data[2]; // LOBBY_LIST[data[1]].players[i].name = data[2]
 				//console.log(LOBBY_LIST[data[1]].players[i][2]);
 			}
 			//add this players info to pack
 			pack[i] = [LOBBY_LIST[data[1]].players[i][1], LOBBY_LIST[data[1]].players[i][2]];
+			//pack[i] = [LOBBY_LIST[data[1]].players[i]].something, LOBBY_LIST[data[1]].name]
 		}
 		//Search through this lobby
 		for (var i in LOBBY_LIST[data[1]].players)
