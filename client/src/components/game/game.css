@@ -2,7 +2,7 @@
 
 .game-columns {
     display: grid;
-    grid-template-columns: 2fr 3fr 1.5fr;
+    grid-template-columns: 20vw 50vw 30vw;
     color: #ffffff;
     font-family: 'Schoolbell', cursive;
     font-size: 1.8vw;
@@ -33,7 +33,7 @@
 }
 
 .game-columns .list {
-    text-align: left;
+    text-align: right;
     margin-left: 1vw;
     width: 50%;
 }

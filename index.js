@@ -65,7 +65,7 @@ socketIo.on("connection", (socket) => {
 		
 		//Creates this 
 		//Lobby id:Lobby ID players: list of Player game: Instance of Game-TODO
-		LOBBY_LIST[id] = {id, players, game};
+		LOBBY_LIST[id] = {id, players/*, game*/};
 		//Console.log every Lobby and every player in a lobby for Debugging
 		for (var i in LOBBY_LIST)
 		{
