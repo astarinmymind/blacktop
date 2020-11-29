@@ -1,31 +1,32 @@
-﻿import Card = require("./card")
+﻿const Card = require("./card")
 class Player {
-	id: number;
-	name: string;
-	hand: Array<Card>;
-	pointTotal: number;
-	isDead: boolean;
+	id;
+	name;
+	hand;
+	pointTotal;
+	isDead;
 
-	public constructor(id: number, name: string) {
+	constructor(id, name) {
 		this.id = id;
 		this.name = name;
 		this.pointTotal = 0;
 		this.isDead = false;
 		this.hand = [];
 	}
-	toFirestore(){
-		var temp = Object.assign({},this);
+
+	toFirestore() {
+		var temp = Object.assign({}, this);
 		temp.hand = temp.hand.map(h => h.toFirestore());
 		return temp;
 	}
 
-	addCard(card: Card): void {
+	addCard(card): void {
 		this.hand.push(card);
     }
 
-	removeCard(card: Card): void {
+	removeCard(card): void {
 		this.hand = this.hand.filter(c => (c.type !== card.type && c.points !== card.points));
 	}
 }
 
-export = Player;
+module.exports = Player;

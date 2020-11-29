@@ -1,15 +1,6 @@
-import { observable, action, makeObservable } from 'mobx'
-import { CardStore } from '../card/CardStore';
-
-import Brickshay from '../../images/Brickshay.gif';
-import Dragon from '../../images/Dragon.gif';
-import Frog from '../../images/Frog.gif';
-import Goblin from '../../images/Goblin.gif';
-import Monkey from '../../images/Monkey.gif';
-import PlushCat from '../../images/PlushCat.gif';
-import Seagull from '../../images/Seagull.gif';
-import Tangerine from '../../images/Tangerine.gif';
-import Werewolf from '../../images/Werewolf.gif';
+import { observable, action } from 'mobx'
+// import { CardStore } from '../card/CardStore';
+import Card from '../card/card';
 
 class Player {
     //playerId: number;
@@ -33,8 +24,15 @@ class Player {
 export class PlayerStore {
     // array of Player Objects
     players: Player[] = []
+    // array of Card Objects
+    playerHand: Card[] = [];
 
     @observable lobbyId: number = 0;
+
+    @action
+    getPlayerHand = () => {
+        return this.playerHand;
+    }
 
     @action 
     getPlayers = () => {

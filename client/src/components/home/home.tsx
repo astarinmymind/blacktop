@@ -1,4 +1,4 @@
-import React, { useState, useEffect, DOMElement, useRef } from "react";
+import React, { useEffect } from "react";
 import { useObserver } from 'mobx-react-lite'
 import { Link } from "react-router-dom";
 import './home.css';
@@ -50,9 +50,9 @@ export const Home = () => {
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)"}}>
             <div className="manifest">
-                <img src={ TestLogo }/>
+                <img src={ TestLogo } alt="logo" />
             </div>
-            <img src={ChalkLine} />
+            <img src={ChalkLine} alt="line" />
             <div style={{ display: "flex", justifyContent: "center" }}>
                 <Link to="/lobby">
                     <button onClick={ makeLobby }>Host game</button>
@@ -80,12 +80,12 @@ export const Home = () => {
                     <br />
                 </div>
                 <div>
-                    <img src={PlushCat}/>
+                    <img src={PlushCat} alt="" />
                 </div>
             </div>
             <div className="home-columns">
                 <div>
-                    <img src={Werewolf}/>
+                    <img src={Werewolf} alt="" />
                 </div>
                 <div>
                     <h1>Rules</h1>
@@ -112,7 +112,7 @@ export const Home = () => {
                     <br />
                 </div>
                 <div>
-                    <img src={TestCard}/>
+                    <img src={TestCard} alt="" />
                 </div>
             </div>
         </div>
@@ -122,7 +122,7 @@ export const Home = () => {
 		var lobbyId = Math.floor(100000 + Math.random() * 900000);
 		gs.socket.emit("makeLobby", lobbyId);
 		playerStore.lobbyId = lobbyId;
-	}
+    }
 }
 
 

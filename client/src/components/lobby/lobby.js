@@ -4,7 +4,6 @@ import { usePlayerStore } from '../player/player'
 import { Link } from "react-router-dom";
 import './lobby.css';
 import TestLogo from '../../images/TestLogo.png';
-import TestCard from '../../images/TestCard.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import Brickshay from '../../images/Brickshay.gif';
 import Dragon from '../../images/Dragon.gif';
@@ -16,7 +15,6 @@ import Seagull from '../../images/Seagull.gif';
 import Tangerine from '../../images/Tangerine.gif';
 import Werewolf from '../../images/Werewolf.gif';
 // import src from '*.avif';
-import { TabPane } from 'semantic-ui-react';
 import GameService from '../../services/GameService';
 
 const gs = new GameService();
@@ -105,6 +103,12 @@ export const Lobby = () => {
         gs.socket.emit("enterLobby", playerStore.lobbyId);
       }, []);
 
+    // emits socket event that player has pressed start game
+    function startGame() 
+    {
+        gs.socket.emit("gameStarted", playerStore.lobbyId);
+    }
+
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
             <div className="manifest">
@@ -149,18 +153,20 @@ export const Lobby = () => {
                     </div>
                 </div>
                 <div>
-                    <div>
-                        {playerStore.players.map((element, i) => 
+                    <div className="list">
+                        {playerStore.getPlayers().map((element, i) => 
                             <li style={{ listStyleType: "none" }} key={i}>
                                 <br />
-                                <img src={element.icon}/>
+                                <img src={element.icon} alt={`Player ${i+1}`} />
                                 {element.name}
                                 <br />
                             </li>
                         )}
                     </div>
+                    <br />
+                    <br />
                     <Link to="/game">
-                        <button onClick="">Start game</button>
+                        <button onClick={startGame}>Start game</button>
                     </Link>
                 </div>
             </div>

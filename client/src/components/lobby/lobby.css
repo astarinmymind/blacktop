@@ -60,6 +60,11 @@
     justify-content: left;
   }
 
+  .lobby-columns .list {
+    text-align: left;
+    margin-left: 1vw;
+  }
+
   input {
     text-align: center;
     font-family: 'Gloria Hallelujah', cursive;

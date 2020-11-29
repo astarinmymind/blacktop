@@ -1,27 +1,27 @@
 ﻿// Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
-//const firebase = require('firebase/app');
-import firebase from '../node_modules/firebase/app';
+const firebase = require('firebase/app');
+//import firebase from '../node_modules/firebase/app';
 // Add the Firebase products that you want to use
-import auth = require('firebase/auth');
-import store = require('firebase/firestore');
+const auth = require('firebase/auth');
+const store = require('firebase/firestore');
 //Other classes
-import Player = require("./player")
-import Card = require("./card")
+const Player = require("./player")
+const Card = require("./card")
 //A Game must have a unique id to prevent conflicts on the database. I suggest making the id equal to gameRooms.length()
 //and then pushing the created game onto gameRooms.
 //This way, the index of a game in gameRooms will be equal to it's id, which will be equal to it's ID in the database
 class Game {
 	// TODO: figure out the class of IO lol
 	io;
-	players: Array<Player>;
-	existingPlayerIDs: Array<number>;
-	mainDeck: Array<Card>;
-	isFinalRound: boolean;
-	isGameOver: boolean;
-	id: number;
+	players;
+	existingPlayerIDs;
+	mainDeck;
+	isFinalRound;
+	isGameOver;
+	id;
 	
-	public constructor(io, id) {
+	constructor(io, id) {
 		this.io = io;
 		this.isFinalRound = false
 		this.isGameOver = false;
@@ -38,13 +38,13 @@ class Game {
 		return temp;
 	}
 
-	generateMainDeck(numberOfCards: number): void {
+	generateMainDeck(numberOfCards) {
 		for (let i = 0; i < numberOfCards; i++) {
 			this.mainDeck.push(this.getRandomCard());
         }
 	}
 
-	generatePlayerHands(numberOfCards: number): void {
+	generatePlayerHands(numberOfCards) {
 		for (let p = 0; p < this.players.length; p++) {
 			for (let i = 0; i < numberOfCards; i++) {
 				this.players[p].hand.push(this.getRandomCard());
@@ -52,25 +52,25 @@ class Game {
         }
     }
 
-	getRandomCard(): Card {
-		let cardTypes: Array<string> = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', "draw 2 from deck", "see the future"];
-		let cardType: string = cardTypes[Math.floor(Math.random() * cardTypes.length)];
-		let card: Card = new Card(cardType);
+	getRandomCard(){
+		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', "draw 2 from deck", "see the future"];
+		let cardType = cardTypes[Math.floor(Math.random() * cardTypes.length)];
+		let card = new Card(cardType);
 		return card;
 	}
 
-	connect(socket, name): void {
+	connect(socket, name){
 		const player = new Player(socket.id, name);
 		this.players.push(player);
 		console.log("Player connected: " + socket.id);
 	}
 
-	disconnect(socket): void {
-		let playerID: number = socket.id;
+	disconnect(socket) {
+		let playerID = socket.id;
 		this.players = this.players.filter(p => p.id !== playerID);
 	}
 
-	start(): void {
+	start(){
 		this.generateMainDeck(50);
 		this.generatePlayerHands(7);
 		while(!this.isGameOver){
@@ -80,7 +80,7 @@ class Game {
 		//this.takeGameRound();
     }
 
-	takeGameRound(): void {
+	takeGameRound(){
 		if (this.isGameOver)
 			return;
 		for (let i = 0; i < this.players.length; i++) {
@@ -102,9 +102,9 @@ class Game {
 		updateDatabase(this);
 	}
 
-	takePlayerTurn(player: Player): void {
+	takePlayerTurn(player){
 
-		let card: Card = null;
+		let card = null;
 		// handle click?
 		// ...
 		// socket emit stuff?
@@ -128,7 +128,7 @@ class Game {
 			this.specialAction(player.pointTotal);
 	}
 
-	specialAction(pointTotal: number): void {
+	specialAction(pointTotal){
 		switch (pointTotal) {
 			case 10:
 				// do stuff
@@ -139,13 +139,13 @@ class Game {
 	}
 
 
-	playCard(player: Player, card: Card) {
-		let cardType: string = card.type;
+	playCard(player, card) {
+		let cardType = card.type;
 		// if Player does not want to play a card, cardType is null
 		if (cardType == null)
 			return;
 		//Socket emit that the player played this card
-		let nopePlayed: boolean = this.listenForNope();
+		let nopePlayed = this.listenForNope();
 		if(nopePlayed){
 			player.removeCard(card)
 			return;
@@ -157,8 +157,8 @@ class Game {
 			// TODO: handle click
 			// current Player selects Card from his/her deck
 			// and selects opponent to give Card to
-			let selectedCard: Card = null;
-			let opponent: Player = null;
+			let selectedCard = null;
+			let opponent = null;
 			player.removeCard(selectedCard);
 			opponent.addCard(selectedCard);
 		}
@@ -171,15 +171,15 @@ class Game {
 			this.mainDeck.push(this.getRandomCard());
 		}
 		else if(cardType === "see the future"){
-			let cardstoDisplay: Array<Card> = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
+			let cardstoDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
 			//TODO: use socket to emit ("showCard", cardstoDisplay to player.id )
 		}
 		else if (cardType === 'steal') {
 			// TODO: handle click
 			// current Player selects opponent to steal Card from
 			// and selects desired Card from opponent’s deck
-			let selectedCard: Card = null;
-			let opponent: Player = null;
+			let selectedCard = null;
+			let opponent = null;
 			opponent.removeCard(selectedCard);
 			player.addCard(selectedCard)
 		}
@@ -190,7 +190,7 @@ class Game {
 		player.removeCard(card);
 	}
 
-	drawCard(player: Player, card: Card) {
+	drawCard(player, card) {
 		if (card.type === 'bomb') {
 			player.isDead = true;
 			// TODO: send message to Game
@@ -200,7 +200,7 @@ class Game {
 		}
 	}
 
-	findPlayerByID(socketID: number): Player {
+	findPlayerByID(socketID) {
 		for (let i = 0; i < this.players.length; i++) {
 			if (this.players[i].id === socketID)
 				return this.players[i];
@@ -230,7 +230,7 @@ var gameConverter = {
     },
     fromFirestore: function(snapshot, options){
         const data = snapshot.data(options);
-        let game:Game = new Game( data.io, data.id); //TODO: Change o to whatever io is.
+        let game = new Game( data.io, data.id); //TODO: Change o to whatever io is.
         game.players = data.players;
         game.existingPlayerIDs = data.existingPlayerIDs;
         game.mainDeck = data.mainDeck;
@@ -240,7 +240,7 @@ var gameConverter = {
     }
 }
 //Add a game to the database
-function addtoDatabase(game):void{
+function addtoDatabase(game){
     var db = firebase.firestore();
     db.collection('Games')
     .doc(game.id.toString()).set(
@@ -256,7 +256,7 @@ function addtoDatabase(game):void{
 }
 
 //Update a game's status within the database
-function updateDatabase(game):void{
+function updateDatabase(game){
     var db = firebase.firestore();
     const doc = db.collection('Games').doc(game.id.toString());
     doc.get().then(function(doc){
@@ -273,7 +273,7 @@ function updateDatabase(game):void{
     })
 }
 //Read from the database: this is mostly used as a check
-function readfromDatabase(game): void{
+function readfromDatabase(game){
     var db = firebase.firestore();
     var id = game.id;
     var doc = db.collection('Games').doc(id.toString());
@@ -292,5 +292,5 @@ function readfromDatabase(game): void{
     });
 }
 
-export = Game; readfromDatabase; updateDatabase;  addtoDatabase;
-//export = Game;
+//export {Game, readfromDatabase, updateDatabase,  addtoDatabase};
+module.exports = {Game, readfromDatabase, updateDatabase,  addtoDatabase};

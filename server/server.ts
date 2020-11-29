@@ -1,6 +1,6 @@
 ﻿const express = require('express');
 const app = express();
-import Game = require('./game');
+const Game = require('./game');
 
 /*
 const webpack = require('webpack');
