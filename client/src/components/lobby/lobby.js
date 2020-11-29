@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import './lobby.css';
 import TestLogo from '../../images/TestLogo.png';
 import TestCard from '../../images/TestCard.png';
@@ -110,6 +110,17 @@ export const Lobby = () => {
     {
         gs.socket.emit("gameStarted", playerStore.lobbyId);
     }
+
+    // function starting
+    
+    const [starting, setStarting] = React.useState({});
+    useEffect(() => {
+        gs.socket.on("startGame", function(data) {
+            console.log("hello");
+            console.log(window.location.pathname);
+            window.location.pathname = '/game';
+        })
+    }, []);
 
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
