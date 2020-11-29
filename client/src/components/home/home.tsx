@@ -48,7 +48,7 @@ export const Home = () => {
     console.log(isVaildId);
 
     return useObserver(() => (
-        <div style={{backgroundColor: "rgb(14, 14, 14)"}}>
+        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
             <div className="manifest">
                 <img src={ TestLogo } alt="logo" />
             </div>
