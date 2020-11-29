@@ -29,6 +29,8 @@ export class PlayerStore {
 
     @observable lobbyId: number = 0;
 
+    @observable currentPlayer: number;
+
     @action
     getPlayerHand = () => {
         return this.playerHand;
