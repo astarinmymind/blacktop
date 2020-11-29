@@ -65,10 +65,11 @@
     margin-left: 1vw;
   }
 
-  input {
+  .lobby-columns input {
     text-align: center;
     font-family: 'Gloria Hallelujah', cursive;
     font-size: 3vw;
+    margin-left: 0;
   }
 
   .lobby-columns .icon-gallery{

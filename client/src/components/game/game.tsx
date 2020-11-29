@@ -57,7 +57,7 @@ function Game() {
   return useObserver(() => (
     // renders an unordered list of cards
     //button with the variable grabbed from the server
-    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
+    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
       <div className="game-columns">
         <div>
           <img src={playerStore.getPlayers()[0].icon} className="flip-img" alt="Current Player" />
@@ -71,18 +71,18 @@ function Game() {
           </div>
         </div>
         <div>
-          <h1>Drag card here to play it</h1>
+          <div className="rectangle">
+            <h1>Drag card here to play it</h1>
+          </div>
         </div>
         <div className="list">
+          <br />
           {playerStore.getPlayers().map((element, i) => 
               <li style={{ listStyleType: "none" }} key={i}>
-                  <br />
                   <img src={element.icon}/>
                   {element.name}
-                  <br />
               </li>
           )}
-          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         </div>
       </div>
       <ul>

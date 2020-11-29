@@ -110,7 +110,7 @@ export const Lobby = () => {
     }
 
     return useObserver(() => (
-        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
+        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
             <div className="manifest">
                 <img alt="" src={TestLogo}/>
             </div>

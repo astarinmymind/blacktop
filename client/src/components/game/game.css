@@ -2,7 +2,7 @@
 
 .game-columns {
     display: grid;
-    grid-template-columns: 20vw 50vw 30vw;
+    grid-template-columns: 2fr 3fr 1.5fr;
     color: #ffffff;
     font-family: 'Schoolbell', cursive;
     font-size: 1.8vw;
@@ -32,10 +32,24 @@
     border: 5px solid white;
 }
 
+.game-columns .rectangle {
+    display: flex;
+    width: 40vw;
+    height: 30vw;
+    background: rgb(36, 36, 36);
+    border-radius: 10%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3vw;
+}
+
 .game-columns .list {
-    text-align: right;
+    text-align: left;
     margin-left: 1vw;
-    width: 50%;
+}
+
+.game-columns .list img {
+    width: 30%;
 }
 
 .game-columns .list img {
