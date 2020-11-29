@@ -21,7 +21,36 @@ const gs = new GameService();
 
 export const Lobby = () => {
     // gets store
-	const {playerStore} = usePlayerStore();
+    const {playerStore} = usePlayerStore();
+    
+    function idToIcon (iconId) {
+        switch (iconId) {
+            case 1:
+                return Dragon;
+            case 2:
+                return Frog;
+            case 3:
+                return Goblin;
+            case 4:
+                return Monkey;
+            case 5:
+                return PlushCat;
+            case 6:
+                return Seagull;
+            case 7:
+                return Tangerine;
+            case 8:
+                return Werewolf;
+            case 9:
+                return Goblin;
+            case 10:
+                return Goblin;
+            case 11:
+                return Goblin;
+            default:
+                return Brickshay;
+        }
+    }
 
     const [name, setName] = React.useState("");
     const updateName = (event) => { 
@@ -35,10 +64,12 @@ export const Lobby = () => {
         setIconId(newIconId);
     }
 
-	function sendPlayer(newName, newIcon) {
-		var pack = [ newName, playerStore.lobbyId, newIcon ];
-		gs.socket.emit("playerName", pack);
-	}
+	function sendPlayer(newName, newIconId) {
+		var pack = [ newName, playerStore.lobbyId, newIconId ];
+        gs.socket.emit("playerName", pack);
+
+        playerStore.currentPlayer.setPlayer(newName, idToIcon(newIconId));
+    }
 
     const [dummy, setDummy] = React.useState({});
     useEffect(() => {
@@ -53,46 +84,7 @@ export const Lobby = () => {
                 const [key, value] = entry;
                 playerStore.setName(value[0], parseInt(key));
 
-                let newIcon;
-                switch (value[1]) {
-                    case 1:
-                        newIcon = Dragon;
-                        break;
-                    case 2:
-                        newIcon = Frog;
-                        break;
-                    case 3:
-                        newIcon = Goblin;
-                        break;
-                    case 4:
-                        newIcon = Monkey;
-                        break;
-                    case 5:
-                        newIcon = PlushCat;
-                        break;
-                    case 6:
-                        newIcon = Seagull;
-                        break;
-                    case 7:
-                        newIcon = Tangerine;
-                        break;
-                    case 8:
-                        newIcon = Werewolf;
-                        break;
-                    case 9:
-                        newIcon = Dragon;
-                        break;
-                    case 10:
-                        newIcon = Dragon;
-                        break;
-                    case 11:
-                        newIcon = Dragon;
-                        break;
-                    default:
-                        newIcon = Brickshay;
-                        break;
-                }
-                playerStore.setIcon(newIcon, parseInt(key));
+                playerStore.setIcon(idToIcon(value[1]), parseInt(key));
             });
 
             setDummy({}); // Needed because Lobby doesn't re-render automatically after above change(s)

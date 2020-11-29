@@ -121,7 +121,7 @@ export const Home = () => {
 	{
 		var lobbyId = Math.floor(100000 + Math.random() * 900000);
 		gs.socket.emit("makeLobby", lobbyId);
-		playerStore.lobbyId = lobbyId;
+        playerStore.lobbyId = lobbyId;
     }
 }
 
