@@ -155,8 +155,8 @@ export const Lobby = () => {
                     </div>
                 </div>
                 <div>
-                    <div>
-                        {playerStore.players.map((element, i) => 
+                    <div className="list-img">
+                        {playerStore.getPlayers().map((element, i) => 
                             <li style={{ listStyleType: "none" }} key={i}>
                                 <br />
                                 <img src={element.icon}/>
@@ -165,6 +165,8 @@ export const Lobby = () => {
                             </li>
                         )}
                     </div>
+                    <br />
+                    <br />
                     <Link to="/game">
                         <button onClick={startGame}>Start game</button>
                     </Link>

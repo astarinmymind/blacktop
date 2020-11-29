@@ -60,6 +60,12 @@
     justify-content: left;
   }
 
+  .lobby-columns list-img {
+    display: flex;
+    vertical-align: middle;
+    justify-content: left;
+  }
+
   input {
     text-align: center;
     font-family: 'Gloria Hallelujah', cursive;

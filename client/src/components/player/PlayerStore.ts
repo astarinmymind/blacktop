@@ -1,5 +1,6 @@
 import { observable, action, makeObservable } from 'mobx'
-import { CardStore } from '../card/CardStore';
+// import { CardStore } from '../card/CardStore';
+import Card from '../card/card';
 
 import Brickshay from '../../images/Brickshay.gif';
 import Dragon from '../../images/Dragon.gif';
@@ -33,8 +34,15 @@ class Player {
 export class PlayerStore {
     // array of Player Objects
     players: Player[] = []
+    // array of Card Objects
+    playerHand: Card[] = [];
 
     @observable lobbyId: number = 0;
+
+    @action
+    getPlayerHand = () => {
+        return this.playerHand;
+    }
 
     @action 
     getPlayers = () => {

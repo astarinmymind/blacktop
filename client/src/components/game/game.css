@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Gloria+Hallelujah&family=Schoolbell&display=swap');
+
+.game-columns {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr;
+    color: #ffffff;
+    font-family: 'Schoolbell', cursive;
+    font-size: 1.8vw;
+    text-align: center;
+    white-space: pre-wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.game-columns h1 {
+    color: #ffffff;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 3vw;
+    margin-top: 0vw;
+}
+
+.game-columns img {
+    width: 50%;
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    vertical-align: middle;
+    justify-content: left;
+}
+
+.game-columns .flip-img {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    border: 5px solid white;
+}
