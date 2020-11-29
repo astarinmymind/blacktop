@@ -15,6 +15,12 @@ import { useObserver } from 'mobx-react-lite'
 import card from '../card/card'
 // import { useCardStore } from '../card/card'
 import './game.css'
+import NopeCard from '../../images/NOPE.png'
+import AddCard from '../../images/ADD1.png'
+import SubCard from '../../images/SUB1.png'
+import DrawCard from '../../images/DRAW.png'
+import GiveCard from '../../images/GIVE.png'
+import SeeCard from '../../images/SEE.png'
 
 import GameService from '../../services/GameService';
 
@@ -54,6 +60,33 @@ function Game() {
       gs.socket.emit("cardPlayed", playerStore.lobbyId);
       console.log("card played");
   }
+
+  function setImage(cardname: string) 
+  {
+      switch (cardname) {
+          case "nope":
+              return NopeCard;
+              break;
+          case "add1":
+              return AddCard;
+              break;
+          case "sub1":
+              return SubCard;
+              break;
+          case "give":
+              return GiveCard;
+              break;
+          case "see":
+              return SeeCard;
+              break;
+          case "draw":
+              return DrawCard;
+              break;
+          default: 
+              break;
+      }
+      return;
+  }
   
   return useObserver(() => (
     // renders an unordered list of cards
@@ -87,7 +120,7 @@ function Game() {
         </div>
       </div>
       <ul>
-        {playerStore.getPlayerHand().map(card => (<li>{card}</li>))}
+        {playerStore.getPlayerHand().map(card => (<li><img src={setImage(card)}/></li>))}
       </ul>
     </div>
   ));
