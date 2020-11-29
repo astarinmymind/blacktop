@@ -61,8 +61,8 @@ function Game() {
     <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
       <div className="game-columns">
         <div>
-          {/* <img src={playerStore.getPlayers()[0].icon} className="flip-img" alt="Current Player" />
-          <h1>{playerStore.getPlayers()[0].name}</h1> */}
+        <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
+          <h1>{playerStore.currentPlayer.name}</h1>
           <div>
             <button onClick={() => drawCard}>Draw Card</button>
           </div>

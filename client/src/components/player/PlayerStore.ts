@@ -1,6 +1,7 @@
 import { observable, action } from 'mobx'
 // import { CardStore } from '../card/CardStore';
 import Card from '../card/card';
+import Brickshay from '../../images/Brickshay.gif'
 
 class Player {
     //playerId: number;
@@ -14,10 +15,15 @@ class Player {
     constructor() {
         //this.playerId = 431;
         this.name = "";
-        //this.icon = null;
+        this.icon = Brickshay;
         //this.hand = new CardStore();
         //this.pointTotal = 0;
         //this.isDead = false;
+    }
+
+    setPlayer(newName: string, newIcon: string) {
+        this.name = newName;
+        this.icon = newIcon;
     }
 }
 
@@ -28,6 +34,8 @@ export class PlayerStore {
     playerHand: Card[] = [];
 
     @observable lobbyId: number = 0;
+
+    @observable currentPlayer: Player = new Player();
 
     @action
     getPlayerHand = () => {
@@ -47,13 +55,13 @@ export class PlayerStore {
 
     @action
     setName = (newName: any, index: number) => {
-        console.log(newName + " goes to " + this.players[index].name);
+        // console.log(newName + " goes to " + this.players[index].name);
         this.players[index].name = newName;
     }
 
     @action
     setIcon = (newIcon: any, index: number) => {
-        console.log(newIcon + " goes to " + this.players[0].icon);
-       this.players[index].icon = newIcon;
+        // console.log(newIcon + " goes to " + this.players[index].icon);
+        this.players[index].icon = newIcon;
     }
 }
