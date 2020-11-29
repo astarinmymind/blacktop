@@ -109,6 +109,15 @@ export const Lobby = () => {
         gs.socket.emit("gameStarted", playerStore.lobbyId);
     }
 
+    const [starting, setStarting] = React.useState({});
+    useEffect(() => {
+        gs.socket.on("startGame", function(data) {
+            console.log("hello");
+            console.log(window.location.pathname);
+            window.location.pathname = '/game';
+        })
+    }, []);
+
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
             <div className="manifest">
