@@ -72,7 +72,9 @@ export const Lobby = () => {
     }
 
     const [dummy, setDummy] = React.useState({});
-    useEffect(() => {
+    React.useEffect(() => {
+        gs.socket.emit("enterLobby", playerStore.lobbyId);
+
         gs.socket.on("updateNames", function(data) {
             playerStore.players = [];
             Object.keys(data).forEach(key => {
@@ -91,28 +93,22 @@ export const Lobby = () => {
         })
     }, []);
 
-    React.useEffect(() => {
-        gs.socket.emit("enterLobby", playerStore.lobbyId);
-      }, []);
-
     // emits socket event that player has pressed start game
     function startGame() 
     {
-        gs.socket.emit("gameStarted", playerStore.lobbyId);
-        console.log(playerStore.lobbyId);
+        console.log(playerStore.gameStarted);
+        if (!playerStore.gameStarted) {
+            gs.socket.emit("gameStarted", playerStore.lobbyId);
+            console.log(playerStore.lobbyId);
+        }
     }
 
-    // deprecated
-    // const [starting, setStarting] = React.useState({});
-    // useEffect(() => {
-    //     gs.socket.on("startGame", function(data) {
-    //         console.log("hello");
-    //         console.log(window.location.pathname);
-    //         console.log(playerStore.getPlayers());
-    //         window.location.pathname = '/game';
-    //         console.log(playerStore.getPlayers());
-    //     })
-    // }, []);
+    const [starting, setStarting] = React.useState({});
+    useEffect(() => {
+        gs.socket.on("startGame", function(data) {
+            playerStore.gameStarted = true;
+        })
+    }, []);
 
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>

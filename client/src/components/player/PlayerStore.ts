@@ -31,12 +31,13 @@ export class PlayerStore {
     // array of Player Objects
     players: Player[] = []
     // array of Card Objects
-    // playerHand: [string, number][] = [["nope", 0]];
     playerHand: string[] = ["nope", "give"];
 
     @observable lobbyId: number = 0;
 
     @observable currentPlayer: Player = new Player();
+
+    @observable gameStarted: boolean = false;
 
     @action
     getPlayerHand = () => {

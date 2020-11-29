@@ -119,12 +119,13 @@ function Game() {
           )}
         </div>
       </div>
-      <ul>
-        {playerStore.getPlayerHand().map(card => (<li><img src={setImage(card)}/></li>))}
+      <ul style={{ listStyleType: "none" }} className="hand" >
+        {playerStore.getPlayerHand().map(card => (
+          <img src={setImage(card)}/>
+        ))}
       </ul>
     </div>
   ));
-
 }
 
 function sendId() {

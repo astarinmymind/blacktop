@@ -55,3 +55,14 @@
 .game-columns .list img {
     /* margin-bottom: 1vw; */
 }
+
+.hand {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hand img {
+    width: 5%;
+    margin: 1vw;
+}
