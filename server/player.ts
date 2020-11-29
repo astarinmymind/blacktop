@@ -20,11 +20,11 @@ class Player {
 		return temp;
 	}
 
-	addCard(card): void {
+	addCard(card) {
 		this.hand.push(card);
     }
 
-	removeCard(card): void {
+	removeCard(card) {
 		this.hand = this.hand.filter(c => (c.type !== card.type && c.points !== card.points));
 	}
 }

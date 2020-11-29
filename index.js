@@ -1,5 +1,7 @@
 const express = require('express');
 const Game = require("./server/game.ts");
+const Player = require("./server/player.ts");
+const Card = require("./server/card.ts");
 const http = require("http").createServer();
 const options = {
 	cors : true,
@@ -58,21 +60,22 @@ socketIo.on("connection", (socket) => {
 		var name = "";
 		
 		//Initilization of player list for this lobby
+		//let game = new Game(0,id)
 		var players = {};
 		
 		//Initilization of first player
-		players[0] = [socket, name, 0];
+		players[0] = [socket, name, 0]; //game.connect(socket, name)
 		
 		//Creates this 
 		//Lobby id:Lobby ID players: list of Player game: Instance of Game-TODO
-		LOBBY_LIST[id] = {id, players/*, game*/};
+		LOBBY_LIST[id] = {id, players/*, game*/};//LOBBY_LIST[id] = game;
 		//Console.log every Lobby and every player in a lobby for Debugging
 		for (var i in LOBBY_LIST)
 		{
 			console.log(LOBBY_LIST[i].id);
 			for (var k in LOBBY_LIST[i].players)
 			{
-				console.log(LOBBY_LIST[i].players[k][0].id);
+				console.log(LOBBY_LIST[i].players[k][0].id); //console.log(LOBBY_LIST[i].players[k].id)
 			}
 			console.log('----------');
 		}
@@ -89,7 +92,7 @@ socketIo.on("connection", (socket) => {
 			if (LOBBY_LIST[i].id == id)
 			{
 				//Adds the player to the lobby
-				LOBBY_LIST[i].players[1] = [socket, name, 0];
+				LOBBY_LIST[i].players[1] = [socket, name, 0]; //LOBBY_LIST[i].connect(socket,name);
 			}
 		}
 	});
@@ -114,6 +117,7 @@ socketIo.on("connection", (socket) => {
 		for (var i in LOBBY_LIST[id].players)
 		{
 			pack[i] = [LOBBY_LIST[id].players[i][1], LOBBY_LIST[id].players[i][2]];
+			//pack[i] = LOBBY_LIST[id].players[i].name
 		}
 		socket.emit('updateNames', pack);
 	});
@@ -128,11 +132,11 @@ socketIo.on("connection", (socket) => {
 		for (var i in LOBBY_LIST[data[1]].players)
 		{
 			//if this player is the player that updated their name
-			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
+			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id) //LOBBY_LIST[data[1]].players[i].id == socket.id
 			{
 				//update their name information
-				LOBBY_LIST[data[1]].players[i][1] = data[0];
-				LOBBY_LIST[data[1]].players[i][2] = data[2];
+				LOBBY_LIST[data[1]].players[i][1] = data[0]; // LOBBY_LIST[data[1]].players[i].name = 
+				LOBBY_LIST[data[1]].players[i][2] = data[2]; // LOBBY_LIST[data[1]].players[i].name = 
 				//console.log(LOBBY_LIST[data[1]].players[i][2]);
 			}
 			//add this players info to pack
@@ -143,12 +147,13 @@ socketIo.on("connection", (socket) => {
 		{
 			//this if-else statement sends the package of player names
 			//to every player for display purposes
-			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id)
+			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id) //LOBBY_LIST[data[1]].players[i].id == socket.id
 			{
 				socket.emit('updateNames', pack);
 			}
 			else {
-			socket.to(LOBBY_LIST[data[1]].players[i][0].id).emit('updateNames', pack);
+			socket.to(LOBBY_LIST[data[1]].players[i][0].id).emit('updateNames', pack); 
+			//LOBBY_LIST[data[1]].players[i].id.emit
 			}
 		}
 		//console.log('name: ' + data[0] + ' / lobby id: ' + data[1]);
