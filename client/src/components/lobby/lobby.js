@@ -102,16 +102,17 @@ export const Lobby = () => {
         console.log(playerStore.lobbyId);
     }
 
-    const [starting, setStarting] = React.useState({});
-    useEffect(() => {
-        gs.socket.on("startGame", function(data) {
-            console.log("hello");
-            console.log(window.location.pathname);
-            console.log(playerStore.getPlayers());
-            window.location.pathname = '/game';
-            console.log(playerStore.getPlayers());
-        })
-    }, []);
+    // deprecated
+    // const [starting, setStarting] = React.useState({});
+    // useEffect(() => {
+    //     gs.socket.on("startGame", function(data) {
+    //         console.log("hello");
+    //         console.log(window.location.pathname);
+    //         console.log(playerStore.getPlayers());
+    //         window.location.pathname = '/game';
+    //         console.log(playerStore.getPlayers());
+    //     })
+    // }, []);
 
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
