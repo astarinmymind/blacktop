@@ -1,16 +1,7 @@
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action } from 'mobx'
 // import { CardStore } from '../card/CardStore';
 import Card from '../card/card';
-
-import Brickshay from '../../images/Brickshay.gif';
-import Dragon from '../../images/Dragon.gif';
-import Frog from '../../images/Frog.gif';
-import Goblin from '../../images/Goblin.gif';
-import Monkey from '../../images/Monkey.gif';
-import PlushCat from '../../images/PlushCat.gif';
-import Seagull from '../../images/Seagull.gif';
-import Tangerine from '../../images/Tangerine.gif';
-import Werewolf from '../../images/Werewolf.gif';
+import Brickshay from '../../images/Brickshay.gif'
 
 class Player {
     //playerId: number;
@@ -24,10 +15,15 @@ class Player {
     constructor() {
         //this.playerId = 431;
         this.name = "";
-        //this.icon = null;
+        this.icon = Brickshay;
         //this.hand = new CardStore();
         //this.pointTotal = 0;
         //this.isDead = false;
+    }
+
+    setPlayer(newName: string, newIcon: string) {
+        this.name = newName;
+        this.icon = newIcon;
     }
 }
 
@@ -35,9 +31,13 @@ export class PlayerStore {
     // array of Player Objects
     players: Player[] = []
     // array of Card Objects
-    playerHand: Card[] = [];
+    playerHand: string[] = ["nope", "give"];
 
     @observable lobbyId: number = 0;
+
+    @observable currentPlayer: Player = new Player();
+
+    @observable gameStarted: boolean = false;
 
     @action
     getPlayerHand = () => {
@@ -57,13 +57,13 @@ export class PlayerStore {
 
     @action
     setName = (newName: any, index: number) => {
-        console.log(newName + " goes to " + this.players[index].name);
+        // console.log(newName + " goes to " + this.players[index].name);
         this.players[index].name = newName;
     }
 
     @action
     setIcon = (newIcon: any, index: number) => {
-        console.log(newIcon + " goes to " + this.players[0].icon);
-       this.players[index].icon = newIcon;
+        // console.log(newIcon + " goes to " + this.players[index].icon);
+        this.players[index].icon = newIcon;
     }
 }

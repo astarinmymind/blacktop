@@ -2,7 +2,7 @@
 
 .game-columns {
     display: grid;
-    grid-template-columns: 2fr 3fr 1fr;
+    grid-template-columns: 2fr 3fr 1.5fr;
     color: #ffffff;
     font-family: 'Schoolbell', cursive;
     font-size: 1.8vw;
@@ -21,16 +21,48 @@
 
 .game-columns img {
     width: 50%;
-    margin-top: 2.5%;
-    margin-bottom: 2.5%;
-    margin-left: 2.5%;
-    margin-right: 2.5%;
+    margin: 1vw;
     vertical-align: middle;
     justify-content: left;
 }
 
 .game-columns .flip-img {
-    -webkit-transform: scaleX(-1);
+    /* -webkit-transform: scaleX(-1); */
     transform: scaleX(-1);
     border: 5px solid white;
+}
+
+.game-columns .rectangle {
+    display: flex;
+    width: 40vw;
+    height: 30vw;
+    background: rgb(36, 36, 36);
+    border-radius: 10%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3vw;
+}
+
+.game-columns .list {
+    text-align: left;
+    margin-left: 1vw;
+}
+
+.game-columns .list img {
+    width: 30%;
+}
+
+.game-columns .list img {
+    /* margin-bottom: 1vw; */
+}
+
+.hand {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hand img {
+    width: 5%;
+    margin: 1vw;
 }

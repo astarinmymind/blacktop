@@ -15,6 +15,12 @@ import { useObserver } from 'mobx-react-lite'
 import card from '../card/card'
 // import { useCardStore } from '../card/card'
 import './game.css'
+import NopeCard from '../../images/NOPE.png'
+import AddCard from '../../images/ADD1.png'
+import SubCard from '../../images/SUB1.png'
+import DrawCard from '../../images/DRAW.png'
+import GiveCard from '../../images/GIVE.png'
+import SeeCard from '../../images/SEE.png'
 
 import GameService from '../../services/GameService';
 
@@ -31,6 +37,7 @@ function Game() {
   // gets store
   // const {cardStore} = useCardStore()
   const {playerStore} = usePlayerStore();
+  console.log(playerStore);
 
   // console.log(cardStore)
 
@@ -53,45 +60,72 @@ function Game() {
       gs.socket.emit("cardPlayed", playerStore.lobbyId);
       console.log("card played");
   }
+
+  function setImage(cardname: string) 
+  {
+      switch (cardname) {
+          case "nope":
+              return NopeCard;
+              break;
+          case "add1":
+              return AddCard;
+              break;
+          case "sub1":
+              return SubCard;
+              break;
+          case "give":
+              return GiveCard;
+              break;
+          case "see":
+              return SeeCard;
+              break;
+          case "draw":
+              return DrawCard;
+              break;
+          default: 
+              break;
+      }
+      return;
+  }
   
   return useObserver(() => (
     // renders an unordered list of cards
     //button with the variable grabbed from the server
-    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
+    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
       <div className="game-columns">
         <div>
-          <img src={playerStore.getPlayers()[0].icon} className="flip-img"/>
-          <h1>{playerStore.getPlayers()[0].name}</h1>
+        <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
+          <h1>{playerStore.currentPlayer.name}</h1>
           <div>
             <button onClick={() => drawCard}>Draw Card</button>
           </div>
+          <br />
           <div>
             <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
           </div>
         </div>
         <div>
-          <h1>Drag card here to play it</h1>
+          <div className="rectangle">
+            <h1>Drag card here to play it</h1>
+          </div>
         </div>
-        <div>
+        <div className="list">
+          <br />
           {playerStore.getPlayers().map((element, i) => 
               <li style={{ listStyleType: "none" }} key={i}>
-                  <br />
                   <img src={element.icon}/>
                   {element.name}
-                  <br />
               </li>
           )}
         </div>
       </div>
-      <div className="hand">
-        {/* {playerStore.getPlayerHand().map(card => (<li>{card}</li>))} */}
-      </div>
-      <ul>
-        {playerStore.getPlayerHand().map(card => (<li>{card}</li>))}
+      <ul style={{ listStyleType: "none" }} className="hand" >
+        {playerStore.getPlayerHand().map(card => (
+          <img src={setImage(card)}/>
+        ))}
       </ul>
     </div>
   ));
-
 }
 
 function sendId() {
