@@ -68,11 +68,7 @@ socketIo.on("connection", (socket) => {
 		
 		//Creates this 
 		//Lobby id:Lobby ID players: list of Player game: Instance of Game-TODO
-<<<<<<< HEAD
-		LOBBY_LIST[id] = {id, players, /* game */};
-=======
 		LOBBY_LIST[id] = {id, players/*, game*/};//LOBBY_LIST[id] = game;
->>>>>>> refs/remotes/origin/main
 		//Console.log every Lobby and every player in a lobby for Debugging
 		for (var i in LOBBY_LIST)
 		{

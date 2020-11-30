@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
-<<<<<<< HEAD
 import { Link, Redirect } from "react-router-dom";
-=======
-import { Link, withRouter } from "react-router-dom";
->>>>>>> refs/remotes/origin/main
 import './lobby.css';
 import TestLogo from '../../images/TestLogo.png';
 import ChalkLine from '../../images/ChalkLine.png';
