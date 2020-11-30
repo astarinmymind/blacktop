@@ -1,23 +1,24 @@
 const express = require('express');
-const {Game, readfromDatabase, updateDatabase, addtoDatabase} = require("./server/game.ts");
-const Player = require("./server/player.ts");
-const Card = require("./server/card.ts");
-const http = require("http").createServer();
+const {Game, readfromDatabase, updateDatabase, addtoDatabase} = require('./server/game.ts');
+const Player = require('./server/player.ts');
+const Card = require('./server/card.ts');
+const http = require('http').createServer();
 const options = {
 	cors : true,
-	origins:["http://127.0.0.1:3000"],
+	origins:['http://127.0.0.1:3000'],
 };
-// Initialize Cloud Firestore through Firebase
+
+// initialize Cloud Firestore through Firebase
 const firebase = require('firebase/app');
 firebase.initializeApp({
-    apiKey: "AIzaSyB5kr10op2T-z9PGWggHFuU-XlfS0_rQE8",
-    authDomain: "sample-game-database.firebaseapp.com",
-    projectId: "sample-game-database",
+    apiKey: 'AIzaSyB5kr10op2T-z9PGWggHFuU-XlfS0_rQE8',
+    authDomain: 'sample-game-database.firebaseapp.com',
+    projectId: 'sample-game-database',
 });
-//End of Firebase stuff
+// end of Firebase stuff
 
 const app = express();
-const socketIo = require("socket.io")(http, options);
+const socketIo = require('socket.io')(http, options);
 const port = 5000;
 //const index = require("./routes/index");
 
@@ -25,24 +26,24 @@ const port = 5000;
 
 let interval;
 
-const title = 'Dont Draw Card'
+const title = "Don't Draw Card"
 
 var SOCKET_LIST = {};
 
 //Initilization of Lobby List
 var LOBBY_LIST = {};
 
-socketIo.on("connection", (socket) => {
+socketIo.on('connection', (socket) => {
 	//socket.id = Math.random() * 100;
 	SOCKET_LIST[socket.id] = socket;
-	console.log("New Client connected: " + 	socket.id);
+	console.log('New client connected: ' + 	socket.id);
 	if (interval) {
 		clearInterval(interval);
 	}
 	interval = setInterval(() => getApiAndEmit(socket), 100);
-	socket.on("disconnect", () => {
+	socket.on('disconnect', () => {
 		delete SOCKET_LIST[socket.id];
-		console.log("Client disconnected: " +  socket.id);
+		console.log('Client disconnected: ' +  socket.id);
 		clearInterval(interval);
 	});
 	socket.on('ID', (id) => {
@@ -54,35 +55,36 @@ socketIo.on("connection", (socket) => {
 	});
 	
 	
-	//Player has created a lobby
+	// a lobby has been created by a player
 	socket.on('makeLobby', (id) => {
-		//Create a new Game associated with this lobby.
+		// create a new Game associated with this lobby
 		var game = new Game(parseInt(id));
 		
-		//Initialization of first player
+		// connect first Player to the Game
 		game.connect(socket, "", 0);
 		LOBBY_LIST[parseInt(id)] = game;
-		//Console.log every Lobby and every player in a lobby for Debugging
+
+		// console.log every Lobby and every player in a lobby for debugging
 		for (var gameID in LOBBY_LIST)
 		{
 			var playerlist = LOBBY_LIST[gameID].players;
 			for (var i = 0; i < playerlist.length; i++)
-				console.log(playerlist[i].socket.id);
+				console.log('Player: ', playerlist[i].socket.id);
 			console.log('----------');
 		}
 	});
 	
-	//A player has joined a lobby
+	// a player has joined an existing lobby
 	socket.on('joinLobby', (id) => {
-		console.log(id);
-		var name = "";
-		//If the lobby is valid, add this Player to the Game.
+		console.log('Player has joined lobby: ', id);
+
+		// if the lobby is valid, connect the new Player to the associated Game
 		if (parseInt(id) in LOBBY_LIST && typeof LOBBY_LIST[parseInt(id)] !== undefined) {
-			LOBBY_LIST[parseInt(id)].connect(socket, name, 0);
+			LOBBY_LIST[parseInt(id)].connect(socket, "", 0);
 		}
 	});
 	
-	//Debug function
+	// debug function
 	socket.on('validId', (id) => {
 		var hit = false;
 		if (parseInt(id) in LOBBY_LIST && typeof LOBBY_LIST[parseInt(id)] !== undefined) {
@@ -91,60 +93,57 @@ socketIo.on("connection", (socket) => {
 		socket.emit('valID', hit);
 	});
 	
-	//Sends the list of player names to the player to display
-	//called on entering a lobby
+	// sends the list of all player names to the player to display
+	// called on entering a lobby
 	socket.on('enterLobby', (id) => {
 		var pack = {};
-		console.log(id);
+		console.log('Player has entered lobby ', id);
 		var playerlist = LOBBY_LIST[parseInt(id)].players;
 		for (var i = 0; i < playerlist.length; i++)
 			pack[id] = [playerlist[i].name, playerlist[i].icon];
 		socket.emit('updateNames', pack);
 	});
 	
-	//Called when a player updates their name or icon
+	// called when a player updates their name or icon
 	socket.on('playerName', (data) =>
 	{
-		//Package that will be sent to every player.
+		// package that will be sent to every player (display name + icon)
 		var pack = {};
 
 		// data[0] is player name, data[1] is game ID, data[2] is player icon
 		gameID = parseInt(data[1]);
-		console.log(LOBBY_LIST);
 		var playerlist = LOBBY_LIST[gameID].players;
+
 		// find this Player in the game's Player array, and update their name + icon
 		for (var i = 0; i < playerlist.length; i++)
 		{
-			if (playerlist[i].socket.id == socket.id)
+			var player = playerlist[i];
+			if (player.socket.id == socket.id)
 			{
-				playerlist[i].name = data[0];
-				playerlist[i].icon = data[2];
+				player.name = data[0];
+				player.icon = data[2];
 			}
 			//add Players' info to pack
-			pack[i] = [playerlist[i].name, playerlist[i].icon];
+			pack[i] = [player.name, player.icon];
 		}
 
-		//Search through this lobby
+		// send the package of player names + icons to every player (for display)
 		for (var i = 0; i < playerlist.length; i++)
 		{
-			//this if-else statement sends the package of player names
-			//to every player for display purposes
 			if (playerlist[i].socket.id == socket.id)
 				socket.emit('updateNames', pack);
 			else 
 				socket.to(playerlist[i].id).emit('updateNames', pack); 
 		}
-		//console.log('name: ' + data[0] + ' / lobby id: ' + data[1]);
 	});
 	
-	socket.on("gameStarted", (id) =>
+	socket.on('gameStarted', (id) =>
 	{
 		var playerlist = LOBBY_LIST[parseInt(id)].players;
 		for (var i = 0; i < playerlist.length; i++)
 		{
 			var player = playerlist[i];
-			console.log(player);
-			// console.log(LOBBY_LIST[id].players[i]);
+			console.log('Player present in game: ', player);
 			if (player.socket.id === socket.id)
 			{
 				socket.emit('startGame', 0);
@@ -162,7 +161,7 @@ socketIo.on("connection", (socket) => {
 	
 	socket.on('cardDrawn', (id) =>
 	{
-		//grab a card from the backend TODO
+		// grab a Card from the backend TODO
 		var playerlist = LOBBY_LIST[parseInt(id)].players;
 		for (var i = 0; i < playerlist.length; i++)
 		{
@@ -172,7 +171,7 @@ socketIo.on("connection", (socket) => {
 	
 	socket.on('cardPlayed', (id) =>
 	{
-		//play the card that is given TODO
+		// play the Card that is given TODO
 		var playerlist = LOBBY_LIST[parseInt(id)].players;
 		for (var i = 0; i < playerlist.length; i++)
 		{
@@ -180,26 +179,23 @@ socketIo.on("connection", (socket) => {
 		}
 	});
 	
-	//sends 1 players hand to everyone
+	// sends one Player's hand to everyone
 	function sendHand(socket, id, hand, elem) {
 		var pack = { hand, elem };
 		var playerlist = LOBBY_LIST[parseInt(id)].players;
 		for (var i = 0; i < playerlist.length; i++)
 		{
 			if (playerlist[i].socket.id == socket.id)
-			{
 				socket.emit('playerHand', pack);
-			}
-			else {
+			else
 				socket.to(playerlist[i].socket.id).emit('otherHand', pack);
-			}
 		}
 	}
 	
 });
 
 const getApiAndEmit = socket => {
-	socket.emit("Title", title);
+	socket.emit('Title', title);
 };
 
 // start express server on port 5000

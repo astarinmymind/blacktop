@@ -15,7 +15,6 @@ const Card = require("./card.ts");
 class Game {
 	id;
 	players;
-	existingPlayerIDs;
 	mainDeck;
 	isFinalRound;
 	isGameOver;
@@ -25,7 +24,6 @@ class Game {
 		this.isFinalRound = false
 		this.isGameOver = false;
 		this.players = new Array();
-		this.existingPlayerIDs = new Array();
 		this.mainDeck = new Array();
 	}
 
@@ -230,7 +228,6 @@ var gameConverter = {
         const data = snapshot.data(options);
         let game = new Game(data.id);
         game.players = data.players.map(player => Player.fromFirestore(player)); //factory function;
-        game.existingPlayerIDs = data.existingPlayerIDs;
         game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
         game.isGameOver = data.isGameOver;
         game.isFinalRound = data.isFinalRound
