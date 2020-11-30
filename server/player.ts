@@ -1,7 +1,7 @@
 ﻿const Card = require ("./card.ts");
 
 class Player {
-	socket;
+	socketID;
 	name;
 	hand;
 	pointTotal;
@@ -9,7 +9,7 @@ class Player {
 	icon;
 
 	static fromFirestore(player){ //pass in a simple JSON object, it returns a player object
-		let p = new Player(player.socket, player.name, player.icon);
+		let p = new Player(player.socketID, player.name, player.icon);
 		p.pointTotal = player.pointTotal;
 		p.isDead = player.isDead;
 		p.hand = player.hand.map(c => Card.fromFirestore(c));
@@ -17,8 +17,8 @@ class Player {
 		//add a modification to add back the functions and other things into socket.
 	}
 
-	constructor(socket, name, icon) {
-		this.socket = socket;
+	constructor(socketID, name, icon) {
+		this.socketID = socketID;
 		this.name = name;
 		this.pointTotal = 0;
 		this.isDead = false;

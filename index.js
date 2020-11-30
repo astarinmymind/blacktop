@@ -34,7 +34,6 @@ var SOCKET_LIST = {};
 var LOBBY_LIST = {};
 
 socketIo.on('connection', (socket) => {
-	//socket.id = Math.random() * 100;
 	SOCKET_LIST[socket.id] = socket;
 	console.log('New client connected: ' + 	socket.id);
 	if (interval) {
@@ -61,7 +60,7 @@ socketIo.on('connection', (socket) => {
 		var game = new Game(parseInt(id));
 		
 		// connect first Player to the Game
-		game.connect(socket, "", 0);
+		game.connect(socket.id, "", 0);
 		LOBBY_LIST[parseInt(id)] = game;
 
 		// console.log every Lobby and every player in a lobby for debugging
@@ -69,18 +68,18 @@ socketIo.on('connection', (socket) => {
 		{
 			var playerlist = LOBBY_LIST[gameID].players;
 			for (var i = 0; i < playerlist.length; i++)
-				console.log('Player: ', playerlist[i].socket.id);
+				console.log('Player: ', playerlist[i].socketID);
 			console.log('----------');
 		}
 	});
 	
 	// a player has joined an existing lobby
 	socket.on('joinLobby', (id) => {
-		console.log('Player has joined lobby: ', id);
+		console.log('Player has joined lobby ', id);
 
 		// if the lobby is valid, connect the new Player to the associated Game
 		if (parseInt(id) in LOBBY_LIST && typeof LOBBY_LIST[parseInt(id)] !== undefined) {
-			LOBBY_LIST[parseInt(id)].connect(socket, "", 0);
+			LOBBY_LIST[parseInt(id)].connect(socket.id, "", 0);
 		}
 	});
 	
@@ -118,7 +117,7 @@ socketIo.on('connection', (socket) => {
 		for (var i = 0; i < playerlist.length; i++)
 		{
 			var player = playerlist[i];
-			if (player.socket.id == socket.id)
+			if (player.socketID == socket.id)
 			{
 				player.name = data[0];
 				player.icon = data[2];
@@ -130,10 +129,10 @@ socketIo.on('connection', (socket) => {
 		// send the package of player names + icons to every player (for display)
 		for (var i = 0; i < playerlist.length; i++)
 		{
-			if (playerlist[i].socket.id == socket.id)
+			if (playerlist[i].socketID == socket.id)
 				socket.emit('updateNames', pack);
 			else 
-				socket.to(playerlist[i].id).emit('updateNames', pack); 
+				socket.to(playerlist[i].socketID).emit('updateNames', pack); 
 		}
 	});
 	
@@ -144,18 +143,18 @@ socketIo.on('connection', (socket) => {
 		{
 			var player = playerlist[i];
 			console.log('Player present in game: ', player);
-			if (player.socket.id === socket.id)
+			if (player.socketID === socket.id)
 			{
 				socket.emit('startGame', 0);
 				console.log('reached here');
 			}
 			else {
-				socket.to(player.socket.id).emit('startGame', 0);
+				socket.to(player.socketID).emit('startGame', 0);
 				console.log('reached here 2');
 			}
 			player.addCard(new Card('nope'));
 			player.addCard(new Card('give'));
-			sendHand(player.socket, id, player.hand, i); 
+			sendHand(player.socketID, id, player.hand, i); 
 		}
 	});
 	
@@ -165,7 +164,8 @@ socketIo.on('connection', (socket) => {
 		var playerlist = LOBBY_LIST[parseInt(id)].players;
 		for (var i = 0; i < playerlist.length; i++)
 		{
-			sendHand(playerlist[0].socket, parseInt(id), playerlist[0].hand, i); 
+			// not sure
+			sendHand(playerlist[0].socketID, parseInt(id), playerlist[0].hand, i); 
 		}
 	});
 	
@@ -174,21 +174,19 @@ socketIo.on('connection', (socket) => {
 		// play the Card that is given TODO
 		var playerlist = LOBBY_LIST[parseInt(id)].players;
 		for (var i = 0; i < playerlist.length; i++)
-		{
-			sendHand(playerlist[0].socket, parseInt(id), playerlist[0].hand, i); 
-		}
+			sendHand(playerlist[i].socketID, parseInt(id), playerlist[i].hand, i); 
 	});
 	
 	// sends one Player's hand to everyone
-	function sendHand(socket, id, hand, elem) {
+	function sendHand(socketID, gameID, hand, elem) {
 		var pack = { hand, elem };
-		var playerlist = LOBBY_LIST[parseInt(id)].players;
+		var playerlist = LOBBY_LIST[parseInt(gameID)].players;
 		for (var i = 0; i < playerlist.length; i++)
 		{
-			if (playerlist[i].socket.id == socket.id)
+			if (playerlist[i].socketID == socketID)
 				socket.emit('playerHand', pack);
 			else
-				socket.to(playerlist[i].socket.id).emit('otherHand', pack);
+				socket.to(playerlist[i].socketID).emit('otherHand', pack);
 		}
 	}
 	

@@ -55,15 +55,15 @@ class Game {
 		return card;
 	}
 
-	connect(socket, name, icon) {
-		const player = new Player(socket, name, icon);
+	connect(socketID, name, icon) {
+		const player = new Player(socketID, name, icon);
 		this.players.push(player);
-		console.log("Player connected: " + socket.id);
+		console.log("Player connected: " + socketID);
 	}
 
-	disconnect(socket) {
-		let playerID = socket.id;
-		this.players = this.players.filter(p => p.id !== playerID);
+	disconnect(socketID) {
+		let playerID = socketID;
+		this.players = this.players.filter(p => p.socketID !== playerID);
 	}
 
 	start() {
