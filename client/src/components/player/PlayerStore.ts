@@ -31,7 +31,7 @@ export class PlayerStore {
     // array of Player Objects
     players: Player[] = []
     // array of Card Objects
-    playerHand: string[] = ["nope", "give"];
+    playerHand: string[] = ["nope", "give", "add1", /*"sub1", "nope", "draw", "see" */];
 
     @observable lobbyId: number = 0;
 
@@ -65,5 +65,11 @@ export class PlayerStore {
     setIcon = (newIcon: any, index: number) => {
         // console.log(newIcon + " goes to " + this.players[index].icon);
         this.players[index].icon = newIcon;
+    }
+
+    @action 
+    drawCard = (card: string) => {
+        this.playerHand.push(card);
+        console.log(this.playerHand);
     }
 }
