@@ -1,17 +1,20 @@
-﻿const Card = require("./card")
+﻿const Card = require ("./card.ts");
+
 class Player {
-	id;
+	socket;
 	name;
 	hand;
 	pointTotal;
 	isDead;
+	icon;
 
-	constructor(id, name) {
-		this.id = id;
+	constructor(socket, name, icon) {
+		this.socket = socket;
 		this.name = name;
 		this.pointTotal = 0;
 		this.isDead = false;
 		this.hand = [];
+		this.icon = icon;
 	}
 
 	toFirestore() {

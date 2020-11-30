@@ -6,32 +6,30 @@ const firebase = require('firebase/app');
 const auth = require('firebase/auth');
 const store = require('firebase/firestore');
 //Other classes
-const Player = require("./player")
-const Card = require("./card")
+const Player = require("./player.ts");
+const Card = require("./card.ts");
+
 //A Game must have a unique id to prevent conflicts on the database. I suggest making the id equal to gameRooms.length()
 //and then pushing the created game onto gameRooms.
 //This way, the index of a game in gameRooms will be equal to it's id, which will be equal to it's ID in the database
 class Game {
-	// TODO: figure out the class of IO lol
-	io;
+	id;
 	players;
 	existingPlayerIDs;
 	mainDeck;
 	isFinalRound;
 	isGameOver;
-	id;
 	
-	constructor(io, id) {
-		this.io = io;
+	constructor(id) {
+		this.id = id;
 		this.isFinalRound = false
 		this.isGameOver = false;
-		this.players = [];
-		this.existingPlayerIDs = [];
-		this.mainDeck = [];
-		this.id = id;
+		this.players = new Array();
+		this.existingPlayerIDs = new Array();
+		this.mainDeck = new Array();
 	}
 
-	toFirestore(){
+	toFirestore() {
 		var temp =  Object.assign({},this)
 		temp.players = temp.players.map(p => p.toFirestore());
 		temp.mainDeck = temp.mainDeck.map(d => d.toFirestore());
@@ -40,27 +38,27 @@ class Game {
 
 	generateMainDeck(numberOfCards) {
 		for (let i = 0; i < numberOfCards; i++) {
-			this.mainDeck.push(this.getRandomCard());
+			this.mainDeck[i] = this.getRandomCard();
         }
 	}
 
 	generatePlayerHands(numberOfCards) {
 		for (let p = 0; p < this.players.length; p++) {
 			for (let i = 0; i < numberOfCards; i++) {
-				this.players[p].hand.push(this.getRandomCard());
+				this.players[p].hand[i] = this.getRandomCard();
             }
         }
     }
 
-	getRandomCard(){
+	getRandomCard() {
 		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', "draw 2 from deck", "see the future"];
 		let cardType = cardTypes[Math.floor(Math.random() * cardTypes.length)];
 		let card = new Card(cardType);
 		return card;
 	}
 
-	connect(socket, name){
-		const player = new Player(socket.id, name);
+	connect(socket, name, icon) {
+		const player = new Player(socket, name, icon);
 		this.players.push(player);
 		console.log("Player connected: " + socket.id);
 	}
@@ -70,7 +68,7 @@ class Game {
 		this.players = this.players.filter(p => p.id !== playerID);
 	}
 
-	start(){
+	start() {
 		this.generateMainDeck(50);
 		this.generatePlayerHands(7);
 		while(!this.isGameOver){
@@ -80,7 +78,7 @@ class Game {
 		//this.takeGameRound();
     }
 
-	takeGameRound(){
+	takeGameRound() {
 		if (this.isGameOver)
 			return;
 		for (let i = 0; i < this.players.length; i++) {
@@ -202,7 +200,7 @@ class Game {
 
 	findPlayerByID(socketID) {
 		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i].id === socketID)
+			if (this.players[i].socket.id === socketID)
 				return this.players[i];
 		}
 		return null;
@@ -230,7 +228,7 @@ var gameConverter = {
     },
     fromFirestore: function(snapshot, options){
         const data = snapshot.data(options);
-        let game = new Game( data.io, data.id); //TODO: Change o to whatever io is.
+        let game = new Game(data.id);
         game.players = data.players;
         game.existingPlayerIDs = data.existingPlayerIDs;
         game.mainDeck = data.mainDeck;
@@ -292,5 +290,5 @@ function readfromDatabase(game){
     });
 }
 
-//export {Game, readfromDatabase, updateDatabase,  addtoDatabase};
-module.exports = {Game, readfromDatabase, updateDatabase,  addtoDatabase};
+//export {Game, readfromDatabase, updateDatabase, addtoDatabase};
+module.exports = {Game, readfromDatabase, updateDatabase, addtoDatabase};

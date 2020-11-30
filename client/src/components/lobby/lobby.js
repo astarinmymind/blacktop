@@ -76,16 +76,16 @@ export const Lobby = () => {
         gs.socket.emit("enterLobby", playerStore.lobbyId);
 
         gs.socket.on("updateNames", function(data) {
-            playerStore.players = [];
+            playerStore.players = {};
             Object.keys(data).forEach(key => {
                 console.log("added player");
-                playerStore.addPlayer();
+                playerStore.addPlayer(key);
             });
             
             Object.entries(data).forEach(entry => {
+                console.log("data: ", data);
                 const [key, value] = entry;
                 playerStore.setName(value[0], parseInt(key));
-
                 playerStore.setIcon(idToIcon(value[1]), parseInt(key));
             });
 
