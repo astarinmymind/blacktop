@@ -88,14 +88,24 @@ function Game() {
       return;
   }
 
-  // const [gameEvent, setGameEvent] = React.useState({});
-  // React.useEffect(() => {
-  //   // draw Card Event
-  //   gs.socket.on("updatePlayerHand", function(data)) {
-  //       // THIS IS TEMPORARY, FORCE ADDING CARD TO PLAYER HAND 
-  //       playerStore.drawCard("nope");
-  //   }
-  // }, []);
+   const [gameEvent, setGameEvent] = React.useState({});
+   React.useEffect(() => {
+     // draw Card Event
+     gs.socket.on("updatePlayerHand", function(data) {
+         // THIS IS TEMPORARY, FORCE ADDING CARD TO PLAYER HAND 
+         playerStore.drawCard("nope");
+     });
+	 
+	 //This is for when the client recieves its own hand from the server
+	 gs.socket.on("playerHand", function(data) {
+		 console.log("got my own hand");
+	 });
+	 
+	 //This is for when the client recieves another hand from the server
+	 gs.socket.on("otherHand", function(data) {
+		 console.log("got another hand");
+	 });
+   }, []);
   
   return useObserver(() => (
     // renders an unordered list of cards

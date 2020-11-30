@@ -63,8 +63,10 @@ socketIo.on("connection", (socket) => {
 		//let game = new Game(0,id)
 		var players = {};
 		
+		var hand = {};
+		
 		//Initilization of first player
-		players[0] = [socket, name, 0]; //game.connect(socket, name)
+		players[0] = [socket, name, 0, hand]; //game.connect(socket, name)
 		
 		//Creates this 
 		//Lobby id:Lobby ID players: list of Player game: Instance of Game-TODO
@@ -85,6 +87,7 @@ socketIo.on("connection", (socket) => {
 	socket.on('joinLobby', (id) => {
 		console.log(id);
 		var name = "";
+		var hand = {};
 		
 		//Search through all Lobbies to find the lobby to join
 		for (var i in LOBBY_LIST)
@@ -92,7 +95,7 @@ socketIo.on("connection", (socket) => {
 			if (LOBBY_LIST[i].id == id)
 			{
 				//Adds the player to the lobby
-				LOBBY_LIST[i].players[1] = [socket, name, 0]; //LOBBY_LIST[i].connect(socket,name);
+				LOBBY_LIST[i].players[1] = [socket, name, 0, hand]; //LOBBY_LIST[i].connect(socket,name);
 			}
 		}
 	});
@@ -167,7 +170,7 @@ socketIo.on("connection", (socket) => {
 			console.log(LOBBY_LIST[id]);
 			console.log(LOBBY_LIST[id].players[0][1]);
 			// console.log(LOBBY_LIST[id].players[i]);
-			if (LOBBY_LIST[id].players[i][0].id[0] == socket.id)
+			if (LOBBY_LIST[id].players[i][0].id == socket.id)
 			{
 				socket.emit('startGame', 0);
 				console.log('reached here');
@@ -176,8 +179,44 @@ socketIo.on("connection", (socket) => {
 				socket.to(LOBBY_LIST[id].players[i][0].id).emit('startGame', 0);
 				console.log('reached here 2');
 			}
+			LOBBY_LIST[id].players[0][3] = ["nope" , "give"];
+			sendHand(LOBBY_LIST[id].players[i][0], id, LOBBY_LIST[id].players[i][3], i); 
 		}
 	});
+	
+	socket.on('cardDrawn', (id) =>
+	{
+		//grab a card from the backend TODO
+		for (var i in LOBBY_LIST[id].players)
+		{
+			sendHand(LOBBY_LIST[id].players[0][0], id, LOBBY_LIST[id].players[0][3], i); 
+		}
+	});
+	
+	socket.on('cardPlayed', (id) =>
+	{
+		//play the card that is given TODO
+		for (var i in LOBBY_LIST[id].players)
+		{
+			sendHand(LOBBY_LIST[id].players[0][0], id, LOBBY_LIST[id].players[0][3], i); 
+		}
+	});
+	
+	//sends 1 players hand to everyone
+	function sendHand(socket, id, hand, elem) {
+		var pack = { hand, elem};
+		for (var i in LOBBY_LIST[id].players)
+		{
+			if (LOBBY_LIST[id].players[i][0].id == socket.id)
+			{
+				socket.emit('playerHand', pack);
+			}
+			else {
+				socket.to(LOBBY_LIST[id].players[i][0].id).emit('otherHand', pack);
+			}
+		}
+	}
+	
 });
 
 const getApiAndEmit = socket => {
