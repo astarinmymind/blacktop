@@ -48,7 +48,7 @@ function Game() {
   }
 
   // emits socket event that player has pressed start game
-  function drawCard() 
+  function cardDrawn() 
   {
       gs.socket.emit("cardDrawn", playerStore.lobbyId);
       console.log("card drawn");
@@ -87,6 +87,15 @@ function Game() {
       }
       return;
   }
+
+  // const [gameEvent, setGameEvent] = React.useState({});
+  // React.useEffect(() => {
+  //   // draw Card Event
+  //   gs.socket.on("updatePlayerHand", function(data)) {
+  //       // THIS IS TEMPORARY, FORCE ADDING CARD TO PLAYER HAND 
+  //       playerStore.drawCard("nope");
+  //   }
+  // }, []);
   
   return useObserver(() => (
     // renders an unordered list of cards
@@ -97,7 +106,7 @@ function Game() {
         <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
           <h1>{playerStore.currentPlayer.name}</h1>
           <div>
-            <button onClick={() => drawCard}>Draw Card</button>
+            <button onClick={cardDrawn}>Draw Card</button>
           </div>
           <br />
           <div>
