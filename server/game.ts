@@ -6,32 +6,30 @@ const firebase = require('firebase/app');
 const auth = require('firebase/auth');
 const store = require('firebase/firestore');
 //Other classes
-const Player = require("./player")
-const Card = require("./card")
+const Player = require("./player.ts");
+const Card = require("./card.ts");
+
 //A Game must have a unique id to prevent conflicts on the database. I suggest making the id equal to gameRooms.length()
 //and then pushing the created game onto gameRooms.
 //This way, the index of a game in gameRooms will be equal to it's id, which will be equal to it's ID in the database
 class Game {
-	// TODO: figure out the class of IO lol
-	io;
+	id;
 	players;
 	existingPlayerIDs;
 	mainDeck;
 	isFinalRound;
 	isGameOver;
-	id;
 	
-	constructor(io, id) {
-		this.io = io;
+	constructor(id) {
+		this.id = id;
 		this.isFinalRound = false
 		this.isGameOver = false;
-		this.players = [];
-		this.existingPlayerIDs = [];
-		this.mainDeck = [];
-		this.id = id;
+		this.players = new Array();
+		this.existingPlayerIDs = new Array();
+		this.mainDeck = new Array();
 	}
 
-	toFirestore(){
+	toFirestore() {
 		var temp =  Object.assign({},this)
 		temp.players = temp.players.map(p => p.toFirestore());
 		temp.mainDeck = temp.mainDeck.map(d => d.toFirestore());
@@ -40,27 +38,27 @@ class Game {
 
 	generateMainDeck(numberOfCards) {
 		for (let i = 0; i < numberOfCards; i++) {
-			this.mainDeck.push(this.getRandomCard());
+			this.mainDeck[i] = this.getRandomCard();
         }
 	}
 
 	generatePlayerHands(numberOfCards) {
 		for (let p = 0; p < this.players.length; p++) {
 			for (let i = 0; i < numberOfCards; i++) {
-				this.players[p].hand.push(this.getRandomCard());
+				this.players[p].hand[i] = this.getRandomCard();
             }
         }
     }
 
-	getRandomCard(){
+	getRandomCard() {
 		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', "draw 2 from deck", "see the future"];
 		let cardType = cardTypes[Math.floor(Math.random() * cardTypes.length)];
 		let card = new Card(cardType);
 		return card;
 	}
 
-	connect(socket, name){
-		const player = new Player(socket.id, name);
+	connect(socket, name, icon) {
+		const player = new Player(socket, name, icon);
 		this.players.push(player);
 		console.log("Player connected: " + socket.id);
 	}
@@ -70,7 +68,7 @@ class Game {
 		this.players = this.players.filter(p => p.id !== playerID);
 	}
 
-	start(){
+	start() {
 		this.generateMainDeck(50);
 		this.generatePlayerHands(7);
 		while(!this.isGameOver){
@@ -80,7 +78,7 @@ class Game {
 		//this.takeGameRound();
     }
 
-	takeGameRound(){
+	takeGameRound() {
 		if (this.isGameOver)
 			return;
 		for (let i = 0; i < this.players.length; i++) {
@@ -202,7 +200,7 @@ class Game {
 
 	findPlayerByID(socketID) {
 		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i].id === socketID)
+			if (this.players[i].socket.id === socketID)
 				return this.players[i];
 		}
 		return null;
@@ -230,67 +228,74 @@ var gameConverter = {
     },
     fromFirestore: function(snapshot, options){
         const data = snapshot.data(options);
-        let game = new Game( data.io, data.id); //TODO: Change o to whatever io is.
-        game.players = data.players;
+        let game = new Game(data.id);
+        game.players = data.players.map(player => Player.fromFirestore(player)); //factory function;
         game.existingPlayerIDs = data.existingPlayerIDs;
-        game.mainDeck = data.mainDeck;
+        game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
         game.isGameOver = data.isGameOver;
         game.isFinalRound = data.isFinalRound
         return game;
     }
 }
 //Add a game to the database
-function addtoDatabase(game){
-    var db = firebase.firestore();
-    db.collection('Games')
-    .doc(game.id.toString()).set(
-    gameConverter.toFirestore(game)
-    )
-    .then(function(docRef){
-    console.log("Success");
-    //console.log(docRef.id);
-    })
-    .catch(function(error) {
-    console.log("Error getting document:", error);
-    });
+async function addtoDatabase(game){
+	var db = firebase.firestore();
+	try{
+    	let docRef = await db.collection('Games')
+    	.doc(game.id.toString()).set(
+    		gameConverter.toFirestore(game)
+    	)
+    	console.log("Success");
+		console.log(docRef.id);
+		return true;
+	}
+    catch ( error ) {
+		console.log("Error getting document:", error);
+		return false;
+    }
 }
 
 //Update a game's status within the database
-function updateDatabase(game){
+async function updateDatabase(game){
     var db = firebase.firestore();
-    const doc = db.collection('Games').doc(game.id.toString());
-    doc.get().then(function(doc){
-    if(doc.exists){
-        db.collection('Games').doc(game.id.toString()).set(
-            gameConverter.toFirestore(game),
-            {merge: false}
-        )
-    }else{
-        console.log("No such document")
+	const doc = db.collection('Games').doc(game.id.toString());
+	try{
+    	let x = await doc.get()
+    	if(x.exists){
+        	await db.collection('Games').doc(game.id.toString()).set(
+            	gameConverter.toFirestore(game),
+            	{merge: false}
+			)
+			return true;
+    	}else{
+			console.log("No such document")
+			return false;
+		}
+	}
+	catch ( error ) {
+		console.log("Error getting document: " ,error);
+		return false;
     }
-    }).catch(function(error){
-    console.log("Error getting document: " ,error);
-    })
 }
 //Read from the database: this is mostly used as a check
-function readfromDatabase(game){
+async function readfromDatabase(id){
     var db = firebase.firestore();
-    var id = game.id;
-    var doc = db.collection('Games').doc(id.toString());
-    doc
-    .withConverter(gameConverter)
-    .get().then(function(doc){
-    if(doc.exists){
-        var game = doc.data();
-        console.log(game.toString());
-        console.log(game.id);
-        }else{
-        console.log("No such document")
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
+	var doc = db.collection('Games').doc(id.toString());
+	try{
+    	let result = await doc.withConverter(gameConverter).get()
+    	if(result.exists){
+        	var game = result.data();
+			return game;
+    	}else{
+			console.log("No such document")
+			return null;
+    	}
+	}
+	catch ( error ) {
+		console.log("Error getting document:", error);
+		return null;
+    }
 }
 
-//export {Game, readfromDatabase, updateDatabase,  addtoDatabase};
-module.exports = {Game, readfromDatabase, updateDatabase,  addtoDatabase};
+//export {Game, readfromDatabase, updateDatabase, addtoDatabase};
+module.exports = {Game, readfromDatabase, updateDatabase, addtoDatabase};

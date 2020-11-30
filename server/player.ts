@@ -1,23 +1,36 @@
-﻿const Card = require("./card")
+﻿const Card = require ("./card.ts");
+
 class Player {
-	id;
+	socket;
 	name;
 	hand;
 	pointTotal;
 	isDead;
+	icon;
 
-	constructor(id, name) {
-		this.id = id;
+	static fromFirestore(player){ //pass in a simple JSON object, it returns a player object
+		let p = new Player(player.socket, player.name, player.icon);
+		p.pointTotal = player.pointTotal;
+		p.isDead = player.isDead;
+		p.hand = player.hand.map(c => Card.fromFirestore(c));
+		return p;
+		//add a modification to add back the functions and other things into socket.
+	}
+
+	constructor(socket, name, icon) {
+		this.socket = socket;
 		this.name = name;
 		this.pointTotal = 0;
 		this.isDead = false;
 		this.hand = [];
+		this.icon = icon;
 	}
 
 	toFirestore() {
 		var temp = Object.assign({}, this);
 		temp.hand = temp.hand.map(h => h.toFirestore());
 		return temp;
+		//add a modification to strip socket everything but data.
 	}
 
 	addCard(card) {

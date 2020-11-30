@@ -1,5 +1,5 @@
 const express = require('express');
-const Game = require("./server/game.ts");
+const {Game, readfromDatabase, updateDatabase, addtoDatabase} = require("./server/game.ts");
 const Player = require("./server/player.ts");
 const Card = require("./server/card.ts");
 const http = require("http").createServer();
@@ -56,29 +56,18 @@ socketIo.on("connection", (socket) => {
 	
 	//Player has created a lobby
 	socket.on('makeLobby', (id) => {
-		//console.log(id);
-		var name = "";
+		//Create a new Game associated with this lobby.
+		var game = new Game(parseInt(id));
 		
-		//Initilization of player list for this lobby
-		//let game = new Game(0,id)
-		var players = {};
-		
-		var hand = {};
-		
-		//Initilization of first player
-		players[0] = [socket, name, 0, hand]; //game.connect(socket, name)
-		
-		//Creates this 
-		//Lobby id:Lobby ID players: list of Player game: Instance of Game-TODO
-		LOBBY_LIST[id] = {id, players/*, game*/};//LOBBY_LIST[id] = game;
+		//Initialization of first player
+		game.connect(socket, "", 0);
+		LOBBY_LIST[parseInt(id)] = game;
 		//Console.log every Lobby and every player in a lobby for Debugging
-		for (var i in LOBBY_LIST)
+		for (var gameID in LOBBY_LIST)
 		{
-			console.log(LOBBY_LIST[i].id);
-			for (var k in LOBBY_LIST[i].players)
-			{
-				console.log(LOBBY_LIST[i].players[k][0].id); //console.log(LOBBY_LIST[i].players[k].id)
-			}
+			var playerlist = LOBBY_LIST[gameID].players;
+			for (var i = 0; i < playerlist.length; i++)
+				console.log(playerlist[i].socket.id);
 			console.log('----------');
 		}
 	});
@@ -87,28 +76,17 @@ socketIo.on("connection", (socket) => {
 	socket.on('joinLobby', (id) => {
 		console.log(id);
 		var name = "";
-		var hand = {};
-		
-		//Search through all Lobbies to find the lobby to join
-		for (var i in LOBBY_LIST)
-		{
-			if (LOBBY_LIST[i].id == id)
-			{
-				//Adds the player to the lobby
-				LOBBY_LIST[i].players[1] = [socket, name, 0, hand]; //LOBBY_LIST[i].connect(socket,name);
-			}
+		//If the lobby is valid, add this Player to the Game.
+		if (parseInt(id) in LOBBY_LIST && typeof LOBBY_LIST[parseInt(id)] !== undefined) {
+			LOBBY_LIST[parseInt(id)].connect(socket, name, 0);
 		}
 	});
 	
 	//Debug function
 	socket.on('validId', (id) => {
 		var hit = false;
-		for (var i in LOBBY_LIST)
-		{
-			if (LOBBY_LIST[i].id == id)
-			{
-				hit = true;
-			}
+		if (parseInt(id) in LOBBY_LIST && typeof LOBBY_LIST[parseInt(id)] !== undefined) {
+			hit = true;
 		}
 		socket.emit('valID', hit);
 	});
@@ -117,102 +95,103 @@ socketIo.on("connection", (socket) => {
 	//called on entering a lobby
 	socket.on('enterLobby', (id) => {
 		var pack = {};
-		for (var i in LOBBY_LIST[id].players)
-		{
-			pack[i] = [LOBBY_LIST[id].players[i][1], LOBBY_LIST[id].players[i][2]];
-			//pack[i] = LOBBY_LIST[id].players[i].name
-		}
+		console.log(id);
+		var playerlist = LOBBY_LIST[parseInt(id)].players;
+		for (var i = 0; i < playerlist.length; i++)
+			pack[id] = [playerlist[i].name, playerlist[i].icon];
 		socket.emit('updateNames', pack);
 	});
 	
 	//Called when a player updates their name or icon
 	socket.on('playerName', (data) =>
 	{
-		//package that will be sent to every player
+		//Package that will be sent to every player.
 		var pack = {};
-		
-		//Search through this lobby 
-		for (var i in LOBBY_LIST[data[1]].players)
+
+		// data[0] is player name, data[1] is game ID, data[2] is player icon
+		gameID = parseInt(data[1]);
+		console.log(LOBBY_LIST);
+		var playerlist = LOBBY_LIST[gameID].players;
+		// find this Player in the game's Player array, and update their name + icon
+		for (var i = 0; i < playerlist.length; i++)
 		{
-			//if this player is the player that updated their name
-			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id) //LOBBY_LIST[data[1]].players[i].id == socket.id
+			if (playerlist[i].socket.id == socket.id)
 			{
-				//update their name information
-				LOBBY_LIST[data[1]].players[i][1] = data[0]; // LOBBY_LIST[data[1]].players[i].icon = data[0]
-				LOBBY_LIST[data[1]].players[i][2] = data[2]; // LOBBY_LIST[data[1]].players[i].name = data[2]
-				//console.log(LOBBY_LIST[data[1]].players[i][2]);
+				playerlist[i].name = data[0];
+				playerlist[i].icon = data[2];
 			}
-			//add this players info to pack
-			pack[i] = [LOBBY_LIST[data[1]].players[i][1], LOBBY_LIST[data[1]].players[i][2]];
-			//pack[i] = [LOBBY_LIST[data[1]].players[i]].something, LOBBY_LIST[data[1]].name]
+			//add Players' info to pack
+			pack[i] = [playerlist[i].name, playerlist[i].icon];
 		}
+
 		//Search through this lobby
-		for (var i in LOBBY_LIST[data[1]].players)
+		for (var i = 0; i < playerlist.length; i++)
 		{
 			//this if-else statement sends the package of player names
 			//to every player for display purposes
-			if (LOBBY_LIST[data[1]].players[i][0].id == socket.id) //LOBBY_LIST[data[1]].players[i].id == socket.id
-			{
+			if (playerlist[i].socket.id == socket.id)
 				socket.emit('updateNames', pack);
-			}
-			else {
-			socket.to(LOBBY_LIST[data[1]].players[i][0].id).emit('updateNames', pack); 
-			//LOBBY_LIST[data[1]].players[i].id.emit
-			}
+			else 
+				socket.to(playerlist[i].id).emit('updateNames', pack); 
 		}
 		//console.log('name: ' + data[0] + ' / lobby id: ' + data[1]);
 	});
 	
-	socket.on("gameStarted",  (id) =>
+	socket.on("gameStarted", (id) =>
 	{
-		for (var i in LOBBY_LIST[id].players)
+		var playerlist = LOBBY_LIST[parseInt(id)].players;
+		for (var i = 0; i < playerlist.length; i++)
 		{
-			console.log(LOBBY_LIST[id]);
-			console.log(LOBBY_LIST[id].players[0][1]);
+			var player = playerlist[i];
+			console.log(player);
 			// console.log(LOBBY_LIST[id].players[i]);
-			if (LOBBY_LIST[id].players[i][0].id == socket.id)
+			if (player.socket.id === socket.id)
 			{
 				socket.emit('startGame', 0);
 				console.log('reached here');
 			}
 			else {
-				socket.to(LOBBY_LIST[id].players[i][0].id).emit('startGame', 0);
+				socket.to(player.socket.id).emit('startGame', 0);
 				console.log('reached here 2');
 			}
-			LOBBY_LIST[id].players[0][3] = ["nope" , "give"];
-			sendHand(LOBBY_LIST[id].players[i][0], id, LOBBY_LIST[id].players[i][3], i); 
+			player.addCard(new Card('nope'));
+			player.addCard(new Card('give'));
+			sendHand(player.socket, id, player.hand, i); 
 		}
 	});
 	
 	socket.on('cardDrawn', (id) =>
 	{
 		//grab a card from the backend TODO
-		for (var i in LOBBY_LIST[id].players)
+		var playerlist = LOBBY_LIST[parseInt(id)].players;
+		for (var i = 0; i < playerlist.length; i++)
 		{
-			sendHand(LOBBY_LIST[id].players[0][0], id, LOBBY_LIST[id].players[0][3], i); 
+			sendHand(playerlist[0].socket, parseInt(id), playerlist[0].hand, i); 
 		}
 	});
 	
 	socket.on('cardPlayed', (id) =>
 	{
 		//play the card that is given TODO
-		for (var i in LOBBY_LIST[id].players)
+		var playerlist = LOBBY_LIST[parseInt(id)].players;
+		for (var i = 0; i < playerlist.length; i++)
 		{
-			sendHand(LOBBY_LIST[id].players[0][0], id, LOBBY_LIST[id].players[0][3], i); 
+			sendHand(playerlist[0].socket, parseInt(id), playerlist[0].hand, i); 
 		}
 	});
 	
 	//sends 1 players hand to everyone
 	function sendHand(socket, id, hand, elem) {
-		var pack = { hand, elem};
-		for (var i in LOBBY_LIST[id].players)
+		var pack = { hand, elem };
+		var playerlist = LOBBY_LIST[parseInt(id)].players;
+		for (var i = 0; i < playerlist.length; i++)
 		{
-			if (LOBBY_LIST[id].players[i][0].id == socket.id)
+			if (playerlist[i].socket.id == socket.id)
 			{
 				socket.emit('playerHand', pack);
 			}
 			else {
-				socket.to(LOBBY_LIST[id].players[i][0].id).emit('otherHand', pack);
+				socket.to(playerlist[i].socket.id).emit('otherHand', pack);
 			}
 		}
 	}
