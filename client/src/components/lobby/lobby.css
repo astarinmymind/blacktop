@@ -18,21 +18,6 @@
     width: 30%;
   }
   
-  /* button {
-    color: #000;
-    font-family: 'Architects Daughter', cursive;
-    border: 2px solid rgb(0, 0, 0);
-    background-color: #fff;
-    font-size: 2.5rem;
-    padding: 10px;
-    cursor: pointer;
-    margin-left: 20px;
-  }
-  
-  button:hover {
-    text-decoration: underline;
-  } */
-  
   .lobby-columns {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -60,16 +45,16 @@
     justify-content: left;
   }
 
-  .lobby-columns list-img {
-    display: flex;
-    vertical-align: middle;
-    justify-content: left;
+  .lobby-columns .list {
+    text-align: left;
+    margin-left: 1vw;
   }
 
-  input {
+  .lobby-columns input {
     text-align: center;
     font-family: 'Gloria Hallelujah', cursive;
     font-size: 3vw;
+    margin-left: 0;
   }
 
   .lobby-columns .icon-gallery{

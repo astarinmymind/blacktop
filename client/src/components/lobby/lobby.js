@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
+<<<<<<< HEAD
 import { Link, Redirect } from "react-router-dom";
+=======
+import { Link, withRouter } from "react-router-dom";
+>>>>>>> refs/remotes/origin/main
 import './lobby.css';
 import TestLogo from '../../images/TestLogo.png';
-import TestCard from '../../images/TestCard.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import Brickshay from '../../images/Brickshay.gif';
 import Dragon from '../../images/Dragon.gif';
@@ -16,14 +19,42 @@ import Seagull from '../../images/Seagull.gif';
 import Tangerine from '../../images/Tangerine.gif';
 import Werewolf from '../../images/Werewolf.gif';
 // import src from '*.avif';
-import { TabPane } from 'semantic-ui-react';
 import GameService from '../../services/GameService';
 
 const gs = new GameService();
 
 export const Lobby = () => {
     // gets store
-	const {playerStore} = usePlayerStore();
+    const {playerStore} = usePlayerStore();
+    
+    function idToIcon (iconId) {
+        switch (iconId) {
+            case 1:
+                return Dragon;
+            case 2:
+                return Frog;
+            case 3:
+                return Goblin;
+            case 4:
+                return Monkey;
+            case 5:
+                return PlushCat;
+            case 6:
+                return Seagull;
+            case 7:
+                return Tangerine;
+            case 8:
+                return Werewolf;
+            case 9:
+                return Goblin;
+            case 10:
+                return Goblin;
+            case 11:
+                return Goblin;
+            default:
+                return Brickshay;
+        }
+    }
 
     const [name, setName] = React.useState("");
     const updateName = (event) => { 
@@ -37,13 +68,17 @@ export const Lobby = () => {
         setIconId(newIconId);
     }
 
-	function sendPlayer(newName, newIcon) {
-		var pack = [ newName, playerStore.lobbyId, newIcon ];
-		gs.socket.emit("playerName", pack);
-	}
+	function sendPlayer(newName, newIconId) {
+		var pack = [ newName, playerStore.lobbyId, newIconId ];
+        gs.socket.emit("playerName", pack);
+
+        playerStore.currentPlayer.setPlayer(newName, idToIcon(newIconId));
+    }
 
     const [dummy, setDummy] = React.useState({});
-    useEffect(() => {
+    React.useEffect(() => {
+        gs.socket.emit("enterLobby", playerStore.lobbyId);
+
         gs.socket.on("updateNames", function(data) {
             playerStore.players = [];
             Object.keys(data).forEach(key => {
@@ -55,75 +90,32 @@ export const Lobby = () => {
                 const [key, value] = entry;
                 playerStore.setName(value[0], parseInt(key));
 
-                let newIcon;
-                switch (value[1]) {
-                    case 1:
-                        newIcon = Dragon;
-                        break;
-                    case 2:
-                        newIcon = Frog;
-                        break;
-                    case 3:
-                        newIcon = Goblin;
-                        break;
-                    case 4:
-                        newIcon = Monkey;
-                        break;
-                    case 5:
-                        newIcon = PlushCat;
-                        break;
-                    case 6:
-                        newIcon = Seagull;
-                        break;
-                    case 7:
-                        newIcon = Tangerine;
-                        break;
-                    case 8:
-                        newIcon = Werewolf;
-                        break;
-                    case 9:
-                        newIcon = Dragon;
-                        break;
-                    case 10:
-                        newIcon = Dragon;
-                        break;
-                    case 11:
-                        newIcon = Dragon;
-                        break;
-                    default:
-                        newIcon = Brickshay;
-                        break;
-                }
-                playerStore.setIcon(newIcon, parseInt(key));
+                playerStore.setIcon(idToIcon(value[1]), parseInt(key));
             });
 
             setDummy({}); // Needed because Lobby doesn't re-render automatically after above change(s)
         })
     }, []);
 
-    React.useEffect(() => {
-        gs.socket.emit("enterLobby", playerStore.lobbyId);
-      }, []);
-
     // emits socket event that player has pressed start game
     function startGame() 
     {
-        gs.socket.emit("gameStarted", playerStore.lobbyId);
+        console.log(playerStore.gameStarted);
+        if (!playerStore.gameStarted) {
+            gs.socket.emit("gameStarted", playerStore.lobbyId);
+            console.log(playerStore.lobbyId);
+        }
     }
 
-    // function starting
-    
     const [starting, setStarting] = React.useState({});
     useEffect(() => {
         gs.socket.on("startGame", function(data) {
-            console.log("hello");
-            console.log(window.location.pathname);
-            window.location.pathname = '/game';
+            playerStore.gameStarted = true;
         })
     }, []);
 
     return useObserver(() => (
-        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
+        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
             <div className="manifest">
                 <img alt="" src={TestLogo}/>
             </div>
@@ -166,11 +158,11 @@ export const Lobby = () => {
                     </div>
                 </div>
                 <div>
-                    <div className="list-img">
+                    <div className="list">
                         {playerStore.getPlayers().map((element, i) => 
                             <li style={{ listStyleType: "none" }} key={i}>
                                 <br />
-                                <img src={element.icon}/>
+                                <img src={element.icon} alt={`Player ${i+1}`} />
                                 {element.name}
                                 <br />
                             </li>
@@ -178,8 +170,8 @@ export const Lobby = () => {
                     </div>
                     <br />
                     <br />
-                    <Link to="/game">
-                        <button onClick={startGame}>Start game</button>
+                    <Link to={{ pathname: '/game', state:{ consent:'true'} }} >
+                        <button onClick={startGame}>Enter game</button>
                     </Link>
                 </div>
             </div>
