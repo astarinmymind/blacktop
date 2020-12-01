@@ -31,9 +31,6 @@ const title = "Don't Draw Card"
 
 var SOCKET_LIST = {};
 
-//Initilization of Lobby List
-var LOBBY_LIST = {};
-
 socketIo.on('connection', (socket) => {
 	SOCKET_LIST[socket.id] = socket;
 	console.log('New client connected: ' + 	socket.id);
@@ -62,7 +59,6 @@ socketIo.on('connection', (socket) => {
 		
 		// connect first Player to the Game
 		game.connect(socket.id, "", 0);
-		//LOBBY_LIST[parseInt(id)] = game;
 		//add to the database
 		let success = await addtoDatabase(game);
 		//console.log(success);
@@ -85,13 +81,11 @@ socketIo.on('connection', (socket) => {
 		if (game === null){
 			return;
 		}
+		// if the lobby is valid, connect the new Player to the associated Game, and update database.
 			game.connect(socket.id, "", 0);
 			await updateDatabase(game);
 
-		// if the lobby is valid, connect the new Player to the associated Game
-		// if (parseInt(id) in LOBBY_LIST && typeof LOBBY_LIST[parseInt(id)] !== undefined) {
-		// 	LOBBY_LIST[parseInt(id)].connect(socket.id, "", 0);
-		// }
+
 	});
 	
 	// debug function
@@ -102,9 +96,6 @@ socketIo.on('connection', (socket) => {
 			hit2 = false;
 		else
 			hit2 = true;
-		// if (parseInt(id) in LOBBY_LIST && typeof LOBBY_LIST[parseInt(id)] !== undefined) {
-		// 	hit = true;
-		//}
 		socket.emit('valID', hit2);
 	});
 	
@@ -118,10 +109,11 @@ socketIo.on('connection', (socket) => {
 			console.log("Problem");
 			return;
 		}
-		var playerlist2 = game.players;
-		//var playerlist = LOBBY_LIST[parseInt(id)].players;
-		for (var i = 0; i < playerlist2.length; i++)
-			pack[id] = [playerlist2[i].name, playerlist2[i].icon];
+		var playerlist = game.players;
+
+		for (var i = 0; i < playerlist.length; i++)
+			pack[id] = [playerlist[i].name, playerlist[i].icon];
+
 		socket.emit('updateNames', pack);
 	});
 	
@@ -138,37 +130,36 @@ socketIo.on('connection', (socket) => {
 			console.log("Problem");
 			return;
 		}
-		var playerlist2 = game.players;
-		//var playerlist = LOBBY_LIST[gameID].players;
+		var playerlist = game.players;
 
 		// find this Player in the game's Player array, and update their name + icon
-		for (var i = 0; i < playerlist2.length; i++)
+		for (var i = 0; i < playerlist.length; i++)
 		{
-			var player = playerlist2[i];
+			var player = playerlist[i];
 			if (player.socketID == socket.id)
 			{
-				playerlist2[i].name = data[0];
-				playerlist2[i].icon = data[2];
-				game.players = playerlist2;
+				playerlist[i].name = data[0];
+				playerlist[i].icon = data[2];
+				game.players = playerlist;
 				await updateDatabase(game);
 			}
 			//add Players' info to pack
-			pack[i] = [player.name, player.icon];
+			pack[i] = [playerlist[i].name, playerlist[i].icon];
 		}
 
 		// send the package of player names + icons to every player (for display)
-		for (var i = 0; i < playerlist2.length; i++)
+		for (var i = 0; i < playerlist.length; i++)
 		{
-			if (playerlist2[i].socketID == socket.id)
+			if (playerlist[i].socketID == socket.id)
 				socket.emit('updateNames', pack);
 			else 
-				socket.to(playerlist2[i].socketID).emit('updateNames', pack); 
+				socket.to(playerlist[i].socketID).emit('updateNames', pack); 
 		}
 	});
 	
 	socket.on('gameStarted', async (id) =>
 	{
-		//var playerlist = LOBBY_LIST[parseInt(id)].players;
+
 		var game = await readfromDatabase(id);
 		if(game === null){
 			return;
@@ -199,7 +190,7 @@ socketIo.on('connection', (socket) => {
 	socket.on('cardDrawn', async (id) =>
 	{
 		// grab a Card from the backend TODO
-		//var playerlist = LOBBY_LIST[parseInt(id)].players;
+		
 		let game = await readfromDatabase(id);
 		if(game === null){
 			return;
@@ -215,7 +206,7 @@ socketIo.on('connection', (socket) => {
 	socket.on('cardPlayed', async (id) =>
 	{
 		// play the Card that is given TODO
-		//var playerlist = LOBBY_LIST[parseInt(id)].players;
+
 		let game = await readfromDatabase(id);
 		if(game === null){
 			return;
@@ -228,7 +219,7 @@ socketIo.on('connection', (socket) => {
 	// sends one Player's hand to everyone
 	async function sendHand(socketID, gameID, hand, elem) {
 		var pack = { hand, elem };
-		//var playerlist = LOBBY_LIST[parseInt(gameID)].players;
+		
 		let game = await readfromDatabase(gameID);
 		if(game === null){
 			return;
