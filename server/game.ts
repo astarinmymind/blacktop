@@ -242,8 +242,8 @@ async function addtoDatabase(game){
     	.doc(game.id.toString()).set(
     		gameConverter.toFirestore(game)
     	)
-    	console.log("Success");
-		console.log(docRef.id);
+    	console.log("Successful write to database");
+		//console.log(docRef.id);
 		return true;
 	}
     catch ( error ) {
