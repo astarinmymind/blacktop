@@ -5,14 +5,17 @@
 
 // */
 
-import React from "react"
-import NopeCard from './images/NOPE.png'
-import AddCard from './images/ADD1.png'
-import SubCard from './images/SUB1.png'
-import DrawCard from './images/DRAW.png'
-import GiveCard from './images/GIVE.png'
-import SeeCard from './images/SEE.png'
+import React from 'react'
+import { useDrag, DragSourceMonitor } from 'react-dnd'
+import { CardTypes } from '../card/CardTypes'
+// import NopeCard from './images/NOPE.png'
+// import AddCard from './images/ADD1.png'
+// import SubCard from './images/SUB1.png'
+// import DrawCard from './images/DRAW.png'
+// import GiveCard from './images/GIVE.png'
+// import SeeCard from './images/SEE.png'
 // import { CardStore } from './CardStore'
+import './card.css'
 
 // // defines type for context value 
 // // note: typescript allows classes as types
@@ -54,10 +57,33 @@ import SeeCard from './images/SEE.png'
 // */
 // export const useCardStore = () => React.useContext(CardContext)
 
-type Card = { 
-    name: string,
-    points: number
-  }
+interface CardProps {
+  name: string
+  src: any
+}
+
+export const Card: React.FC<CardProps> = ({ name, src }) => {
+  const [{ isDragging }, drag] = useDrag({
+    item: { name, type: CardTypes.CARD },
+    end: (card: { name: string } | undefined, monitor: DragSourceMonitor) => {
+      const dropResult = monitor.getDropResult()
+      if (card && dropResult) {
+        alert(`You used ${card.name}!`)
+      }
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  })
+  const opacity = isDragging ? 0.4 : 1
+
+  return (
+    <div ref={drag} className="card">
+      <img src={src} />
+    </div>
+  )
+}
+
 
 // function setImage(Card c) 
 // {
@@ -85,5 +111,3 @@ type Card = {
 //             break;
 //     }
 // }
-
-export default Card;

@@ -12,8 +12,11 @@ Notes:
 import React, { useState, useEffect } from "react";
 import { usePlayerStore } from '../player/player'
 import { useObserver } from 'mobx-react-lite'
+import { Card } from '../card/card'
+import { Board } from '../board/board'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import { ToastContainer, toast } from 'react-toastify';
-import card from '../card/card'
 // import { useCardStore } from '../card/card'
 import './game.css'
 import NopeCard from '../../images/NOPE.png'
@@ -160,50 +163,51 @@ function Game() {
   return useObserver(() => (
     // renders an unordered list of cards
     //button with the variable grabbed from the server
-    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
-      <div className="game-columns">
-        <div>
-        <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
-          <h1>{playerStore.currentPlayer.name}</h1>
+    <DndProvider backend={HTML5Backend}>
+      <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
+        <div className="game-columns">
           <div>
-          <ToastContainer
-position="bottom-center"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick={false}
-rtl={false}
-pauseOnFocusLoss={false}
-draggable={false}
-pauseOnHover={false}/>
+          <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
+            <h1>{playerStore.currentPlayer.name}</h1>
+            <div>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable={false}
+              pauseOnHover={false}
+            />
             <button onClick={sendNotification}>Draw Card</button>
+            </div>
+            <br />
+            <div>
+              <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
+            </div>
           </div>
-          <br />
           <div>
-            <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
+            <Board />
           </div>
-        </div>
-        <div>
-          <div className="rectangle">
-            <h1>Drag card here to play it</h1>
-          </div>
-        </div>
-        <div className="list">
-          <br />
-          {playerStore.getPlayers().map((element, i) => 
+          <div className="list">
+            <br />
+            {playerStore.getPlayers().map((element, i) => 
               <li style={{ listStyleType: "none" }} key={i}>
-                  <img src={element.icon}/>
-                  {element.name}
+                <img src={element.icon}/>
+                {element.name}
               </li>
-          )}
+            )}
+          </div>
+        </div>
+        <div className="hand" >
+          {playerStore.getPlayerHand().map(card => (
+              <Card name={card} src={setImage(card)} />
+          ))}
         </div>
       </div>
-      <ul style={{ listStyleType: "none" }} className="hand" >
-        {playerStore.getPlayerHand().map(card => (
-          <img src={setImage(card)}/>
-        ))}
-      </ul>
-    </div>
+    </DndProvider>
   ));
 }
 

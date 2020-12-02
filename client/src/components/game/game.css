@@ -32,15 +32,8 @@
     border: 5px solid white;
 }
 
-.game-columns .rectangle {
-    display: flex;
-    width: 40vw;
-    height: 30vw;
-    background: rgb(36, 36, 36);
-    border-radius: 10%;
-    justify-content: center;
-    align-items: center;
-    margin-top: 3vw;
+.game-columns button {
+    margin-left: 0px;
 }
 
 .game-columns .list {
@@ -58,11 +51,5 @@
 
 .hand {
     display: flex;
-    flex-direction: row;
     justify-content: center;
-}
-
-.hand img {
-    width: 5%;
-    margin: 1vw;
 }
