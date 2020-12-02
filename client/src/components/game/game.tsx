@@ -10,21 +10,21 @@ Notes:
   
 //export const Game = () => {
 import React, { useState, useEffect } from "react";
-import { usePlayerStore } from '../player/player'
-import { useObserver } from 'mobx-react-lite'
-import { Card } from '../card/card'
-import { Board } from '../board/board'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { usePlayerStore } from '../player/player';
+import { useObserver } from 'mobx-react-lite';
+import { Card } from '../card/card';
+import { Board } from '../board/board';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ToastContainer, toast } from 'react-toastify';
-// import { useCardStore } from '../card/card'
-import './game.css'
-import NopeCard from '../../images/NOPE.png'
-import AddCard from '../../images/ADD1.png'
-import SubCard from '../../images/SUB1.png'
-import DrawCard from '../../images/DRAW.png'
-import GiveCard from '../../images/GIVE.png'
-import SeeCard from '../../images/SEE.png'
+// import { useCardStore } from '../card/card';
+import './game.css';
+import NopeCard from '../../images/NOPE.png';
+import AddCard from '../../images/ADD1.png';
+import SubCard from '../../images/SUB1.png';
+import DrawCard from '../../images/DRAW.png';
+import GiveCard from '../../images/GIVE.png';
+import SeeCard from '../../images/SEE.png';
 
 import GameService from '../../services/GameService';
 
@@ -48,49 +48,49 @@ function Game() {
   // emits socket event that player has pressed start game
   function startGame() 
   {
-      gs.socket.emit("gameStarted", playerStore.lobbyId);
+    gs.socket.emit("gameStarted", playerStore.lobbyId);
   }
 
   // emits socket event that player has pressed draw card
   function cardDrawn() 
   {
-      gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayer.playerId);
-      console.log("card drawn");
+    gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayer.playerId);
+    console.log("card drawn");
   }
 
   // emits socket event that player has played a card 
   // @COLE: integrate which card was dragged by changing index of playerhand (3rd parameter)
   function playCard() 
   {
-      gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.playerId, playerStore.playerHand[1]);
-      console.log("card played");
+    gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.playerId, playerStore.playerHand[1]);
+    console.log("card played");
   }
 
   function setImage(cardname: string) 
   {
-      switch (cardname) {
-          case "nope":
-              return NopeCard;
-              break;
-          case "add1":
-              return AddCard;
-              break;
-          case "sub1":
-              return SubCard;
-              break;
-          case "give":
-              return GiveCard;
-              break;
-          case "see":
-              return SeeCard;
-              break;
-          case "draw":
-              return DrawCard;
-              break;
-          default: 
-              break;
-      }
-      return;
+    switch (cardname) {
+        case "nope":
+            return NopeCard;
+            break;
+        case "add1":
+            return AddCard;
+            break;
+        case "sub1":
+            return SubCard;
+            break;
+        case "give":
+            return GiveCard;
+            break;
+        case "see":
+            return SeeCard;
+            break;
+        case "draw":
+            return DrawCard;
+            break;
+        default: 
+            break;
+    }
+    return;
   }
 
   // function sendNotification(event: string) 

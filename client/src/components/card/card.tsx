@@ -6,6 +6,7 @@
 // */
 
 import React from 'react'
+import { usePlayerStore } from '../player/player';
 import { useDrag, DragSourceMonitor } from 'react-dnd'
 import { CardTypes } from '../card/CardTypes'
 // import NopeCard from './images/NOPE.png'
@@ -16,6 +17,10 @@ import { CardTypes } from '../card/CardTypes'
 // import SeeCard from './images/SEE.png'
 // import { CardStore } from './CardStore'
 import './card.css'
+
+import GameService from '../../services/GameService';
+
+const gs = new GameService();
 
 // // defines type for context value 
 // // note: typescript allows classes as types
@@ -63,23 +68,34 @@ interface CardProps {
 }
 
 export const Card: React.FC<CardProps> = ({ name, src }) => {
+  const {playerStore} = usePlayerStore();
+
+  // emits socket event that player has played a card
+  function playCard() 
+  {
+    gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.playerId, name);
+    console.log(`card played: ${name}`);
+  }
+
+  // implementation od react-dnd based on their dustbin example
   const [{ isDragging }, drag] = useDrag({
     item: { name, type: CardTypes.CARD },
     end: (card: { name: string } | undefined, monitor: DragSourceMonitor) => {
       const dropResult = monitor.getDropResult()
       if (card && dropResult) {
-        alert(`You used ${card.name}!`)
+        // alert(`You used ${card.name}!`)
+        playCard();
       }
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })
-  const opacity = isDragging ? 0.4 : 1
+  const opacity = isDragging ? 0 : 1
 
   return (
     <div ref={drag} className="card">
-      <img src={src} />
+      <img src={src} style={{opacity: opacity}} />
     </div>
   )
 }
