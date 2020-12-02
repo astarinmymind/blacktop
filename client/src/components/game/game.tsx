@@ -176,7 +176,7 @@ rtl={false}
 pauseOnFocusLoss={false}
 draggable={false}
 pauseOnHover={false}/>
-            <button onClick={sendNotification}>Draw Card</button>
+            <button onClick={cardDrawn}>Draw Card</button>
           </div>
           <br />
           <div>
