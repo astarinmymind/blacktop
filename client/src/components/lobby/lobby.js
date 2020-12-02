@@ -3,17 +3,18 @@ import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
 import { Link, Redirect } from "react-router-dom";
 import './lobby.css';
-import TestLogo from '../../images/TestLogo.png';
-import ChalkLine from '../../images/ChalkLine.png';
-import Brickshay from '../../images/Brickshay.gif';
-import Dragon from '../../images/Dragon.gif';
-import Frog from '../../images/Frog.gif';
-import Goblin from '../../images/Goblin.gif';
-import Monkey from '../../images/Monkey.gif';
-import PlushCat from '../../images/PlushCat.gif';
-import Seagull from '../../images/Seagull.gif';
-import Tangerine from '../../images/Tangerine.gif';
-import Werewolf from '../../images/Werewolf.gif';
+import TestLogo     from '../../images/TestLogo.png';
+import ChalkLine    from '../../images/ChalkLine.png';
+import Brickshay    from '../../images/Brickshay.gif';
+import Dragon       from '../../images/Dragon.gif';
+import Frog         from '../../images/Frog.gif';
+import Goblin       from '../../images/Goblin.gif';
+import Monkey       from '../../images/Monkey.gif';
+import Mouse        from '../../images/Mouse.gif';
+import PlushCat     from '../../images/PlushCat.gif';
+import Seagull      from '../../images/Seagull.gif';
+import Tangerine    from '../../images/Tangerine.gif';
+import Werewolf     from '../../images/Werewolf.gif';
 // import src from '*.avif';
 import GameService from '../../services/GameService';
 
@@ -34,36 +35,36 @@ export const Lobby = () => {
             case 4:
                 return Monkey;
             case 5:
-                return PlushCat;
+                return Mouse;
             case 6:
-                return Seagull;
+                return PlushCat;
             case 7:
-                return Tangerine;
+                return Seagull;
             case 8:
-                return Werewolf;
+                return Tangerine;
             case 9:
-                return Goblin;
+                return Werewolf;
             case 10:
-                return Goblin;
+                return PlushCat;
             case 11:
-                return Goblin;
+                return Brickshay;
             default:
                 return Brickshay;
         }
     }
 
     const [name, setName] = React.useState("");
+    const [iconId, setIconId] = React.useState(Brickshay);
     const updateName = (event) => { 
 		sendPlayer(event.target.value, iconId);
         setName(event.target.value);
     }
-
-    const [iconId, setIconId] = React.useState(Brickshay);
     const updateIcon = (newIconId) => { 
 		sendPlayer(name, newIconId);
         setIconId(newIconId);
     }
 
+    // Sends the player's name and icon to socket and playerStore
 	function sendPlayer(newName, newIconId) {
 		var pack = [ newName, playerStore.lobbyId, newIconId ];
         gs.socket.emit("playerName", pack);
@@ -91,6 +92,10 @@ export const Lobby = () => {
 
             setDummy({}); // Needed because Lobby doesn't re-render automatically after above change(s)
         })
+
+        gs.socket.on("startGame", function(data) {
+            playerStore.gameStarted = true;
+        })
     }, []);
 
     // emits socket event that player has pressed start game
@@ -102,13 +107,6 @@ export const Lobby = () => {
             console.log(playerStore.lobbyId);
         }
     }
-
-    const [starting, setStarting] = React.useState({});
-    useEffect(() => {
-        gs.socket.on("startGame", function(data) {
-            playerStore.gameStarted = true;
-        })
-    }, []);
 
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
@@ -135,20 +133,20 @@ export const Lobby = () => {
                     <div className="icon-gallery">
                         <>
                             <img alt="" src={Brickshay} onClick={() => updateIcon(0)}/>
-                            <img alt="" src={Dragon} onClick={() => updateIcon(1)}/>
-                            <img alt="" src={Frog} onClick={() => updateIcon(2)}/>
-                            <img alt="" src={Goblin} onClick={() => updateIcon(3)}/>
+                            <img alt="" src={Dragon}    onClick={() => updateIcon(1)}/>
+                            <img alt="" src={Frog}      onClick={() => updateIcon(2)}/>
+                            <img alt="" src={Goblin}    onClick={() => updateIcon(3)}/>
                         </>
                         <>
-                            <img alt="" src={Monkey} onClick={() => updateIcon(4)}/>
-                            <img alt="" src={PlushCat} onClick={() => updateIcon(5)}/>
-                            <img alt="" src={Seagull} onClick={() => updateIcon(6)}/>
-                            <img alt="" src={Tangerine} onClick={() => updateIcon(7)}/>
+                            <img alt="" src={Monkey}    onClick={() => updateIcon(4)}/>
+                            <img alt="" src={Mouse}     onClick={() => updateIcon(5)}/>
+                            <img alt="" src={PlushCat}  onClick={() => updateIcon(6)}/>
+                            <img alt="" src={Seagull}   onClick={() => updateIcon(7)}/>
                         </>
                         <>
-                            <img alt="" src={Werewolf} onClick={() => updateIcon(8)}/>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(9)}/>
-                            <img alt="" src={PlushCat} onClick={() => updateIcon(10)}/>
+                            <img alt="" src={Tangerine} onClick={() => updateIcon(8)}/>
+                            <img alt="" src={Werewolf}  onClick={() => updateIcon(9)}/>
+                            <img alt="" src={PlushCat}  onClick={() => updateIcon(10)}/>
                             <img alt="" src={Brickshay} onClick={() => updateIcon(11)}/>
                         </>
                     </div>

@@ -10,19 +10,24 @@ import Werewolf from '../../images/Werewolf.gif';
 import GameService from '../../services/GameService';
 import { usePlayerStore } from '../player/player'
 
-
 const gs = new GameService();
-
 
 export const Home = () => {     
     const {playerStore} = usePlayerStore();
+    
+    // Create a lobby when Host Game is clicked
+	function makeLobby() 
+	{
+		var lobbyId = Math.floor(100000 + Math.random() * 900000);
+		gs.socket.emit("makeLobby", lobbyId);
+        playerStore.lobbyId = lobbyId;
+    }
     
     const [lobbyId, setLobbyId] = React.useState("");
     const updateLobbyId = (event: React.ChangeEvent<HTMLInputElement>) => { 
         const re = /^[0-9\b]+$/;
 
-        // if value is not blank, then test the regex
-
+        // if value is not blank, then test the regex for digits only
         if (event.target.value === '' || re.test(event.target.value)) {
             setLobbyId(event.target.value);
             gs.socket.emit("validId", event.target.value);
@@ -30,20 +35,28 @@ export const Home = () => {
         }
     }
 
+    // If valid, send entered Lobby ID to socket to be checked if it is valid
+    function sendLobbyId() {
+        if (!lobbyId || !isVaildId) {
+            alert("You must enter a valid, 6-digit game code!");
+        }
+        else {
+            gs.socket.emit("joinLobby", lobbyId);
+            playerStore.lobbyId = parseInt(lobbyId);
+        }
+    }
+
     const [isVaildId, setIsValidId] = React.useState(false);
     useEffect(() => {
+        // Set local state to the validity of the entered Lobby ID
         gs.socket.on("valID", function(data) {
             setIsValidId(data);
         })
     }, []);
-
-    function sendLobbyId() {
-		gs.socket.emit("joinLobby", lobbyId);
-		playerStore.lobbyId = parseInt(lobbyId);
-    }
     
+    // A link that is only active if the lobby ID is valid
     const ConditionalLink = () => isVaildId
-      ? <Link to="/Lobby"><button onClick={ sendLobbyId }>Join game</button></Link>
+      ? <Link to="/lobby"><button onClick={ sendLobbyId }>Join game</button></Link>
       : <><button onClick={ sendLobbyId }>Join game</button></>;
     console.log(isVaildId);
 
@@ -117,13 +130,6 @@ export const Home = () => {
             </div>
         </div>
     ));
-	function makeLobby() 
-	{
-		var lobbyId = Math.floor(100000 + Math.random() * 900000);
-		gs.socket.emit("makeLobby", lobbyId);
-        playerStore.lobbyId = lobbyId;
-    }
 }
-
 
 export default Home;
