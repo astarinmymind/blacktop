@@ -12,6 +12,7 @@ Notes:
 import React, { useState, useEffect } from "react";
 import { usePlayerStore } from '../player/player'
 import { useObserver } from 'mobx-react-lite'
+import { ToastContainer, toast } from 'react-toastify';
 import card from '../card/card'
 // import { useCardStore } from '../card/card'
 import './game.css'
@@ -30,7 +31,7 @@ const gs = new GameService();
 var id = Math.floor(Math.random() * 100);
 
 //address of the server
-
+toast.configure();
 function Game() {
 	//this is syntax I use to set variables, setTitle being the way to change them
 
@@ -47,17 +48,18 @@ function Game() {
       gs.socket.emit("gameStarted", playerStore.lobbyId);
   }
 
-  // emits socket event that player has pressed start game
+  // emits socket event that player has pressed draw card
   function cardDrawn() 
   {
-      gs.socket.emit("cardDrawn", playerStore.lobbyId);
+      gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayer.playerId);
       console.log("card drawn");
   }
 
-  // emits socket event that player has pressed start game
+  // emits socket event that player has played a card 
+  // @COLE: integrate which card was dragged by changing index of playerhand (3rd parameter)
   function playCard() 
   {
-      gs.socket.emit("cardPlayed", playerStore.lobbyId);
+      gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.playerId, playerStore.playerHand[1]);
       console.log("card played");
   }
 
@@ -88,35 +90,93 @@ function Game() {
       return;
   }
 
+  // function sendNotification(event: string) 
+  function sendNotification() 
+  {
+    console.log('toast message')
+    // switch (event) {
+    //   case "nopeEvent":
+    toast.dark('NOPE!', {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      });
+      //     break;
+      // case "giveEvent":
+      //     toast.dark('🦄 CARD GIVETH!', {
+      //       position: "top-right",
+      //       autoClose: 5000,
+      //       hideProgressBar: false,
+      //       closeOnClick: true,
+      //       pauseOnHover: true,
+      //       draggable: true,
+      //       progress: undefined,
+      //       });
+      //     break;
+      // case "seefutureEvent":
+      //     toast.dark('🦄 SEE THE FUTURE!', {
+      //       position: "top-right",
+      //       autoClose: 5000,
+      //       hideProgressBar: false,
+      //       closeOnClick: true,
+      //       pauseOnHover: true,
+      //       draggable: true,
+      //       progress: undefined,
+      //       });
+      //     break;
+      // default: 
+      //     break;
+  }
+   
    const [gameEvent, setGameEvent] = React.useState({});
    React.useEffect(() => {
-     // draw Card Event
-     gs.socket.on("updatePlayerHand", function(data) {
-         // THIS IS TEMPORARY, FORCE ADDING CARD TO PLAYER HAND 
-         playerStore.drawCard("nope");
-     });
+
+    // @NICK: update player hand after draw/play Card Event
+    gs.socket.on("updatePlayerHand", function(data) {
+        playerStore.playerHand = data;
+    });
+
+    // @NICK: event notification: nope, give, see, draw event
+    gs.socket.on("eventNotification", function(data) {
+        // sendNotification(data);
+    });
 	 
-	 //This is for when the client recieves its own hand from the server
-	 gs.socket.on("playerHand", function(data) {
-		 console.log("got my own hand");
-	 });
-	 
-	 //This is for when the client recieves another hand from the server
-	 gs.socket.on("otherHand", function(data) {
-		 console.log("got another hand");
-	 });
+    //This is for when the client recieves its own hand from the server
+    gs.socket.on("playerHand", function(data) {
+      console.log("got my own hand");
+    });
+    
+    //This is for when the client recieves another hand from the server
+    gs.socket.on("otherHand", function(data) {
+      console.log("got another hand");
+    });
+    
    }, []);
   
   return useObserver(() => (
     // renders an unordered list of cards
     //button with the variable grabbed from the server
-    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
+    <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
       <div className="game-columns">
         <div>
         <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
           <h1>{playerStore.currentPlayer.name}</h1>
           <div>
-            <button onClick={cardDrawn}>Draw Card</button>
+          <ToastContainer
+position="bottom-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss={false}
+draggable={false}
+pauseOnHover={false}/>
+            <button onClick={sendNotification}>Draw Card</button>
           </div>
           <br />
           <div>
