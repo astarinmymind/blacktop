@@ -167,7 +167,7 @@ function Game() {
       <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
         <div className="game-columns">
           <div>
-          <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
+            <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
             <h1>{playerStore.currentPlayer.name}</h1>
             <div>
             <ToastContainer
