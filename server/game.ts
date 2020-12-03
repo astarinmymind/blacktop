@@ -28,7 +28,7 @@ class Game {
 	}
 
 	toFirestore() {
-		var temp =  Object.assign({},this)
+		var temp =  Object.assign({}, this)
 		temp.players = temp.players.map(p => p.toFirestore());
 		temp.mainDeck = temp.mainDeck.map(d => d.toFirestore());
 		return temp;
@@ -42,14 +42,17 @@ class Game {
 
 	generatePlayerHands(numberOfCards) {
 		for (let p = 0; p < this.players.length; p++) {
+			let player = this.players[p];
+			player.addCard('nope');
+			player.addCard('give');
 			for (let i = 0; i < numberOfCards; i++) {
-				this.players[p].hand[i] = this.getRandomCard();
+				player.addCard(this.getRandomCard());
             }
         }
     }
 
 	getRandomCard() {
-		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', "draw 2 from deck", "see the future"];
+		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', 'draw 2', 'see future'];
 		let cardType = cardTypes[Math.floor(Math.random() * cardTypes.length)];
 		let card = new Card(cardType);
 		return card;
@@ -68,8 +71,8 @@ class Game {
 
 	start() {
 		this.generateMainDeck(50);
-		this.generatePlayerHands(7);
-		while(!this.isGameOver){
+		this.generatePlayerHands(5);
+		while (!this.isGameOver) {
 			this.takeGameRound();
 		}
 		//emit some sort of message to clients that game is over, along with the winner
@@ -158,7 +161,7 @@ class Game {
 			player.removeCard(selectedCard);
 			opponent.addCard(selectedCard);
 		}
-		else if(cardType === "draw 2 from deck"){
+		else if(cardType === 'draw 2') {
 			this.drawCard(player, this.mainDeck[0]); // get first card in main deck
 			this.mainDeck.shift();
 			this.mainDeck.push(this.getRandomCard());
@@ -166,8 +169,8 @@ class Game {
 			this.mainDeck.shift();
 			this.mainDeck.push(this.getRandomCard());
 		}
-		else if(cardType === "see the future"){
-			let cardstoDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
+		else if(cardType === 'see future') {
+			let cardsToDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
 			//TODO: use socket to emit ("showCard", cardstoDisplay to player.id )
 		}
 		else if (cardType === 'steal') {
