@@ -170,21 +170,18 @@ function Game() {
             <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
             <h1>{playerStore.currentPlayer.name}</h1>
             <div>
-            <ToastContainer
-              position="bottom-center"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable={false}
-              pauseOnHover={false}
-            />
-            <button onClick={sendNotification}>Draw Card</button>
-            </div>
-            <br />
-            <div>
+              <ToastContainer
+                position="bottom-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover={false}
+              />
+              <button onClick={sendNotification}>Draw Card</button>
               <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
             </div>
           </div>
