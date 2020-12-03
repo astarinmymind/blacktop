@@ -1,0 +1,9 @@
+.card {
+    cursor: grab;
+    margin: 1vw;
+    margin-bottom: 0;
+}
+
+.card img {
+    width: 8vw;
+}
