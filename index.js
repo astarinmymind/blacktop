@@ -148,7 +148,7 @@ socketIo.on('connection', (socket) => {
 		if (playerlist.length === 0)
 			return;
 		
-		game.start();
+		//game.start();
 
 		// TODO: move this to Game class?
 		for (let i = 0; i < playerlist.length; i++)
