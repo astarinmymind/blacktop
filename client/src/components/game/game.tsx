@@ -16,9 +16,7 @@ import { Card } from '../card/card';
 import { Board } from '../board/board';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { ToastContainer, toast } from 'react-toastify';
 import { Link } from "react-router-dom";
-// import { useCardStore } from '../card/card';
 import './game.css';
 import NopeCard from '../../images/NOPE.png';
 import AddCard from '../../images/ADD1.png';
@@ -38,7 +36,6 @@ const gs = new GameService();
 // var id = Math.floor(Math.random() * 100);
 
 //address of the server
-toast.configure();
 function Game() {
 	//this is syntax I use to set variables, setTitle being the way to change them
 
@@ -83,46 +80,18 @@ function Game() {
     return;
   }
 
-  // function sendNotification(event: string) 
-  function sendNotification() 
+  function sendNotification(event: string) 
   {
     console.log('toast message')
-    // switch (event) {
-    //   case "nopeEvent":
-    toast.dark('NOPE!', {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      });
-      //     break;
-      // case "giveEvent":
-      //     toast.dark('🦄 CARD GIVETH!', {
-      //       position: "top-right",
-      //       autoClose: 5000,
-      //       hideProgressBar: false,
-      //       closeOnClick: true,
-      //       pauseOnHover: true,
-      //       draggable: true,
-      //       progress: undefined,
-      //       });
-      //     break;
-      // case "seefutureEvent":
-      //     toast.dark('🦄 SEE THE FUTURE!', {
-      //       position: "top-right",
-      //       autoClose: 5000,
-      //       hideProgressBar: false,
-      //       closeOnClick: true,
-      //       pauseOnHover: true,
-      //       draggable: true,
-      //       progress: undefined,
-      //       });
-      //     break;
-      // default: 
-      //     break;
+    switch (event) {
+      case "nopeEvent":
+          break;
+      case "giveEvent":
+          break;
+      case "seefutureEvent":
+          break;
+      default: 
+          break;
   }
    
    const [gameEvent, setGameEvent] = React.useState({});
@@ -137,7 +106,10 @@ function Game() {
 
     // @NICK: event notification: nope, give, see, draw event
     gs.socket.on("eventNotification", function(data) {
-        // sendNotification(data);
+    });
+
+    // @NICK: last card played for display
+    gs.socket.on("lastCardPlayed", function(data) {
     });
 	 
     //This is for when the client recieves its own hand from the server
@@ -168,18 +140,7 @@ function Game() {
               <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
               <h1>{playerStore.currentPlayer.name}</h1>
               <div>
-                <ToastContainer
-                  position="bottom-center"
-                  autoClose={5000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick={false}
-                  rtl={false}
-                  pauseOnFocusLoss={false}
-                  draggable={false}
-                  pauseOnHover={false}
-                />
-                <button onClick={sendNotification}>Draw Card</button>
+                <button onClick={cardDrawn}>Draw Card</button>
                 <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
               </div>
             </div>
