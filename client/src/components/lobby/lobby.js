@@ -56,12 +56,22 @@ export const Lobby = () => {
     const [name, setName] = React.useState("");
     const [iconId, setIconId] = React.useState(Brickshay);
     const updateName = (event) => { 
-		sendPlayer(event.target.value, iconId);
-        setName(event.target.value);
+        if (!playerStore.gameStarted) {
+            sendPlayer(event.target.value, iconId);
+            setName(event.target.value);
+        }
+        else {
+            alert("The game has already started! Click \"Enter game\" to join.");
+        }
     }
-    const updateIcon = (newIconId) => { 
-		sendPlayer(name, newIconId);
-        setIconId(newIconId);
+    const updateIcon = (newIconId) => {
+        if (!playerStore.gameStarted) { 
+            sendPlayer(name, newIconId);
+            setIconId(newIconId);
+        }
+        else {
+            alert("The game has already started! Click \"Enter game\" to join.");
+        }
     }
 
     // Sends the player's name and icon to socket and playerStore
