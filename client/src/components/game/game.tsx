@@ -36,7 +36,7 @@ const gs = new GameService();
 // var id = Math.floor(Math.random() * 100);
 
 //address of the server
-function Game() {
+export const Game = () => {
 	//this is syntax I use to set variables, setTitle being the way to change them
 
   // gets store
@@ -92,6 +92,7 @@ function Game() {
           break;
       default: 
           break;
+    }
   }
    
    const [gameEvent, setGameEvent] = React.useState({});
@@ -167,6 +168,8 @@ function Game() {
   }
 
   function resultsPage() {
+    // playerStore.gameStarted = false;
+    
     return(
       <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, minHeight: '100vh'}}>
         <img src={ TestLogo } alt="logo" className="logo" />
@@ -188,9 +191,9 @@ function Game() {
   ));
 }
 
+export default Game;
+
 function sendId() {
 	//sending the ID to the server so you can print it
 	//socket.emit("ID", id);
 }
-
-export default Game;

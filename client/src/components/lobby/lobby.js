@@ -13,6 +13,7 @@ import Monkey       from '../../images/Monkey.gif';
 import Mouse        from '../../images/Mouse.gif';
 import PlushCat     from '../../images/PlushCat.gif';
 import Seagull      from '../../images/Seagull.gif';
+import Slug         from '../../images/Slug.gif';
 import Tangerine    from '../../images/Tangerine.gif';
 import Werewolf     from '../../images/Werewolf.gif';
 // import src from '*.avif';
@@ -41,11 +42,11 @@ export const Lobby = () => {
             case 7:
                 return Seagull;
             case 8:
-                return Tangerine;
+                return Slug;
             case 9:
-                return Werewolf;
+                return Tangerine;
             case 10:
-                return PlushCat;
+                return Werewolf;
             case 11:
                 return Brickshay;
             default:
@@ -157,9 +158,9 @@ export const Lobby = () => {
                             <img alt="" src={Seagull}   onClick={() => updateIcon(7)}/>
                         </>
                         <>
-                            <img alt="" src={Tangerine} onClick={() => updateIcon(8)}/>
-                            <img alt="" src={Werewolf}  onClick={() => updateIcon(9)}/>
-                            <img alt="" src={PlushCat}  onClick={() => updateIcon(10)}/>
+                            <img alt="" src={Slug} onClick={() => updateIcon(8)}/>
+                            <img alt="" src={Tangerine}  onClick={() => updateIcon(9)}/>
+                            <img alt="" src={Werewolf}  onClick={() => updateIcon(10)}/>
                             <img alt="" src={Brickshay} onClick={() => updateIcon(11)}/>
                         </>
                     </div>
