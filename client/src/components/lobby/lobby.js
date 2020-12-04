@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useObserver } from 'mobx-react-lite'
 import { usePlayerStore } from '../player/player'
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import './lobby.css';
 import TestLogo     from '../../images/TestLogo.png';
 import ChalkLine    from '../../images/ChalkLine.png';
@@ -102,6 +102,11 @@ export const Lobby = () => {
     function startGame() 
     {
         console.log(playerStore.gameStarted);
+        if (!name) {
+            sendPlayer(" ", iconId);
+            setName(" ");
+        }
+
         if (!playerStore.gameStarted) {
             gs.socket.emit("gameStarted", playerStore.lobbyId);
             console.log(playerStore.lobbyId);
@@ -113,7 +118,7 @@ export const Lobby = () => {
             <div className="manifest">
                 <img alt="" src={TestLogo}/>
             </div>
-            <img src={ChalkLine} />
+            <img alt="" src={ChalkLine} />
             <div className="lobby-columns">
                 <div style={{textAlign: "right"}}>
                     <h1>Game Code: </h1>

@@ -9,7 +9,7 @@ Notes:
 // import { CardStore } from "../card/CardStore";
   
 //export const Game = () => {
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { usePlayerStore } from '../player/player';
 import { useObserver } from 'mobx-react-lite';
 import { Card } from '../card/card';
@@ -17,6 +17,7 @@ import { Board } from '../board/board';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ToastContainer, toast } from 'react-toastify';
+import { Link } from "react-router-dom";
 // import { useCardStore } from '../card/card';
 import './game.css';
 import NopeCard from '../../images/NOPE.png';
@@ -25,13 +26,16 @@ import SubCard from '../../images/SUB1.png';
 import DrawCard from '../../images/DRAW.png';
 import GiveCard from '../../images/GIVE.png';
 import SeeCard from '../../images/SEE.png';
+import TestLogo from '../../images/TestLogo.png';
+import ChalkLine from '../../images/ChalkLine.png';
+import Brickshay from '../../images/Brickshay.gif'
 
 import GameService from '../../services/GameService';
 
 const gs = new GameService();
 
 //Just a random ID i used to test that each client was different
-var id = Math.floor(Math.random() * 100);
+// var id = Math.floor(Math.random() * 100);
 
 //address of the server
 toast.configure();
@@ -58,35 +62,21 @@ function Game() {
     console.log("card drawn");
   }
 
-  // emits socket event that player has played a card 
-  // @COLE: integrate which card was dragged by changing index of playerhand (3rd parameter)
-  function playCard() 
-  {
-    gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.playerId, playerStore.playerHand[1]);
-    console.log("card played");
-  }
-
   function setImage(cardname: string) 
   {
     switch (cardname) {
         case "nope":
             return NopeCard;
-            break;
         case "add1":
             return AddCard;
-            break;
         case "sub1":
             return SubCard;
-            break;
         case "give":
             return GiveCard;
-            break;
         case "see":
             return SeeCard;
-            break;
         case "draw":
             return DrawCard;
-            break;
         default: 
             break;
     }
@@ -160,51 +150,76 @@ function Game() {
     
    }, []);
   
-  return useObserver(() => (
-    // renders an unordered list of cards
-    //button with the variable grabbed from the server
-    <DndProvider backend={HTML5Backend}>
-      <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
-        <div className="game-columns">
-          <div>
-            <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
-            <h1>{playerStore.currentPlayer.name}</h1>
+  function gamePage() {
+    return (
+      // renders an unordered list of cards
+      //button with the variable grabbed from the server
+      <DndProvider backend={HTML5Backend}>
+        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
+          <div className="game-columns">
             <div>
-              <ToastContainer
-                position="bottom-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss={false}
-                draggable={false}
-                pauseOnHover={false}
-              />
-              <button onClick={sendNotification}>Draw Card</button>
-              <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
+              <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
+              <h1>{playerStore.currentPlayer.name}</h1>
+              <div>
+                <ToastContainer
+                  position="bottom-center"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick={false}
+                  rtl={false}
+                  pauseOnFocusLoss={false}
+                  draggable={false}
+                  pauseOnHover={false}
+                />
+                <button onClick={sendNotification}>Draw Card</button>
+                <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
+              </div>
+            </div>
+            <div>
+              <Board />
+            </div>
+            <div className="list">
+              <br />
+              {playerStore.getPlayers().map((element, i) => 
+                <li style={{ listStyleType: "none" }} key={i}>
+                  <img alt="icon" src={element.icon}/>
+                  {element.name}
+                </li>
+              )}
             </div>
           </div>
-          <div>
-            <Board />
-          </div>
-          <div className="list">
-            <br />
-            {playerStore.getPlayers().map((element, i) => 
-              <li style={{ listStyleType: "none" }} key={i}>
-                <img src={element.icon}/>
-                {element.name}
-              </li>
-            )}
+          <div className="hand" >
+            {playerStore.getPlayerHand().map(card => (
+                <Card name={card} src={setImage(card)} />
+            ))}
           </div>
         </div>
-        <div className="hand" >
-          {playerStore.getPlayerHand().map(card => (
-              <Card name={card} src={setImage(card)} />
-          ))}
+      </DndProvider>
+    );
+  }
+
+  function resultsPage(victorName, victorIcon) {
+    return(
+      <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
+        <div className="manifest">
+                  <img alt="" src={TestLogo}/>
+              </div>
+              <img alt="" src={ChalkLine} />
+        <div className="results">
+          <h1>{true ? "Victory!" : "Defeat!"}</h1>
+          <img src={victorIcon} alt="Victor" />
+          <h1>{victorName}</h1>
+          <Link to={{ pathname: '/', state:{ consent:'true'} }} >
+              <button>Go Home</button>
+          </Link>
         </div>
       </div>
-    </DndProvider>
+    );
+  }
+
+  return useObserver(() => (
+    false ? gamePage() : resultsPage("Jeff the Killer", Brickshay)
   ));
 }
 

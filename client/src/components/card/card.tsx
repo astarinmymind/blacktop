@@ -95,7 +95,7 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
 
   return (
     <div ref={drag} className="card">
-      <img src={src} style={{opacity: opacity}} />
+      <img alt="card" src={src} style={{opacity: opacity}} />
     </div>
   )
 }

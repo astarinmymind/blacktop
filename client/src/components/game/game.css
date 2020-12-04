@@ -51,3 +51,22 @@
     display: flex;
     justify-content: center;
 }
+
+.results {
+    text-align: center;
+}
+
+.results h1 {
+    color: #ffffff;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 3vw;
+    margin-top: 0vw;
+    margin-bottom: 1vw;
+}
+
+.results img {
+    width: 20%;
+    margin: 1vw;
+    vertical-align: middle;
+    justify-content: left;
+}

@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx'
 // import { CardStore } from '../card/CardStore';
-import { Card } from '../card/card';
 import Brickshay from '../../images/Brickshay.gif'
 
 class Player {

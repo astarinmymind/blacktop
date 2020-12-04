@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDrop } from 'react-dnd'
-import { CardTypes as CardTypes } from '../card/CardTypes'
+import { CardTypes } from '../card/CardTypes'
 import './board.css'
 
 export const Board: React.FC = () => {
