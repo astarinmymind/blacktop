@@ -1,6 +1,6 @@
 .rectangle {
     display: flex;
-    width: 40vw;
+    width: 25vw;
     height: 30vw;
     background: rgb(36, 36, 36);
     border-radius: 10%;

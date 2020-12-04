@@ -37,6 +37,23 @@
     border: 0.3vw solid white;
 }
 
+.game-columns .events-box {
+    display: flex;
+    flex-direction: column;
+    width: 18vw;
+    height: 30vw;
+    background: rgb(36, 36, 36);
+    border-radius: 7%;
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 1vw;
+}
+
+.game-columns .events-box html {
+    margin: 0.5vw;
+    font-size: medium;
+}
+
 .game-columns .list {
     text-align: left;
     margin-left: 1vw;

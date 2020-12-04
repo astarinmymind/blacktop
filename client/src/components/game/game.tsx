@@ -130,7 +130,18 @@ export const Game = () => {
       setVictorIndex(data);
       setGameFinished(true);
     }) ;   
-   }, []);
+  }, []);
+  
+  const [textLog, setTextLog] = React.useState(["OH! HELLO THERE!\n", "No need to worry about any potential overflow!\n"]);
+  function eventsLog() {
+    return (
+      <div className="events-box">
+        <html>
+          {textLog}
+        </html>
+      </div>
+    );
+  }
   
   function gamePage() {
     return (
@@ -147,8 +158,9 @@ export const Game = () => {
                 <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
               </div>
             </div>
-            <div>
+            <div style={{display: 'flex'}}>
               <Board />
+              {eventsLog()}
             </div>
             <div className="list">
               {playerStore.getPlayers().map((element, i) => 
