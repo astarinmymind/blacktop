@@ -4,18 +4,6 @@
     margin: 0;
     padding: 0;
     vertical-align: middle;
-  } 
-  
-  .manifest {
-    display: flex;
-    justify-content: left;
-  }
-  
-  .manifest img {
-    margin-top: 2%;
-    margin-left: 2%;
-    height: 30%;
-    width: 30%;
   }
   
   .lobby-columns {

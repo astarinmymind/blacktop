@@ -28,7 +28,7 @@ class Player {
 
 export class PlayerStore {
     // array of Player Objects
-    players = {};
+    players: Player[] = [];
     // array of Card Objects
     playerHand: string[] = ["nope", "give", "add1", /*"sub1", "nope", "draw", "see" */];
 

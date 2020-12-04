@@ -126,6 +126,8 @@ function Game() {
   }
    
    const [gameEvent, setGameEvent] = React.useState({});
+   const [victorIndex, setVictorIndex] = React.useState(0);
+   const [gameFinished, setGameFinished] = React.useState(false);
    React.useEffect(() => {
 
     // @NICK: update player hand after draw/play Card Event
@@ -147,7 +149,12 @@ function Game() {
     gs.socket.on("otherHand", function(data) {
       console.log("got another hand");
     });
-    
+
+    // @NICK: A winner is decided and the index of the victorious player is passed in
+    gs.socket.on("results", function(data) {
+      setVictorIndex(data);
+      setGameFinished(true);
+    }) ;   
    }, []);
   
   function gamePage() {
@@ -180,7 +187,6 @@ function Game() {
               <Board />
             </div>
             <div className="list">
-              <br />
               {playerStore.getPlayers().map((element, i) => 
                 <li style={{ listStyleType: "none" }} key={i}>
                   <img alt="icon" src={element.icon}/>
@@ -199,19 +205,17 @@ function Game() {
     );
   }
 
-  function resultsPage(victorName, victorIcon) {
+  function resultsPage() {
     return(
-      <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
-        <div className="manifest">
-                  <img alt="" src={TestLogo}/>
-              </div>
-              <img alt="" src={ChalkLine} />
+      <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, minHeight: '100vh'}}>
+        <img src={ TestLogo } alt="logo" className="logo" />
+        <img src={ ChalkLine } alt="line" className="line" />
         <div className="results">
-          <h1>{true ? "Victory!" : "Defeat!"}</h1>
-          <img src={victorIcon} alt="Victor" />
-          <h1>{victorName}</h1>
+          <h1>{playerStore.players[victorIndex].name === playerStore.currentPlayer.name ? "Victory!" : "Defeat!"}</h1>
+          <img src={playerStore.players[victorIndex].icon} alt="Victor" />
+          <h1>{playerStore.players[victorIndex].name}</h1>
           <Link to={{ pathname: '/', state:{ consent:'true'} }} >
-              <button>Go Home</button>
+            <button>Go Home</button>
           </Link>
         </div>
       </div>
@@ -219,7 +223,7 @@ function Game() {
   }
 
   return useObserver(() => (
-    false ? gamePage() : resultsPage("Jeff the Killer", Brickshay)
+    gameFinished ? resultsPage() : gamePage()
   ));
 }
 

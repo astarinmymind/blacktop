@@ -61,11 +61,9 @@ export const Home = () => {
     console.log(isVaildId);
 
     return useObserver(() => (
-        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0}}>
-            <div className="manifest">
-                <img src={ TestLogo } alt="logo" />
-            </div>
-            <img src={ChalkLine} alt="line" />
+        <div style={{backgroundColor: "rgb(14, 14, 14)", minHeight: '100vh', margin: 0}}>
+            <img src={ TestLogo } alt="logo" className="logo" />
+            <img src={ ChalkLine } alt="line" className="line" />
             <div style={{ display: "flex", justifyContent: "center" }}>
                 <Link to="/lobby">
                     <button onClick={ makeLobby }>Host game</button>

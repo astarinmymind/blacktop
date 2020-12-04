@@ -114,11 +114,9 @@ export const Lobby = () => {
     }
 
     return useObserver(() => (
-        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}}>
-            <div className="manifest">
-                <img alt="" src={TestLogo}/>
-            </div>
-            <img alt="" src={ChalkLine} />
+        <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, minHeight: '100vh'}}>
+            <img src={ TestLogo } alt="logo" className="logo" />
+            <img src={ ChalkLine } alt="line" className="line" />
             <div className="lobby-columns">
                 <div style={{textAlign: "right"}}>
                     <h1>Game Code: </h1>
