@@ -96,6 +96,7 @@ export const Game = () => {
   }
    
    const [gameEvent, setGameEvent] = React.useState({});
+   const [lastFive, setLastFive] = React.useState([{}, {}, {}, {}, {}]);
    const [victorIndex, setVictorIndex] = React.useState(0);
    const [gameFinished, setGameFinished] = React.useState(false);
    React.useEffect(() => {
@@ -111,6 +112,7 @@ export const Game = () => {
 
     // @NICK: last card played for display
     gs.socket.on("lastCardPlayed", function(data) {
+      setLastFive([data, lastFive[0], lastFive[1], lastFive[2], lastFive[3]]);
     });
 	 
     //This is for when the client recieves its own hand from the server
