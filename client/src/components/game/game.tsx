@@ -59,6 +59,13 @@ export const Game = () => {
     console.log("card drawn");
   }
 
+  // emits socket event that player has pressed draw card
+  function turnEnded() 
+  {
+    gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayer.playerId);
+    console.log("turn ended");
+  }
+
   function setImage(cardname) 
   {
     console.log(cardname.type)
@@ -114,6 +121,7 @@ export const Game = () => {
 
     // @NICK: event notification: nope, give, see, draw event
     gs.socket.on("eventNotification", function(data) {
+        setDummy({});
     });
 
     // @NICK: last card played for display
@@ -164,7 +172,7 @@ export const Game = () => {
               <h1>{playerStore.currentPlayer.name}</h1>
               <div>
                 <button onClick={cardDrawn}>Draw Card</button>
-                <button /*onClick={() => cardStore.addCard('card string', 0)}*/>End Turn</button>
+                <button onClick={turnEnded}>End Turn</button>
               </div>
             </div>
             <div style={{display: 'flex'}}>
