@@ -27,7 +27,7 @@ class Player {
 	}
 
 	toFirestore() {
-		var temp = Object.assign({}, this);
+		let temp = Object.assign({}, this);
 		temp.hand = temp.hand.map(h => h.toFirestore());
 		return temp;
 		//add a modification to strip socket everything but data.
@@ -38,7 +38,13 @@ class Player {
     }
 
 	removeCard(card) {
-		this.hand = this.hand.filter(c => (c.type !== card.type && c.points !== card.points));
+		console.log(this.hand);
+		for (let i = 0; i < this.hand.length; i++) {
+			if (this.hand[i].type === card.type && this.hand[i].points === card.points) {
+				this.hand.splice(i, 1);
+				return;
+			}
+		}
 	}
 }
 

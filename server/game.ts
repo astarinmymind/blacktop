@@ -18,7 +18,7 @@ class Game {
 	mainDeck;
 	isFinalRound;
 	isGameOver;
-	
+
 	constructor(id) {
 		this.id = id;
 		this.isFinalRound = false
@@ -28,7 +28,7 @@ class Game {
 	}
 
 	toFirestore() {
-		var temp =  Object.assign({}, this)
+		var temp = Object.assign({}, this)
 		temp.players = temp.players.map(p => p.toFirestore());
 		temp.mainDeck = temp.mainDeck.map(d => d.toFirestore());
 		return temp;
@@ -37,19 +37,19 @@ class Game {
 	generateMainDeck(numberOfCards) {
 		for (let i = 0; i < numberOfCards; i++) {
 			this.mainDeck[i] = this.getRandomCard();
-        }
+		}
 	}
 
 	generatePlayerHands(numberOfCards) {
 		for (let p = 0; p < this.players.length; p++) {
 			let player = this.players[p];
-			player.addCard('nope');
-			player.addCard('give');
+			player.addCard(new Card('nope'));
+			player.addCard(new Card('give'));
 			for (let i = 0; i < numberOfCards; i++) {
 				player.addCard(this.getRandomCard());
-            }
-        }
-    }
+			}
+		}
+	}
 
 	getRandomCard() {
 		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'subtract', 'draw 2', 'see future'];
@@ -77,7 +77,7 @@ class Game {
 		}
 		//emit some sort of message to clients that game is over, along with the winner
 		//this.takeGameRound();
-    }
+	}
 
 	takeGameRound() {
 		if (this.isGameOver)
@@ -101,7 +101,7 @@ class Game {
 		updateDatabase(this);
 	}
 
-	takePlayerTurn(player){
+	takePlayerTurn(player) {
 
 		let card = null;
 		// handle click?
@@ -114,7 +114,7 @@ class Game {
 		// ...		
 		// socket emit stuff?
 		// retrieve cardType
-		this.drawCard(player, this.mainDeck[0]); // get first card in main deck
+		player.drawCard(player, this.mainDeck[0]); // get first card in main deck
 		this.mainDeck.shift();
 		this.mainDeck.push(this.getRandomCard());
 
@@ -127,26 +127,44 @@ class Game {
 			this.specialAction(player.pointTotal);
 	}
 
-	specialAction(pointTotal){
-		switch (pointTotal) {
-			case 10:
-				// do stuff
-			case 20:
-				// do stuff
-			//...
-        }
+	drawTopCard(player) {
+		let card = this.mainDeck[0]; // get first card in main deck
+		if (card.type === 'bomb') {
+			player.isDead = true;
+			// TODO: send message to Game
+		}
+		else {
+			player.addCard(card);
+		}
+		this.mainDeck.shift();
+		this.mainDeck.push(this.getRandomCard());
 	}
 
+	specialAction(pointTotal) {
+		switch (pointTotal) {
+			case 10:
+			// do stuff
+			case 20:
+			// do stuff
+			//...
+		}
+	}
 
 	playCard(player, card) {
+		
 		let cardType = card.type;
+		
 		// if Player does not want to play a card, cardType is null
 		if (cardType == null)
 			return;
+
+		console.log("Card played: ", card);
+		player.removeCard(card);
+		return;
 		//Socket emit that the player played this card
 		let nopePlayed = this.listenForNope();
-		if(nopePlayed){
-			player.removeCard(card)
+		if (nopePlayed) {
+			
 			return;
 			//socket emit that someone said nope
 			// TODO
@@ -161,15 +179,15 @@ class Game {
 			player.removeCard(selectedCard);
 			opponent.addCard(selectedCard);
 		}
-		else if(cardType === 'draw 2') {
-			this.drawCard(player, this.mainDeck[0]); // get first card in main deck
+		else if (cardType === 'draw 2') {
+			player.drawCard(this.mainDeck[0]); // get first card in main deck
 			this.mainDeck.shift();
 			this.mainDeck.push(this.getRandomCard());
-			this.drawCard(player, this.mainDeck[0]); // get first card in main deck
+			player.drawCard(player, this.mainDeck[0]); // get first card in main deck
 			this.mainDeck.shift();
 			this.mainDeck.push(this.getRandomCard());
 		}
-		else if(cardType === 'see future') {
+		else if (cardType === 'see future') {
 			let cardsToDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
 			//TODO: use socket to emit ("showCard", cardstoDisplay to player.id )
 		}
@@ -186,17 +204,6 @@ class Game {
 		else if (cardType === 'add' || cardType === 'subtract') {
 			player.pointTotal += card.points;
 		}
-		player.removeCard(card);
-	}
-
-	drawCard(player, card) {
-		if (card.type === 'bomb') {
-			player.isDead = true;
-			// TODO: send message to Game
-		}
-		else {
-			player.addCard(card);
-		}
 	}
 
 	findPlayerByID(socketID) {
@@ -206,10 +213,16 @@ class Game {
 		}
 		return null;
 	}
-	listenForNope(){
-	//if someone emits a nope event within 6 seconds
+
+	logPlayers() {
+		for (let i = 0; i < this.players.length; i++) {
+			console.log("Player in game ", this.id, ": ", this.players[i]);
+		}
+	}
+	listenForNope() {
+		//if someone emits a nope event within 6 seconds
 		//return true
-	//else
+		//else
 		return false;
 	}
 
@@ -217,85 +230,85 @@ class Game {
 
 // TODO: more Game functions
 // TODO: add functionality for when a player interrupts another's turn:
-	// for Example, Player 1 plays 'steal a card' from Player 2
-	// Player 2 can counter with 'nope' instantly.
+// for Example, Player 1 plays 'steal a card' from Player 2
+// Player 2 can counter with 'nope' instantly.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Database functions
 
 // Firestore data converter -> convert to and from firestore document to JSON object (Game)
 var gameConverter = {
-    toFirestore: function(Game) {
-        return Game.toFirestore()
-    },
-    fromFirestore: function(snapshot, options){
-        const data = snapshot.data(options);
-        let game = new Game(data.id);
-        game.players = data.players.map(player => Player.fromFirestore(player)); //factory function;
-        game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
-        game.isGameOver = data.isGameOver;
-        game.isFinalRound = data.isFinalRound
-        return game;
-    }
+	toFirestore: function (Game) {
+		return Game.toFirestore()
+	},
+	fromFirestore: function (snapshot, options) {
+		const data = snapshot.data(options);
+		let game = new Game(data.id);
+		game.players = data.players.map(player => Player.fromFirestore(player)); //factory function;
+		game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
+		game.isGameOver = data.isGameOver;
+		game.isFinalRound = data.isFinalRound
+		return game;
+	}
 }
 //Add a game to the database
-async function addtoDatabase(game){
+async function addtoDatabase(game) {
 	var db = firebase.firestore();
-	try{
-    	let docRef = await db.collection('Games')
-    	.doc(game.id.toString()).set(
-    		gameConverter.toFirestore(game)
-    	)
-    	console.log("Successful write to database");
+	try {
+		let docRef = await db.collection('Games')
+			.doc(game.id.toString()).set(
+				gameConverter.toFirestore(game)
+			)
+		console.log("Successful write to database");
 		//console.log(docRef.id);
 		return true;
 	}
-    catch ( error ) {
+	catch (error) {
 		console.log("Error getting document:", error);
 		return false;
-    }
+	}
 }
 
 //Update a game's status within the database
-async function updateDatabase(game){
-    var db = firebase.firestore();
+async function updateDatabase(game) {
+	var db = firebase.firestore();
 	const doc = db.collection('Games').doc(game.id.toString());
-	try{
-    	let x = await doc.get()
-    	if(x.exists){
-        	await db.collection('Games').doc(game.id.toString()).set(
-            	gameConverter.toFirestore(game),
-            	{merge: false}
+	try {
+		let x = await doc.get()
+		if (x.exists) {
+			await db.collection('Games').doc(game.id.toString()).set(
+				gameConverter.toFirestore(game),
+				{ merge: false }
 			)
 			return true;
-    	}else{
+		} else {
 			console.log("No such document")
 			return false;
 		}
 	}
-	catch ( error ) {
-		console.log("Error getting document: " ,error);
+	catch (error) {
+		console.log("Error getting document: ", error);
 		return false;
-    }
+	}
 }
 //Read from the database: this is mostly used as a check
-async function readfromDatabase(id){
-    var db = firebase.firestore();
+async function readfromDatabase(id) {
+	var db = firebase.firestore();
 	var doc = db.collection('Games').doc(id.toString());
-	try{
-    	let result = await doc.withConverter(gameConverter).get()
-    	if(result.exists){
-        	var game = result.data();
+	try {
+		let result = await doc.withConverter(gameConverter).get()
+		if (result.exists) {
+			var game = result.data();
 			return game;
-    	}else{
+		} else {
 			console.log("No such document")
 			return null;
-    	}
+		}
 	}
-	catch ( error ) {
+	catch (error) {
 		console.log("Error getting document:", error);
 		return null;
-    }
+	}
 }
 
 //export {Game, readfromDatabase, updateDatabase, addtoDatabase};
-module.exports = {Game, readfromDatabase, updateDatabase, addtoDatabase};
+module.exports = { Game, readfromDatabase, updateDatabase, addtoDatabase };

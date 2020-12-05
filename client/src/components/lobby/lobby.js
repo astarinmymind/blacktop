@@ -88,7 +88,7 @@ export const Lobby = () => {
         gs.socket.emit("enterLobby", playerStore.lobbyId);
 
         gs.socket.on("updateNames", function(data) {
-            playerStore.players = {};
+            playerStore.players = [];
             Object.keys(data).forEach(key => {
                 console.log("added player");
                 playerStore.addPlayer(key);
@@ -97,8 +97,9 @@ export const Lobby = () => {
             Object.entries(data).forEach(entry => {
                 console.log("data: ", data);
                 const [key, value] = entry;
-                playerStore.setName(value[0], parseInt(key));
-                playerStore.setIcon(idToIcon(value[1]), parseInt(key));
+                playerStore.setID(value[0], parseInt(key))
+                playerStore.setName(value[1], parseInt(key));
+                playerStore.setIcon(idToIcon(value[2]), parseInt(key));
             });
 
             setDummy({}); // Needed because Lobby doesn't re-render automatically after above change(s)
