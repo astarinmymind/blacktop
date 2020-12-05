@@ -19,6 +19,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Link } from "react-router-dom";
 import './game.css';
 import NopeCard from '../../images/NOPE.png';
+import SkipCard from '../../images/SKIP.png';
 import AddCard from '../../images/ADD1.png';
 import SubCard from '../../images/SUB1.png';
 import DrawCard from '../../images/DRAW.png';
@@ -73,7 +74,7 @@ export const Game = () => {
     switch (cardname.type) {
         case "nope":
             return NopeCard;
-        case "add1":
+        case "add":
             return AddCard;
         case "subtract":
             return SubCard;
@@ -83,6 +84,8 @@ export const Game = () => {
             return SeeCard;
         case "draw 2":
             return DrawCard;
+        case "skip":
+            return SkipCard;
         default: 
             break;
     }
