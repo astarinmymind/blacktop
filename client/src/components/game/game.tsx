@@ -69,13 +69,13 @@ export const Game = () => {
         case "add1":
             console.log("add card passed in")
             return AddCard;
-        case "sub1":
+        case "subtract":
             return SubCard;
         case "give":
             return GiveCard;
-        case "see":
+        case "see future":
             return SeeCard;
-        case "draw":
+        case "draw 2":
             return DrawCard;
         default: 
             break;
@@ -141,7 +141,7 @@ export const Game = () => {
     }) ;   
   }, []);
   
-  const [textLog, setTextLog] = React.useState(["OH! HELLO THERE!\n", "No need to worry about any potential overflow!\n"]);
+  const [textLog, setTextLog] = React.useState(["Welcome to Blacktop!\n"]);
   function eventsLog() {
     return (
       <div className="events-box">
@@ -183,7 +183,7 @@ export const Game = () => {
           <div className="hand">
             {/* <img src={NopeCard} alt="icon"/> */}
             {playerStore.getPlayerHand().map((card) => 
-                <img src={setImage(card)} alt="icon"/>
+                <Card name={card} src={setImage(card)}/>
             )}
           </div>
         </div>

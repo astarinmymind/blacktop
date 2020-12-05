@@ -52,6 +52,7 @@
 .game-columns .events-box html {
     margin: 0.5vw;
     font-size: medium;
+    overflow-y: auto;
 }
 
 .game-columns .list {
