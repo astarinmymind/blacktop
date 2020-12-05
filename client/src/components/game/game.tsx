@@ -59,12 +59,15 @@ export const Game = () => {
     console.log("card drawn");
   }
 
-  function setImage(cardname: string) 
+  function setImage(cardname) 
   {
-    switch (cardname) {
+    console.log(cardname.type)
+    switch (cardname.type) {
         case "nope":
+            console.log("nope card passed in")
             return NopeCard;
         case "add1":
+            console.log("add card passed in")
             return AddCard;
         case "sub1":
             return SubCard;
@@ -99,11 +102,14 @@ export const Game = () => {
    const [lastFive, setLastFive] = React.useState([{}, {}, {}, {}, {}]);
    const [victorIndex, setVictorIndex] = React.useState(0);
    const [gameFinished, setGameFinished] = React.useState(false);
+   const [dummy, setDummy] = React.useState({});
    React.useEffect(() => {
 
     // @NICK: update player hand after draw/play Card Event
     gs.socket.on("updatePlayerHand", function(data) {
+        console.log("this is updating the players hand")
         playerStore.playerHand = data;
+        setDummy({});
     });
 
     // @NICK: event notification: nope, give, see, draw event
@@ -118,6 +124,9 @@ export const Game = () => {
     //This is for when the client recieves its own hand from the server
     gs.socket.on("playerHand", function(data) {
       console.log("got my own hand");
+      console.log(data.hand)
+      playerStore.playerHand = data.hand;
+      setDummy({});
     });
     
     //This is for when the client recieves another hand from the server
@@ -171,10 +180,11 @@ export const Game = () => {
               )}
             </div>
           </div>
-          <div className="hand" >
-            {playerStore.getPlayerHand().map(card => (
-                <Card name={card} src={setImage(card)} />
-            ))}
+          <div className="hand">
+            {/* <img src={NopeCard} alt="icon"/> */}
+            {playerStore.getPlayerHand().map((card) => 
+                <img src={setImage(card)} alt="icon"/>
+            )}
           </div>
         </div>
       </DndProvider>
@@ -204,7 +214,6 @@ export const Game = () => {
     gameFinished ? resultsPage() : gamePage()
   ));
 }
-
 export default Game;
 
 function sendId() {

@@ -30,7 +30,7 @@ export class PlayerStore {
     // array of Player Objects
     players: Player[] = [];
     // array of Card Objects
-    playerHand: string[] = ["nope", "give", "add1", /*"sub1", "nope", "draw", "see" */];
+    playerHand: string[] = [/*"nope", "give", "add1", "sub1", "nope", "draw", "see" */];
 
     @observable lobbyId: number = 0;
 
