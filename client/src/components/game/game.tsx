@@ -130,6 +130,7 @@ export const Game = () => {
 
     // @NICK: event notification: nope, give, see, draw event
     gs.socket.on("eventNotification", function(data) {
+        console.log(data)
         setDummy({});
     });
 
