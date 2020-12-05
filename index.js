@@ -203,7 +203,11 @@ socketIo.on('connection', (socket) => {
 			return;
 		let player = game.players[index];
 		console.log(player);
-		game.playCard(player, card);
+		var win = game.playCard(player, card);
+		if (win != -1)
+		{
+			socket.emit("results", win);
+		}
 		await updateDatabase(game);
 		let playerlist = game.players;
 		console.log(player);
@@ -216,9 +220,27 @@ socketIo.on('connection', (socket) => {
 		for (let i = 0; i < playerlist.length; i++)
 		{
 			if (playerlist[i].socketID == socketID)
+			{
 				socket.emit('allScores', pack);
+				socket.emit('eventNotification', [index, card]);
+			}
 			else
+			{
 				socket.to(playerlist[i].socketID).emit('allScores', pack);
+				socket.to(playerlist[i].socketID).emit("eventNotification", [index, card]);
+			}
+		}
+	});
+	
+	socket.on('turnEnded', async(id, index) =>
+	{
+		if (index == playerlist.length)
+		{
+			//round is over
+			if (false)//final round started
+			{
+				socket.emit("Final Round", [deadPlayers, Case]);
+			}
 		}
 	});
 	
