@@ -7,14 +7,16 @@ class Player {
     //lobbyId: number = 0;
     name: string;
     icon: any;
+    index: number;
     //hand: CardStore;
     //pointTotal: number;
    // isDead: boolean;
     
-    constructor(id: number) {
-        this.playerId = id;
+    constructor(index: number) {
+        this.playerId = -1
         this.name = "";
         this.icon = Brickshay;
+        this.index = index;
         //this.hand = new CardStore();
         //this.pointTotal = 0;
         //this.isDead = false;
@@ -36,7 +38,7 @@ export class PlayerStore {
 
     @observable lobbyId: number = 0;
 
-    @observable currentPlayer: Player = new Player(-1);
+    @observable currentPlayer: Player = new Player(this.players.length);
 
     @observable gameStarted: boolean = false;
 
@@ -47,11 +49,7 @@ export class PlayerStore {
 
     @action 
     getPlayers = () => {
-        var playerArray:  Player[] = [];
-        for (var playerID in this.players) {
-            playerArray.push(this.players[playerID]);
-        }
-        return playerArray;
+        return this.players;
     }
 
     @action 
@@ -61,20 +59,26 @@ export class PlayerStore {
 
     // pushes player onto player array 
     @action 
-    addPlayer = (id: number) => {
-        this.players[id] = new Player(id);
+    addPlayer = () => {
+        console.log(this.players);
+        this.players.push(new Player(this.players.length));
     }
 
     @action
-    setName = (newName: any, id: number) => {
+    setID = (playerId: number, index: number) => {
+        this.players[index].playerId = playerId;
+    }
+
+    @action
+    setName = (newName: any, index: number) => {
         // console.log(newName + " goes to " + this.players[index].name);
-        this.players[id].name = newName;
+        this.players[index].name = newName;
     }
 
     @action
-    setIcon = (newIcon: any, id: number) => {
+    setIcon = (newIcon: any, index: number) => {
         // console.log(newIcon + " goes to " + this.players[index].icon);
-        this.players[id].icon = newIcon;
+        this.players[index].icon = newIcon;
     }
 
     @action 

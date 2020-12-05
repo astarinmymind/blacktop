@@ -2,11 +2,12 @@
 	type;
 	points;
 
-	static fromFirestore(card){
+	static fromFirestore(card) {
 		let c = new Card(card.type);
 		c.points = card.points;
 		return c;
 	}
+
 	constructor(type) {
 		this.type = type;
 		this.points = 0;
@@ -14,7 +15,7 @@
 	}
 
 	toFirestore() {
-		return Object.assign({},this);
+		return Object.assign({}, this);
 	}
 
 	generateCardPoints() {
