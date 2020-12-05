@@ -73,7 +73,7 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
   // emits socket event that player has played a card
   function playCard() 
   {
-    gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.playerId, name);
+    gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.index, name);
     console.log(`card played: ${name}`);
   }
 

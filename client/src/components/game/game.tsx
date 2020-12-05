@@ -55,7 +55,7 @@ export const Game = () => {
   // emits socket event that player has pressed draw card
   function cardDrawn() 
   {
-    gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayer.playerId);
+    gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayer.index);
     console.log("card drawn");
   }
 

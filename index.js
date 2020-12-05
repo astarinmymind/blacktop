@@ -99,7 +99,7 @@ socketIo.on('connection', (socket) => {
 		}
 		let playerlist = game.players;
 		for (let i = 0; i < playerlist.length; i++)
-			pack[id] = [playerlist[i].name, playerlist[i].icon];
+			pack[i] = [playerlist[i].socketID, playerlist[i].name, playerlist[i].icon];
 		socket.emit('updateNames', pack);
 	});
 	
@@ -127,7 +127,7 @@ socketIo.on('connection', (socket) => {
 				await updateDatabase(game);
 			}
 			//add Players' info to pack
-			pack[i] = [playerlist[i].name, playerlist[i].icon];
+			pack[i] = [playerlist[i].socketID, playerlist[i].name, playerlist[i].icon];
 		}
 		// send the package of player names + icons to every player (for display)
 		for (let i = 0; i < playerlist.length; i++)
@@ -148,13 +148,14 @@ socketIo.on('connection', (socket) => {
 		if (playerlist.length === 0)
 			return;
 		
-		//game.start();
-
+		// game.start();
+		game.generateMainDeck(50);
+		game.generatePlayerHands(5);
+		game.logPlayers();
 		// TODO: move this to Game class?
 		for (let i = 0; i < playerlist.length; i++)
 		{
 			let player = playerlist[i];
-			console.log('Player present in game: ', player);
 			if (player.socketID === socket.id)
 			{
 				socket.emit('startGame', 0);
@@ -164,31 +165,31 @@ socketIo.on('connection', (socket) => {
 				socket.to(player.socketID).emit('startGame', 0);
 				console.log('reached here 2');
 			}
-			player.addCard(new Card('nope'));
-			player.addCard(new Card('give'));
-			playerlist[i] = player;
 			sendHand(player.socketID, id, player.hand, i); 
 		}
-		game.players = playerlist;
-		await updateDatabase(game); //maybe put this inside the loop later
+		//game.players = playerlist;
+		await updateDatabase(game);
+		 //maybe put this inside the loop later
 	});
 	
-	socket.on('cardDrawn', async (id, index) =>
+	socket.on('cardDrawn', async (gameID, index) =>
 	{
-		console.log(id);
 		// grab a Card from the backend TODO
-		let game = await readfromDatabase(id);
-		if(game === null)
+		let game = await readfromDatabase(gameID);
+		if (game === null)
 			return;
-		let playerlist = game.players;
-		console.log(playerlist);
+		let player = game.players[index];
+		if (player === null)
+			return;
+
 		// assuming the player ID given from client is the index in array
 		// this doesnt work rn, index is wrong and getRandomCard crashes
-		game.drawCard(game.players[0], game.getRandomCard());
+		game.drawTopCard(player);
+		let playerlist = game.players;
 		for (let i = 0; i < playerlist.length; i++)
 		{
 			// not sure
-			sendHand(playerlist[0].socketID, parseInt(id), playerlist[0].hand, i); 
+			sendHand(player.socketID, parseInt(gameID), player.hand, i); 
 		}
 		await updateDatabase(game);
 	});
@@ -198,10 +199,10 @@ socketIo.on('connection', (socket) => {
 		// play the Card that is given TODO
 
 		let game = await readfromDatabase(id);
-		if(game === null){
+		if (game === null)
 			return;
-		}
-		game.playCard(0, card);
+		let player = game.players[index];
+		game.playCard(player, card);
 		let playerlist = game.players;
 		for (let i = 0; i < playerlist.length; i++)
 			sendHand(playerlist[i].socketID, parseInt(id), playerlist[i].hand, i); 
