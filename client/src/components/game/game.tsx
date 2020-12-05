@@ -29,6 +29,7 @@ import ChalkLine from '../../images/ChalkLine.png';
 import Brickshay from '../../images/Brickshay.gif'
 
 import GameService from '../../services/GameService';
+import { getPositionOfLineAndCharacter } from "typescript";
 
 const gs = new GameService();
 
@@ -59,7 +60,7 @@ export const Game = () => {
     console.log("card drawn");
   }
 
-  // emits socket event that player has pressed draw card
+  // emits socket event that player has ended their turn 
   function turnEnded() 
   {
     gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayer.playerId);
@@ -71,10 +72,8 @@ export const Game = () => {
     console.log(cardname.type)
     switch (cardname.type) {
         case "nope":
-            console.log("nope card passed in")
             return NopeCard;
         case "add1":
-            console.log("add card passed in")
             return AddCard;
         case "subtract":
             return SubCard;
@@ -117,6 +116,13 @@ export const Game = () => {
         console.log("this is updating the players hand")
         playerStore.playerHand = data;
         setDummy({});
+    });
+
+    // @NICK: update player points 
+    gs.socket.on("updatePlayerPoints", function(data) {
+      console.log("this is updating the players points")
+      playerStore.point = data;
+      setDummy({});
     });
 
     // @NICK: event notification: nope, give, see, draw event
@@ -184,6 +190,7 @@ export const Game = () => {
                 <li style={{ listStyleType: "none" }} key={i}>
                   <img alt="icon" src={element.icon}/>
                   {element.name}
+                  {playerStore.getPoints()}
                 </li>
               )}
             </div>

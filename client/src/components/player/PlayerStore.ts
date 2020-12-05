@@ -32,6 +32,8 @@ export class PlayerStore {
     // array of Card Objects
     playerHand: string[] = [/*"nope", "give", "add1", "sub1", "nope", "draw", "see" */];
 
+    point: number = 10;
+
     @observable lobbyId: number = 0;
 
     @observable currentPlayer: Player = new Player(-1);
@@ -50,6 +52,11 @@ export class PlayerStore {
             playerArray.push(this.players[playerID]);
         }
         return playerArray;
+    }
+
+    @action 
+    getPoints = () => {
+        return this.point;
     }
 
     // pushes player onto player array 
