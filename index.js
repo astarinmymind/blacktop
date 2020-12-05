@@ -202,10 +202,24 @@ socketIo.on('connection', (socket) => {
 		if (game === null)
 			return;
 		let player = game.players[index];
+		console.log(player);
 		game.playCard(player, card);
+		await updateDatabase(game);
 		let playerlist = game.players;
+		console.log(player);
+		var pack = {};
 		for (let i = 0; i < playerlist.length; i++)
-			sendHand(playerlist[i].socketID, parseInt(id), playerlist[i].hand, i); 
+		{
+			sendHand(playerlist[i].socketID, parseInt(id), playerlist[i].hand, i);
+			pack[i] = playerlist[i].pointTotal;
+		}
+		for (let i = 0; i < playerlist.length; i++)
+		{
+			if (playerlist[i].socketID == socketID)
+				socket.emit('allScores', pack);
+			else
+				socket.to(playerlist[i].socketID).emit('allScores', pack);
+		}
 	});
 	
 	// sends one Player's hand to everyone
@@ -215,6 +229,7 @@ socketIo.on('connection', (socket) => {
 		if (game === null)
 			return;
 		let playerlist = game.players;
+		console.log(playerlist);
 		for (let i = 0; i < playerlist.length; i++)
 		{
 			if (playerlist[i].socketID == socketID)
