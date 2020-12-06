@@ -202,15 +202,13 @@ socketIo.on('connection', (socket) => {
 		if (game === null)
 			return;
 		let player = game.players[index];
-		console.log(player);
 		var win = game.playCard(player, card);
 		if (win != -1)
 		{
-			socket.emit("results", win);
+			//socket.emit("results", win);
 		}
 		await updateDatabase(game);
 		let playerlist = game.players;
-		console.log(player);
 		var pack = {};
 		for (let i = 0; i < playerlist.length; i++)
 		{
@@ -219,8 +217,9 @@ socketIo.on('connection', (socket) => {
 		}
 		for (let i = 0; i < playerlist.length; i++)
 		{
-			if (playerlist[i].socketID == socketID)
+			if (playerlist[i].socketID == socket.id)
 			{
+				console.log('here');
 				socket.emit('allScores', pack);
 				socket.emit('eventNotification', [index, card]);
 			}
