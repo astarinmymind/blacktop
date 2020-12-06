@@ -72,8 +72,8 @@ export const Card: React.FC<CardProps> = ({ name: card, src }) => {
 
   // emits socket event that player has played a card
   function playCard() {
-    if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex) {
-      alert('It is not your turn!');
+    if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex && card['type'] !== 'nope') {
+      alert('You can only play a card on your turn, unless you are playing a NOPE card!');
       return;
     }
 

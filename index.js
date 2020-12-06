@@ -21,9 +21,6 @@ firebase.initializeApp({
 const app = express();
 const socketIo = require('socket.io')(http, options);
 const port = 5000;
-//const index = require("./routes/index");
-
-//app.use(index);
 
 var interval;
 
@@ -31,22 +28,19 @@ var SOCKET_LIST = {};
 
 socketIo.on('connection', (socket) => {
 	SOCKET_LIST[socket.id] = socket;
-	// console.log('New client connected: ' + 	socket.id);
+	console.log('New client connected: ' + 	socket.id);
 	if (interval) {
 		clearInterval(interval);
 	}
 	interval = setInterval(() => getApiAndEmit(socket), 100);
 	socket.on('disconnect', () => {
 		delete SOCKET_LIST[socket.id];
-		// console.log('Client disconnected: ' +  socket.id);
+		console.log('Client disconnected: ' +  socket.id);
 		clearInterval(interval);
 	});
 	socket.on('ID', (id) => {
 		for (var i in SOCKET_LIST)
-		{
 			var socket = SOCKET_LIST[i];
-			// console.log(socket.id);
-		}
 	});
 	
 	
@@ -73,7 +67,7 @@ socketIo.on('connection', (socket) => {
 		if (game === null)
 			return;
 		// if the lobby is valid, connect the new Player to the associated Game, and update database.
-		game.connect(socket.id, "", 0);
+		game.connect(socket.id, '', 0);
 		socket.emit('playerIndex', game.players.length - 1);
 		await updateDatabase(game);
 	});
@@ -94,8 +88,8 @@ socketIo.on('connection', (socket) => {
 		let pack = {};
 		// console.log('Player has entered lobby ', id);
 		let game = await readfromDatabase(id);
-		if(game === null){
-			// console.log("Failed to retrieve Game instance ", id, " from database.");
+		if(game === null) {
+			console.log('Failed to retrieve Game instance ', id, ' from database.');
 			return;
 		}
 		let playerlist = game.players;
@@ -176,7 +170,6 @@ socketIo.on('connection', (socket) => {
 	{
 		console.log("Draw card");
 		console.log(index);
-		// grab a Card from the backend TODO
 		let game = await readfromDatabase(gameID);
 		if (game === null)
 			return;
@@ -184,75 +177,57 @@ socketIo.on('connection', (socket) => {
 		if (player === null)
 			return;
 
-		// assuming the player ID given from client is the index in array
-		// this doesnt work rn, index is wrong and getRandomCard crashes
 		game.drawTopCard(player);
 		let playerlist = game.players;
-		console.log(playerlist);
 		for (let i = 0; i < playerlist.length; i++)
-		{
-			// not sure
 			sendHand(playerlist[i].socketID, parseInt(gameID), playerlist[i].hand, i); 
-		}
 		await updateDatabase(game);
 	});
 
-	socket.on("Opponent Selected to give to", async(gameID, opponentIndex) =>{
-
-		socket.emit("Select Card to give ", opponentIndex)
+	socket.on('giveOpponentSelected', async (gameID, opponentIndex) => {
+		let game = await readfromDatabase(gameID);
+		socket.emit('selectCardToGive', opponentIndex, game.findPlayerByID(socket.ID).hand);
 	});
 
-	socket.on("Opponent Selected to steal from", async(gameID, opponentIndex) =>{
-
-		//TODO: Send players[opponentIndex] hand to current player
-		socket.emit("Select Card to steal", opponentIndex)
-
-	});
-
-	socket.on("Card to steal selected", async (card, opponentIndex, gameID) =>{
-		let game = await readfromDatabase(gameID)
-		if(game == null){
+	socket.on('giveCardSelected', async (card, opponentIndex, gameID) => {
+		let game = await readfromDatabase(gameID);
+		if (game == null)
 			return;
+		for (let i = 0; i < game.players.length; i++) {
+			if (game.players[i].socketID === socket.id) {
+				game.transferCard(i, opponentIndex, card);
+				return;
+			}
 		}
-		let playerIndex = null
-		for(let i = 0; i < game.players.length; i++){
-			if(game.players[i].socketID === socket.id)
-				playerIndex = i;
-				break;
-		}
-		game.transferCard(opponentIndex, playerIndex, card)
 	});
 
-	socket.on("Card to give selected", async (card, opponentIndex, gameID) =>{
-		let game = await readfromDatabase(gameID)
-		if(game == null){
-			return;
+	socket.on('stealOpponentSelected', async (opponentIndex) => {
+		let game = await readfromDatabase(gameID);
+		socket.emit('selectCardToSteal', opponentIndex, game.players[opponentIndex].hand);
+	});
+
+	socket.on('stealCardSelected', async (card, opponentIndex, gameID) => {
+		let game = await readfromDatabase(gameID);
+		if (game == null)
+			return; 
+		for (let i = 0; i < game.players.length; i++) {
+			if (game.players[i].socketID === socket.id) {
+				game.transferCard(opponentIndex, i, card);
+				return;
+			}
 		}
-		let playerIndex = null
-		for(let i = 0; i < game.players.length; i++){
-			if(game.players[i].socketID === socket.id)
-				playerIndex = i;
-				break;
-		}
-		game.transferCard(playerIndex, opponentIndex, card)
 	});
 	
 	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
 	{
-		// play the Card that is given TODO
-
 		let game = await readfromDatabase(id);
-		if (game === null || game.turnNumber % game.players.length != playerIndex) {
-			console.log("You can only play a card on your turn, unless you are playing a NOPE card!");
-			return;
-		}
-		let player = game.players[playerIndex];
-		// console.log(player);
-		var win = game.playCard(player, card, socket);
-		// if (win != -1)
-		// {
-		// 	socket.emit("results", win);
-		// }
+
+		console.log(playerIndex);
+		var winnerIndex = game.playCard(game.players[playerIndex], socket, card);
+
+		if (winnerIndex !== -1) 
+			socket.emit('results', winnerIndex);
+		
 		await updateDatabase(game);
 		let playerlist = game.players;
 		var pack = {};
@@ -265,16 +240,13 @@ socketIo.on('connection', (socket) => {
 		{
 			if (playerlist[i].socketID == socket.id)
 			{
-				// console.log('here');
 				socket.emit('allScores', pack);
 				socket.emit('eventNotification', [playerIndex, card]);
-				console.log("first")
 			}
 			else
 			{
 				socket.to(playerlist[i].socketID).emit('allScores', pack);
-				socket.to(playerlist[i].socketID).emit("eventNotification", [playerIndex, card]);
-				console.log("twice")
+				socket.to(playerlist[i].socketID).emit('eventNotification', [playerIndex, card]);
 			}
 		}
 	});
@@ -285,20 +257,19 @@ socketIo.on('connection', (socket) => {
 		game.turnNumber++;
 		if (game.turnNumber % game.players.length === 0)
 		{
-			//round is over
-			if (false)//final round started
+			if (game.isFinalRound)
 			{
-				socket.emit("Final Round", [deadPlayers, Case]);
+				let deadPlayers = game.players.filter(p => p.isDead);
+				socket.emit('finalRound', deadPlayers);
 			}
 		}
 		await updateDatabase(game);
-		
 		for (let i = 0; i < game.players.length; i++)
 		{
-			if (game.players[i].socketID === socket.id) {
+			if (game.players[i].socketID === socket.id)
 				socket.emit('turnCount', game.turnNumber);
-			}
-			socket.to(game.players[i].socketID).emit('turnCount', game.turnNumber);
+			else
+				socket.to(game.players[i].socketID).emit('turnCount', game.turnNumber);
 		}
 	});
 	
