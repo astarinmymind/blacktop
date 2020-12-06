@@ -31,21 +31,21 @@ var SOCKET_LIST = {};
 
 socketIo.on('connection', (socket) => {
 	SOCKET_LIST[socket.id] = socket;
-	console.log('New client connected: ' + 	socket.id);
+	// console.log('New client connected: ' + 	socket.id);
 	if (interval) {
 		clearInterval(interval);
 	}
 	interval = setInterval(() => getApiAndEmit(socket), 100);
 	socket.on('disconnect', () => {
 		delete SOCKET_LIST[socket.id];
-		console.log('Client disconnected: ' +  socket.id);
+		// console.log('Client disconnected: ' +  socket.id);
 		clearInterval(interval);
 	});
 	socket.on('ID', (id) => {
 		for (var i in SOCKET_LIST)
 		{
 			var socket = SOCKET_LIST[i];
-			console.log(socket.id);
+			// console.log(socket.id);
 		}
 	});
 	
@@ -61,14 +61,14 @@ socketIo.on('connection', (socket) => {
 			return;
 		// log every Lobby + its players for debugging
 		let playerlist = result.players;
-		for (let i = 0; i < playerlist.length; i++)
-			console.log('Player: ', playerlist[i].socketID);
-		console.log('----------');
+		// for (let i = 0; i < playerlist.length; i++)
+			// console.log('Player: ', playerlist[i].socketID);
+		// console.log('----------');
 	});
 	
 	// a player has joined an existing lobby
 	socket.on('joinLobby', async (id) => {
-		console.log('Player has joined lobby ', id);
+		// console.log('Player has joined lobby ', id);
 		let game = await readfromDatabase(id);
 		if (game === null)
 			return;
@@ -91,10 +91,10 @@ socketIo.on('connection', (socket) => {
 	// called on entering a lobby
 	socket.on('enterLobby', async (id) => {
 		let pack = {};
-		console.log('Player has entered lobby ', id);
+		// console.log('Player has entered lobby ', id);
 		let game = await readfromDatabase(id);
 		if(game === null){
-			console.log("Failed to retrieve Game instance ", id, " from database.");
+			// console.log("Failed to retrieve Game instance ", id, " from database.");
 			return;
 		}
 		let playerlist = game.players;
@@ -111,7 +111,7 @@ socketIo.on('connection', (socket) => {
 		let pack = {};
 		let game = await readfromDatabase(parseInt(data[1]));
 		if(game === null) {
-			console.log("Failed to retrieve Game instance ", id, " from database.");
+			// console.log("Failed to retrieve Game instance ", id, " from database.");
 			return;
 		}
 		let playerlist = game.players;
@@ -159,11 +159,11 @@ socketIo.on('connection', (socket) => {
 			if (player.socketID === socket.id)
 			{
 				socket.emit('startGame', 0);
-				console.log('reached here');
+				// console.log('reached here');
 			}
 			else {
 				socket.to(player.socketID).emit('startGame', 0);
-				console.log('reached here 2');
+				// console.log('reached here 2');
 			}
 			// sendHand(player.socketID, id, player.hand, i); 
 		}
@@ -183,6 +183,7 @@ socketIo.on('connection', (socket) => {
 	
 	socket.on('cardDrawn', async (gameID, index) =>
 	{
+		console.log("Draw card");
 		// grab a Card from the backend TODO
 		let game = await readfromDatabase(gameID);
 		if (game === null)
@@ -219,7 +220,6 @@ socketIo.on('connection', (socket) => {
 		// }
 		await updateDatabase(game);
 		let playerlist = game.players;
-		console.log(player);
 		var pack = {};
 		for (let i = 0; i < playerlist.length; i++)
 		{
@@ -230,6 +230,7 @@ socketIo.on('connection', (socket) => {
 		{
 			if (playerlist[i].socketID == socket.id)
 			{
+				// console.log('here');
 				socket.emit('allScores', pack);
 				socket.emit('eventNotification', [index, card]);
 				console.log("first")
@@ -263,17 +264,11 @@ socketIo.on('connection', (socket) => {
 			return;
 		let playerlist = game.players;
 		// console.log(playerlist);
-		for (let i = 0; i < playerlist.length; i++)
-		{
-			if (playerlist[i].socketID == socketID) {
-				socket.emit('playerHand', pack);
-				console.log("abcdef")
-			}
-			else {
-				socket.to(playerlist[i].socketID).emit('otherHand', pack);
-				console.log("jgdskjf")
-			}
-		}
+		console.log(socketID, ": ", hand)
+		if (socketID == socketID)
+			socket.emit('playerHand', pack);
+		else
+			socket.to(socketID).emit('otherHand', pack);
 	}
 });
 
