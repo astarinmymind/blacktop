@@ -58,7 +58,7 @@ export const Game = () => {
     gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
     gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex);
     textLog.push(playerStore.players[playerStore.currentPlayerIndex].name, ' ended their turn. \n')
-    textLog.push('it is now ', playerStore.players[(playerStore.currentPlayerIndex+1)%playerStore.players.length].name, '\'s turn. \n')
+    textLog.push('it is now ', playerStore.players[(playerStore.currentPlayerIndex + 1) % playerStore.players.length].name, '\'s turn. \n')
   }
 
   function setImage(cardname) 
@@ -113,15 +113,15 @@ export const Game = () => {
 
     // update player points 
     gs.socket.on("allScores", function(data) {
-      console.log(data)
+      console.log(data);
       playerStore.point = data;
       setDummy({});
     });
 
     // event notification: nope, give, see, draw event
     gs.socket.on("eventNotification", function(data) {
-        console.log(data[0])
-        console.log(data[1])
+        console.log(data[0]);
+        console.log(data[1]);
         var name = playerStore.players[data[0]].name
         textLog.push(name, ' ', 'played ', data[1].type, '\n')
         setDummy({});

@@ -6,8 +6,8 @@ const firebase = require('firebase/app');
 const auth = require('firebase/auth');
 const store = require('firebase/firestore');
 //Other classes
-const Player = require("./player.ts");
-const Card = require("./card.ts");
+const Player = require('./player.ts');
+const Card = require('./card.ts');
 
 //A Game must have a unique id to prevent conflicts on the database. I suggest making the id equal to gameRooms.length()
 //and then pushing the created game onto gameRooms.
@@ -16,17 +16,17 @@ class Game {
 	id;
 	players;
 	mainDeck;
-	isFinalRound;
 	isGameOver;
 	turnNumber;
+	finalTurnNumber;
 
 	constructor(id) {
 		this.id = id;
-		this.isFinalRound = false
 		this.isGameOver = false;
 		this.players = new Array();
 		this.mainDeck = new Array();
 		this.turnNumber = 0;
+		this.finalTurnNumber = -1;
 	}
 
 	toFirestore() {
@@ -63,7 +63,6 @@ class Game {
 	connect(socketID, name, icon) {
 		const player = new Player(socketID, name, icon);
 		this.players.push(player);
-		console.log("Player connected: " + socketID);
 	}
 
 	disconnect(socketID) {
@@ -87,50 +86,64 @@ class Game {
 			//...
 		}
 	}
-	transferCard( sender, reciever, card){
-		this.players[sender].removeCard(card)
-		this.players[reciever].addCard(card)
+
+	transferCard(senderIndex, recipientIndex, card) {
+		this.players[senderIndex].removeCard(card);
+		this.players[recipientIndex].addCard(card);
 	}
 
-	playCard(player, card, socket) {
-		
+	playCard(player, socket, card) {
 		let cardType = card.type;
-		console.log("Card played: ", card);
 		player.removeCard(card);
 		
-		if (cardType === 'give' || cardType == 'steal') {
+		if (cardType === 'give' || cardType === 'steal') {
 			let opponentIndices = [];
 			for (let i = 0; i< this.players.length; i++){
 				if(this.players[i].socketID!== socket.id)
 				opponentIndices.push(i);
 			}
-			socket.emit("selectOpponent", opponentIndices)
+			socket.emit('selectOpponent', opponentIndices, cardType);
 		}
-		
 		else if (cardType === 'draw 2') {
-			player.drawCard(this.mainDeck[0]); // get first card in main deck
+			player.addCard(this.mainDeck[0]); // get first card in main deck
 			this.mainDeck.shift();
 			this.mainDeck.push(this.getRandomCard());
-			player.drawCard(player, this.mainDeck[0]); // get first card in main deck
+			player.addCard(this.mainDeck[0]); // again, get first card in main deck
 			this.mainDeck.shift();
 			this.mainDeck.push(this.getRandomCard());
 		}
-
-		else if (cardType === "see future") {
+		else if (cardType === 'see future') {
 			let cardsToDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
-			socket.emit("See Future", cardsToDisplay)
+			socket.emit('seeFuture', cardsToDisplay)
 		}
-
-		else if (cardType === 'skip') { }
 		else if (cardType === 'add' || cardType === 'subtract') {
 			player.pointTotal += card.points;
+			if (player.pointTotal >= 100) {
+				player.isDead = true;
+				if (this.finalTurnNumber === -1)
+					this.finalTurnNumber = Math.ceil(this.turnNumber / this.players.length + 1) * this.players.length;
+			}
 		}
+		if (this.finalTurnNumber === this.turnNumber)
+			return this.findWinnerIndex();
+		return -1;
+	}
 
+	findWinnerIndex() {
+		let maxScore = -1;
+		let winnerIndex = -1;
+		for (let i = 0; i < this.players.length; i++) {
+			if (!this.players[i].isDead && this.players[i].pointTotal > maxScore) {
+				maxScore = this.players[i].pointTotal;
+				winnerIndex = i;
+			}
+		}
+		return winnerIndex;
 	}
 
 	findPlayerByID(socketID) {
 		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i].socket.id === socketID)
+			if (this.players[i].socketID === socketID)
 				return this.players[i];
 		}
 		return null;
@@ -138,7 +151,7 @@ class Game {
 
 	logPlayers() {
 		for (let i = 0; i < this.players.length; i++) {
-			console.log("Player in game ", this.id, ": ", this.players[i]);
+			console.log('Player in game ', this.id, ': ', this.players[i]);
 		}
 	}
 	
@@ -162,7 +175,6 @@ var gameConverter = {
 		game.players = data.players.map(player => Player.fromFirestore(player)); //factory function;
 		game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
 		game.isGameOver = data.isGameOver;
-		game.isFinalRound = data.isFinalRound;
 		game.turnNumber = data.turnNumber;
 		return game;
 	}
@@ -175,12 +187,11 @@ async function addtoDatabase(game) {
 			.doc(game.id.toString()).set(
 				gameConverter.toFirestore(game)
 			)
-		console.log("Successful write to database");
-		//console.log(docRef.id);
+		console.log('Successful write to database.');
 		return true;
 	}
 	catch (error) {
-		console.log("Error getting document:", error);
+		console.log('Error getting document:', error);
 		return false;
 	}
 }
@@ -195,16 +206,15 @@ async function updateDatabase(game) {
 			await db.collection('Games').doc(game.id.toString()).set(
 				gameConverter.toFirestore(game),
 				{ merge: false }
-			)
-			console.log("asdas");
+			);
 			return true;
 		} else {
-			console.log("No such document")
+			console.log('updateDatabase failed: no such document.');
 			return false;
 		}
 	}
 	catch (error) {
-		console.log("Error getting document: ", error);
+		console.log('Error getting document: ', error);
 		return false;
 	}
 }
@@ -213,17 +223,17 @@ async function readfromDatabase(id) {
 	var db = firebase.firestore();
 	var doc = db.collection('Games').doc(id.toString());
 	try {
-		let result = await doc.withConverter(gameConverter).get()
+		let result = await doc.withConverter(gameConverter).get();
 		if (result.exists) {
 			var game = result.data();
 			return game;
 		} else {
-			console.log("No such document")
+			console.log('readfromDatabase failed: no such document');
 			return null;
 		}
 	}
 	catch (error) {
-		console.log("Error getting document:", error);
+		console.log('Error getting document:', error);
 		return null;
 	}
 }

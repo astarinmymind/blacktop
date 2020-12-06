@@ -37,7 +37,7 @@ const gs = new GameService();
 
 // // exports context provider 
 // /* A Note on Syntax: 
-//     - we are annotating function type: "This variable holds a function: React Functional Component"
+//     - we are annotating function type: 'This variable holds a function: React Functional Component'
 //     - child is of type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
 // */
 // export const CardProvider: React.FC<React.PropsWithChildren<{}>> = ({children}) => {
@@ -72,7 +72,7 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
 
   // emits socket event that player has played a card
   function playCard() {
-    gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayerIndex, name);
+    gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, name);
   }
 
   // implementation od react-dnd based on their dustbin example
@@ -92,8 +92,8 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
   const opacity = isDragging ? 0 : 1
 
   return (
-    <div ref={drag} className="card">
-      <img alt="card" src={src} style={{opacity: opacity}} />
+    <div ref={drag} className='card'>
+      <img alt='card' src={src} style={{opacity: opacity}} />
     </div>
   )
 }
@@ -103,22 +103,22 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
 // {
 //     let cardType : string = c.name
 //     switch (cardType) {
-//         case "nope":
+//         case 'nope':
 //             c.picture = NopeCard;
 //             break;
-//         case "add1":
+//         case 'add1':
 //             c.picture = AddCard;
 //             break;
-//         case "sub1":
+//         case 'sub1':
 //             c.picture = SubCard;
 //             break;
-//         case "give":
+//         case 'give':
 //             c.picture = GiveCard;
 //             break;
-//         case "see":
+//         case 'see':
 //             c.picture = SeeCard;
 //             break;
-//         case "draw":
+//         case 'draw':
 //             c.picture = DrawCard;
 //             break;
 //         default: 
