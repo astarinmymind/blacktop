@@ -52,17 +52,13 @@ export const Game = () => {
     gs.socket.emit("gameStarted", playerStore.lobbyId);
   }
 
-  // emits socket event that player has pressed draw card
-  function cardDrawn() 
+  // emits socket event that player has pressed end turn
+  function endTurn() 
   {
     gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
-  }
-
-  // emits socket event that player has ended their turn 
-  function turnEnded() 
-  {
     gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex);
-    console.log("turn ended");
+    textLog.push(playerStore.players[playerStore.currentPlayerIndex].name, ' ended their turn. \n')
+    textLog.push('it is now ', playerStore.players[playerStore.currentPlayerIndex+1].name, '\'s turn. \n')
   }
 
   function setImage(cardname) 
@@ -109,26 +105,25 @@ export const Game = () => {
    const [dummy, setDummy] = React.useState({});
    React.useEffect(() => {
 
-    // @NICK: update player hand after draw/play Card Event
+    // update player hand after draw/play Card Event
     gs.socket.on("updatePlayerHand", function(data) {
         playerStore.playerHand = data;
         setDummy({});
     });
 
-    // @NICK: update player points 
+    // update player points 
     gs.socket.on("allScores", function(data) {
       console.log(data)
       playerStore.point = data;
       setDummy({});
     });
 
-    // @NICK: event notification: nope, give, see, draw event
+    // event notification: nope, give, see, draw event
     gs.socket.on("eventNotification", function(data) {
         console.log(data[0])
         console.log(data[1])
         var name = playerStore.players[data[0]].name
         textLog.push(name, ' ', 'played ', data[1].type, '\n')
-        // setTextLog(([name, ' ', 'played ', data[1].type]));
         setDummy({});
     });
 
@@ -136,18 +131,12 @@ export const Game = () => {
     gs.socket.on("lastCardPlayed", function(data) {
       setLastFive([data, lastFive[0], lastFive[1], lastFive[2], lastFive[3]]);
     });
-	 
-    // //This is for when the client recieves its own hand from the server
-    // gs.socket.on("playerHand", function(data) {
-    //   playerStore.playerHand = data.hand;
-    //   setDummy({});
-    // });
     
-    //This is for when the client recieves another hand from the server
+    // This is for when the client recieves another hand from the server
     gs.socket.on("otherHand", function(data) {
     });
 
-    // @NICK: A winner is decided and the index of the victorious player is passed in
+    // A winner is decided and the index of the victorious player is passed in
     gs.socket.on("results", function(data) {
       setVictorIndex(data);
       setGameFinished(true);
@@ -180,8 +169,7 @@ export const Game = () => {
               <img src={playerStore.players[playerStore.currentPlayerIndex].icon} className="flip-img" alt="Current Player" />
               <h1>{playerStore.players[playerStore.currentPlayerIndex].name}</h1>
               <div>
-                <button onClick={cardDrawn}>Draw Card</button>
-                <button onClick={turnEnded}>End Turn</button>
+                <button onClick={endTurn}>Draw & End Turn</button>
               </div>
             </div>
             <div style={{display: 'flex'}}>
