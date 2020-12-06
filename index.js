@@ -166,18 +166,8 @@ socketIo.on('connection', (socket) => {
 				socket.to(player.socketID).emit('startGame', 0);
 				// console.log('reached here 2');
 			}
-			// sendHand(player.socketID, id, player.hand, i); 
-		}
-		for (let i = 0; i < playerlist.length; i++)
-		{
-			let player = playerlist[i];
 			sendHand(player.socketID, id, player.hand, i); 
-			game.logPlayers();
-			// console.log(player.socketID)
-			// console.log(player.hand)
-			// console.log(id)
 		}
-		//game.players = playerlist;
 		await updateDatabase(game);
 		 //maybe put this inside the loop later
 	});
@@ -261,34 +251,24 @@ socketIo.on('connection', (socket) => {
 	
 	// sends one Players hand to itself
 	async function sendHand(socketID, gameID, hand, elem) {
-		console.log(socketID);
 		let pack = {hand, elem};
 		let game = await readfromDatabase(gameID);
 		if (game === null)
 			return;
 		let playerlist = game.players;
 		// console.log(playerlist);
-		//console.log(socketID, ": ", hand)
-		if (socketID == socket.id)
+		for (let i = 0; i < playerlist.length; i++)
 		{
-			socket.emit('playerHand', pack);
-		}
-		else
-		{
-			socket.to(socketID).emit('playerHand', pack);
-		}
-		for (let i = 0, i < playerlist; i++)
-		{
-			if (playerlist[i].socketID != socketID)
-			{
-				if (socketID == socket.id)
-				{
-					socket.emit('otherHand', hand.length);
+			if (playerlist[i].socketID == socketID) {
+				if (socketID === socket.id) {
+					socket.emit('playerHand', pack);
 				}
-				else
-				{
-					socket.to(socketID).emit('otherHand', hand.length);
-				}
+				console.log(`Sending ${playerlist[i].socketID} hand to themself: ${hand}`);
+				socket.to(playerlist[i].socketID).emit('playerHand', pack);
+			}
+			else {
+				// console.log(`Sending ${playerlist[i].socketID} hand to ${socket.id}: ${hand}`);
+				socket.to(playerlist[i].socketID).emit('otherHand', pack);
 			}
 		}
 	}

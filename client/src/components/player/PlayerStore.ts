@@ -13,7 +13,7 @@ class Player {
    // isDead: boolean;
     
     constructor(index: number) {
-        this.playerId = -1
+        this.playerId = -1;
         this.name = "";
         this.icon = Brickshay;
         this.index = index;
@@ -38,7 +38,7 @@ export class PlayerStore {
 
     @observable lobbyId: number = 0;
 
-    @observable currentPlayer: Player = new Player(this.players.length);
+    @observable currentPlayerIndex: number = 0;
 
     @observable gameStarted: boolean = false;
 

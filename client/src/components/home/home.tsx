@@ -52,6 +52,10 @@ export const Home = () => {
         gs.socket.on("valID", function(data) {
             setIsValidId(data);
         })
+
+        gs.socket.on("playerIndex", function(data) {
+            playerStore.currentPlayerIndex = data;
+        })
     }, []);
     
     // A link that is only active if the lobby ID is valid

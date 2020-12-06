@@ -54,13 +54,13 @@ export const Game = () => {
   // emits socket event that player has pressed draw card
   function cardDrawn() 
   {
-    gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayer.index);
+    gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
   }
 
   // emits socket event that player has ended their turn 
   function turnEnded() 
   {
-    gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayer.playerId);
+    gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.players[playerStore.currentPlayerIndex].playerId);
     console.log("turn ended");
 
     if (playerStore.turnNumber === playerStore.players.length - 1) {
@@ -178,8 +178,8 @@ export const Game = () => {
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
           <div className="game-columns">
             <div>
-              <img src={playerStore.currentPlayer.icon} className="flip-img" alt="Current Player" />
-              <h1>{playerStore.currentPlayer.name}</h1>
+              <img src={playerStore.players[playerStore.currentPlayerIndex].icon} className="flip-img" alt="Current Player" />
+              <h1>{playerStore.players[playerStore.currentPlayerIndex].name}</h1>
               <div>
                 <button onClick={cardDrawn}>Draw Card</button>
                 <button onClick={turnEnded}>End Turn</button>
@@ -222,7 +222,7 @@ export const Game = () => {
         <img src={ TestLogo } alt="logo" className="logo" />
         <img src={ ChalkLine } alt="line" className="line" />
         <div className="results">
-          <h1>{playerStore.players[victorIndex].name === playerStore.currentPlayer.name ? "Victory!" : "Defeat!"}</h1>
+          <h1>{playerStore.players[victorIndex].name === playerStore.players[playerStore.currentPlayerIndex].name ? "Victory!" : "Defeat!"}</h1>
           <img src={playerStore.players[victorIndex].icon} alt="Victor" />
           <h1>{playerStore.players[victorIndex].name}</h1>
           <Link to={{ pathname: '/', state:{ consent:'true'} }} >

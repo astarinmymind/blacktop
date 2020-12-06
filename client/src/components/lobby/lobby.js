@@ -80,10 +80,15 @@ export const Lobby = () => {
 		var pack = [ newName, playerStore.lobbyId, newIconId ];
         gs.socket.emit("playerName", pack);
 
-        playerStore.currentPlayer.setPlayer(newName, idToIcon(newIconId));
+        if (!playerStore.players[playerStore.currentPlayerIndex])
+        {
+            playerStore.addPlayer();
+        }
+        playerStore.players[playerStore.currentPlayerIndex].setPlayer(newName, idToIcon(newIconId));
     }
 
     const [dummy, setDummy] = React.useState({});
+    
     React.useEffect(() => {
         gs.socket.emit("enterLobby", playerStore.lobbyId);
 

@@ -72,8 +72,8 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
 
   // emits socket event that player has played a card
   function playCard() {
-    if (playerStore.players[playerStore.turnNumber].name === playerStore.currentPlayer.name || name === "nope") {
-      gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.index, name);
+    if (playerStore.players[playerStore.turnNumber].name === playerStore.players[playerStore.currentPlayerIndex].name || name === "nope") {
+      gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayerIndex, name);
       console.log(`card played: ${name}`);
     }
     else {
