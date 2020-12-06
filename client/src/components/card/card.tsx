@@ -72,13 +72,7 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
 
   // emits socket event that player has played a card
   function playCard() {
-    if (playerStore.players[playerStore.turnNumber].name === playerStore.players[playerStore.currentPlayerIndex].name || name === "nope") {
-      gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayerIndex, name);
-      console.log(`card played: ${name}`);
-    }
-    else {
-      alert("You can only play a card on your turn, unless you are playing a NOPE card!");
-    }
+    gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayerIndex, name);
   }
 
   // implementation od react-dnd based on their dustbin example

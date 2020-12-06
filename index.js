@@ -202,8 +202,10 @@ socketIo.on('connection', (socket) => {
 		// play the Card that is given TODO
 
 		let game = await readfromDatabase(id);
-		if (game === null)
+		if (game === null || game.turnNumber % game.players.length != index) {
+			console.log("You can only play a card on your turn, unless you are playing a NOPE card!");
 			return;
+		}
 		let player = game.players[index];
 		// console.log(player);
 		var win = game.playCard(player, card);
@@ -239,13 +241,24 @@ socketIo.on('connection', (socket) => {
 	
 	socket.on('turnEnded', async(id, index) =>
 	{
-		if (index == playerlist.length)
+		let game = await readfromDatabase(id);
+		game.turnNumber++;
+		if (game.turnNumber % game.players.length === 0)
 		{
 			//round is over
 			if (false)//final round started
 			{
 				socket.emit("Final Round", [deadPlayers, Case]);
 			}
+		}
+		await updateDatabase(game);
+		
+		for (let i = 0; i < game.players.length; i++)
+		{
+			if (game.players[i].socketID === socket.id) {
+				socket.emit('turnCount', game.turnNumber);
+			}
+			socket.to(game.players[i].socketID).emit('turnCount', game.turnNumber);
 		}
 	});
 	

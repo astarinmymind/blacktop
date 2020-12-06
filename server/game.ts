@@ -18,6 +18,7 @@ class Game {
 	mainDeck;
 	isFinalRound;
 	isGameOver;
+	turnNumber;
 
 	constructor(id) {
 		this.id = id;
@@ -25,6 +26,7 @@ class Game {
 		this.isGameOver = false;
 		this.players = new Array();
 		this.mainDeck = new Array();
+		this.turnNumber = 0;
 	}
 
 	toFirestore() {
@@ -246,7 +248,8 @@ var gameConverter = {
 		game.players = data.players.map(player => Player.fromFirestore(player)); //factory function;
 		game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
 		game.isGameOver = data.isGameOver;
-		game.isFinalRound = data.isFinalRound
+		game.isFinalRound = data.isFinalRound;
+		game.turnNumber = data.turnNumber;
 		return game;
 	}
 }
@@ -279,6 +282,7 @@ async function updateDatabase(game) {
 				gameConverter.toFirestore(game),
 				{ merge: false }
 			)
+			console.log("asdas");
 			return true;
 		} else {
 			console.log("No such document")

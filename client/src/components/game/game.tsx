@@ -18,13 +18,14 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Link } from "react-router-dom";
 import './game.css';
-import NopeCard from '../../images/NOPE.png';
-import SkipCard from '../../images/SKIP.png';
+import NopeCard from '../../images/TestCard.png';
+import SkipCard from '../../images/SkipCard.png';
 import AddCard from '../../images/ADD1.png';
-import SubCard from '../../images/SUB1.png';
-import DrawCard from '../../images/DRAW.png';
-import GiveCard from '../../images/GIVE.png';
-import SeeCard from '../../images/SEE.png';
+import SubCard from '../../images/Minus10.png';
+import DrawCard from '../../images/DrawCard.png';
+import GiveCard from '../../images/GiveCard.png';
+import SeeCard from '../../images/PeekCard.png';
+import StealCard from '../../images/StealCard.png'
 import TestLogo from '../../images/TestLogo.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import Brickshay from '../../images/Brickshay.gif'
@@ -60,15 +61,8 @@ export const Game = () => {
   // emits socket event that player has ended their turn 
   function turnEnded() 
   {
-    gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.players[playerStore.currentPlayerIndex].playerId);
+    gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex);
     console.log("turn ended");
-
-    if (playerStore.turnNumber === playerStore.players.length - 1) {
-      playerStore.turnNumber = 0;
-    }
-    else {
-      playerStore.turnNumber++;
-    }
   }
 
   function setImage(cardname) 
@@ -135,6 +129,7 @@ export const Game = () => {
         var name = playerStore.players[data[0]].name
         textLog.push(name, ' ', 'played ', data[1].type, '\n')
         // setTextLog(([name, ' ', 'played ', data[1].type]));
+        setDummy({});
     });
 
     // @NICK: last card played for display
@@ -156,7 +151,11 @@ export const Game = () => {
     gs.socket.on("results", function(data) {
       setVictorIndex(data);
       setGameFinished(true);
-    }) ;   
+    });
+
+    gs.socket.on("turnCount", function(data) {
+      playerStore.turnNumber = data;
+    });
   }, []);
   
   const [textLog, setTextLog] = React.useState(["Welcome to Blacktop!\n"]);
