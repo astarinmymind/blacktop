@@ -44,6 +44,8 @@ export class PlayerStore {
 
     @observable turnNumber: number = 0;
 
+    @observable opponentIndex: number = -1;
+
     @action
     getPlayerHand = () => {
         return this.playerHand;

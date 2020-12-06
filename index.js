@@ -237,16 +237,16 @@ socketIo.on('connection', (socket) => {
 		game.transferCard(playerIndex, opponentIndex, card)
 	});
 	
-	socket.on('cardPlayed', async (id, index, card) =>
+	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
 	{
 		// play the Card that is given TODO
 
 		let game = await readfromDatabase(id);
-		if (game === null || game.turnNumber % game.players.length != index) {
+		if (game === null || game.turnNumber % game.players.length != playerIndex) {
 			console.log("You can only play a card on your turn, unless you are playing a NOPE card!");
 			return;
 		}
-		let player = game.players[index];
+		let player = game.players[playerIndex];
 		// console.log(player);
 		var win = game.playCard(player, card, socket);
 		// if (win != -1)
@@ -267,13 +267,13 @@ socketIo.on('connection', (socket) => {
 			{
 				// console.log('here');
 				socket.emit('allScores', pack);
-				socket.emit('eventNotification', [index, card]);
+				socket.emit('eventNotification', [playerIndex, card]);
 				console.log("first")
 			}
 			else
 			{
 				socket.to(playerlist[i].socketID).emit('allScores', pack);
-				socket.to(playerlist[i].socketID).emit("eventNotification", [index, card]);
+				socket.to(playerlist[i].socketID).emit("eventNotification", [playerIndex, card]);
 				console.log("twice")
 			}
 		}

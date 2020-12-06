@@ -92,7 +92,7 @@ class Game {
 		this.players[reciever].addCard(card)
 	}
 
-	playCard(player, card, socket) {
+	playCard(player, card, socket, opponent) {
 		
 		let cardType = card.type;
 		console.log("Card played: ", card);
@@ -104,7 +104,7 @@ class Game {
 				if(this.players[i].socketID!== socket.id)
 				opponentIndices.push(i);
 			}
-			socket.emit("selectOpponent", opponentIndices)
+			// socket.emit("selectOpponent", opponentIndices)
 		}
 		
 		else if (cardType === 'draw 2') {
