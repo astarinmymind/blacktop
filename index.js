@@ -165,7 +165,16 @@ socketIo.on('connection', (socket) => {
 				socket.to(player.socketID).emit('startGame', 0);
 				console.log('reached here 2');
 			}
+			// sendHand(player.socketID, id, player.hand, i); 
+		}
+		for (let i = 0; i < playerlist.length; i++)
+		{
+			let player = playerlist[i];
 			sendHand(player.socketID, id, player.hand, i); 
+			game.logPlayers();
+			// console.log(player.socketID)
+			// console.log(player.hand)
+			// console.log(id)
 		}
 		//game.players = playerlist;
 		await updateDatabase(game);
@@ -202,12 +211,12 @@ socketIo.on('connection', (socket) => {
 		if (game === null)
 			return;
 		let player = game.players[index];
-		console.log(player);
+		// console.log(player);
 		var win = game.playCard(player, card);
-		if (win != -1)
-		{
-			socket.emit("results", win);
-		}
+		// if (win != -1)
+		// {
+		// 	socket.emit("results", win);
+		// }
 		await updateDatabase(game);
 		let playerlist = game.players;
 		console.log(player);
@@ -219,15 +228,17 @@ socketIo.on('connection', (socket) => {
 		}
 		for (let i = 0; i < playerlist.length; i++)
 		{
-			if (playerlist[i].socketID == socketID)
+			if (playerlist[i].socketID == socket.id)
 			{
 				socket.emit('allScores', pack);
 				socket.emit('eventNotification', [index, card]);
+				console.log("first")
 			}
 			else
 			{
 				socket.to(playerlist[i].socketID).emit('allScores', pack);
 				socket.to(playerlist[i].socketID).emit("eventNotification", [index, card]);
+				console.log("twice")
 			}
 		}
 	});
@@ -251,13 +262,17 @@ socketIo.on('connection', (socket) => {
 		if (game === null)
 			return;
 		let playerlist = game.players;
-		console.log(playerlist);
+		// console.log(playerlist);
 		for (let i = 0; i < playerlist.length; i++)
 		{
-			if (playerlist[i].socketID == socketID)
+			if (playerlist[i].socketID == socketID) {
 				socket.emit('playerHand', pack);
-			else
+				console.log("abcdef")
+			}
+			else {
 				socket.to(playerlist[i].socketID).emit('otherHand', pack);
+				console.log("jgdskjf")
+			}
 		}
 	}
 });

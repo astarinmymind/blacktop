@@ -44,9 +44,6 @@ export const Game = () => {
   // gets store
   // const {cardStore} = useCardStore()
   const {playerStore} = usePlayerStore();
-  console.log(playerStore);
-
-  // console.log(cardStore)
 
   // emits socket event that player has pressed start game
   function startGame() 
@@ -58,19 +55,16 @@ export const Game = () => {
   function cardDrawn() 
   {
     gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayer.index);
-    console.log("card drawn");
   }
 
   // emits socket event that player has ended their turn 
   function turnEnded() 
   {
     gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayer.playerId);
-    console.log("turn ended");
   }
 
   function setImage(cardname) 
   {
-    console.log(cardname.type)
     switch (cardname.type) {
         case "nope":
             return NopeCard;
@@ -94,7 +88,6 @@ export const Game = () => {
 
   function sendNotification(event: string) 
   {
-    console.log('toast message')
     switch (event) {
       case "nopeEvent":
           break;
@@ -116,22 +109,24 @@ export const Game = () => {
 
     // @NICK: update player hand after draw/play Card Event
     gs.socket.on("updatePlayerHand", function(data) {
-        console.log("this is updating the players hand")
         playerStore.playerHand = data;
         setDummy({});
     });
 
     // @NICK: update player points 
-    gs.socket.on("updatePlayerPoints", function(data) {
-      console.log("this is updating the players points")
+    gs.socket.on("allScores", function(data) {
+      console.log(data)
       playerStore.point = data;
       setDummy({});
     });
 
     // @NICK: event notification: nope, give, see, draw event
     gs.socket.on("eventNotification", function(data) {
-        console.log(data)
-        setDummy({});
+        console.log(data[0])
+        console.log(data[1])
+        var name = playerStore.players[data[0]].name
+        textLog.push(name, ' ', 'played ', data[1].type, '\n')
+        // setTextLog(([name, ' ', 'played ', data[1].type]));
     });
 
     // @NICK: last card played for display
@@ -139,17 +134,14 @@ export const Game = () => {
       setLastFive([data, lastFive[0], lastFive[1], lastFive[2], lastFive[3]]);
     });
 	 
-    //This is for when the client recieves its own hand from the server
-    gs.socket.on("playerHand", function(data) {
-      console.log("got my own hand");
-      console.log(data.hand)
-      playerStore.playerHand = data.hand;
-      setDummy({});
-    });
+    // //This is for when the client recieves its own hand from the server
+    // gs.socket.on("playerHand", function(data) {
+    //   playerStore.playerHand = data.hand;
+    //   setDummy({});
+    // });
     
     //This is for when the client recieves another hand from the server
     gs.socket.on("otherHand", function(data) {
-      console.log("got another hand");
     });
 
     // @NICK: A winner is decided and the index of the victorious player is passed in
@@ -194,10 +186,14 @@ export const Game = () => {
                 <li style={{ listStyleType: "none" }} key={i}>
                   <img alt="icon" src={element.icon}/>
                   {element.name}
-                  {playerStore.getPoints()}
                 </li>
               )}
             </div>
+            {/* <div>
+              {playerStore.getPoints().map((point) => 
+                <li>{point}</li>
+              )}
+            </div> */}
           </div>
           <div className="hand">
             {/* <img src={NopeCard} alt="icon"/> */}
@@ -230,7 +226,7 @@ export const Game = () => {
   }
 
   return useObserver(() => (
-    gameFinished ? resultsPage() : gamePage()
+    false ? resultsPage() : gamePage()
   ));
 }
 export default Game;

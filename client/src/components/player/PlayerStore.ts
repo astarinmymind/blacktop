@@ -34,7 +34,7 @@ export class PlayerStore {
     // array of Card Objects
     playerHand: string[] = [/*"nope", "give", "add1", "sub1", "nope", "draw", "see" */];
 
-    point: number = 10;
+    point: number[] = [5, 7, 8];
 
     @observable lobbyId: number = 0;
 

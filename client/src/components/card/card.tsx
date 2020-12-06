@@ -74,7 +74,7 @@ export const Card: React.FC<CardProps> = ({ name, src }) => {
   function playCard() 
   {
     gs.socket.emit("cardPlayed", playerStore.lobbyId, playerStore.currentPlayer.index, name);
-    console.log(`card played: ${name}`);
+    // console.log(`card played: ${name}`);
   }
 
   // implementation od react-dnd based on their dustbin example
