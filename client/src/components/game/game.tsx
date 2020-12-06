@@ -66,6 +66,13 @@ export const Game = () => {
   {
     gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayer.playerId);
     console.log("turn ended");
+
+    if (playerStore.turnNumber === playerStore.players.length - 1) {
+      playerStore.turnNumber = 0;
+    }
+    else {
+      playerStore.turnNumber++;
+    }
   }
 
   function setImage(cardname) 

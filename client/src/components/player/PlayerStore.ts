@@ -42,6 +42,8 @@ export class PlayerStore {
 
     @observable gameStarted: boolean = false;
 
+    @observable turnNumber: number = 0;
+
     @action
     getPlayerHand = () => {
         return this.playerHand;
