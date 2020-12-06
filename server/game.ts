@@ -71,73 +71,9 @@ class Game {
 		this.players = this.players.filter(p => p.socketID !== playerID);
 	}
 
-	start() {
-		this.generateMainDeck(50);
-		this.generatePlayerHands(5);
-		while (!this.isGameOver) {
-			this.takeGameRound();
-		}
-		//emit some sort of message to clients that game is over, along with the winner
-		//this.takeGameRound();
-	}
-
-	takeGameRound() {
-		if (this.isGameOver)
-			return;
-		for (let i = 0; i < this.players.length; i++) {
-			let player = this.players[i];
-			if (!player.isDead)
-				this.takePlayerTurn(player);
-		}
-
-		if (this.isFinalRound) {
-			this.isGameOver = true;
-			return;
-		}
-
-		for (let i = 0; i < this.players.length; i++) {
-			let player = this.players[i];
-			if (player.isDead)
-				this.isFinalRound = true;
-		}
-		updateDatabase(this);
-	}
-
-	takePlayerTurn(player) {
-
-		let card = null;
-		// handle click?
-		// ...
-		// socket emit stuff?
-		// retrieve card
-		this.playCard(player, card);
-
-		// handle click?
-		// ...		
-		// socket emit stuff?
-		// retrieve cardType
-		player.drawCard(player, this.mainDeck[0]); // get first card in main deck
-		this.mainDeck.shift();
-		this.mainDeck.push(this.getRandomCard());
-
-		if (player.pointTotal >= 100) {
-			player.isDead = true;
-			return;
-		}
-
-		if (player.pointTotal % 10 == 0)
-			this.specialAction(player.pointTotal);
-	}
-
 	drawTopCard(player) {
 		let card = this.mainDeck[0]; // get first card in main deck
-		if (card.type === 'bomb') {
-			player.isDead = true;
-			// TODO: send message to Game
-		}
-		else {
-			player.addCard(card);
-		}
+		player.addCard(card);
 		this.mainDeck.shift();
 		this.mainDeck.push(this.getRandomCard());
 	}
@@ -151,36 +87,26 @@ class Game {
 			//...
 		}
 	}
+	transferCard( sender, reciever, card){
+		this.players[sender].removeCard(card)
+		this.players[reciever].addCard(card)
+	}
 
-	playCard(player, card) {
+	playCard(player, card, socket) {
 		
 		let cardType = card.type;
-		
-		// if Player does not want to play a card, cardType is null
-		if (cardType == null)
-			return;
-
 		console.log("Card played: ", card);
 		player.removeCard(card);
-		return;
-		//Socket emit that the player played this card
-		let nopePlayed = this.listenForNope();
-		if (nopePlayed) {
-			
-			return;
-			//socket emit that someone said nope
-			// TODO
-			// special case as nope card can be used at random times
+		
+		if (cardType === 'give' || cardType == 'steal') {
+			let opponentIndices = [];
+			for (let i = 0; i< this.players.length; i++){
+				if(this.players[i].socketID!== socket.id)
+				opponentIndices.push(i);
+			}
+			socket.emit("selectOpponent", opponentIndices)
 		}
-		else if (cardType === 'give') {
-			// TODO: handle click
-			// current Player selects Card from his/her deck
-			// and selects opponent to give Card to
-			let selectedCard = null;
-			let opponent = null;
-			player.removeCard(selectedCard);
-			opponent.addCard(selectedCard);
-		}
+		
 		else if (cardType === 'draw 2') {
 			player.drawCard(this.mainDeck[0]); // get first card in main deck
 			this.mainDeck.shift();
@@ -189,23 +115,17 @@ class Game {
 			this.mainDeck.shift();
 			this.mainDeck.push(this.getRandomCard());
 		}
-		else if (cardType === 'see future') {
+
+		else if (cardType === "see future") {
 			let cardsToDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
-			//TODO: use socket to emit ("showCard", cardstoDisplay to player.id )
+			socket.emit("See Future", cardsToDisplay)
 		}
-		else if (cardType === 'steal') {
-			// TODO: handle click
-			// current Player selects opponent to steal Card from
-			// and selects desired Card from opponent’s deck
-			let selectedCard = null;
-			let opponent = null;
-			opponent.removeCard(selectedCard);
-			player.addCard(selectedCard)
-		}
+
 		else if (cardType === 'skip') { }
 		else if (cardType === 'add' || cardType === 'subtract') {
 			player.pointTotal += card.points;
 		}
+
 	}
 
 	findPlayerByID(socketID) {
@@ -221,13 +141,7 @@ class Game {
 			console.log("Player in game ", this.id, ": ", this.players[i]);
 		}
 	}
-	listenForNope() {
-		//if someone emits a nope event within 6 seconds
-		//return true
-		//else
-		return false;
-	}
-
+	
 }
 
 // TODO: more Game functions

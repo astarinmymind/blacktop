@@ -58,7 +58,7 @@ export const Game = () => {
     gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
     gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex);
     textLog.push(playerStore.players[playerStore.currentPlayerIndex].name, ' ended their turn. \n')
-    textLog.push('it is now ', playerStore.players[playerStore.currentPlayerIndex+1].name, '\'s turn. \n')
+    textLog.push('it is now ', playerStore.players[(playerStore.currentPlayerIndex+1)%playerStore.players.length].name, '\'s turn. \n')
   }
 
   function setImage(cardname) 

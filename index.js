@@ -196,6 +196,46 @@ socketIo.on('connection', (socket) => {
 		}
 		await updateDatabase(game);
 	});
+
+	socket.on("Opponent Selected to give to", async(gameID, opponentIndex) =>{
+
+		socket.emit("Select Card to give ", opponentIndex)
+	});
+
+	socket.on("Opponent Selected to steal from", async(gameID, opponentIndex) =>{
+
+		//TODO: Send players[opponentIndex] hand to current player
+		socket.emit("Select Card to steal", opponentIndex)
+
+	});
+
+	socket.on("Card to steal selected", async (card, opponentIndex, gameID) =>{
+		let game = await readfromDatabase(gameID)
+		if(game == null){
+			return;
+		}
+		let playerIndex = null
+		for(let i = 0; i < game.players.length; i++){
+			if(game.players[i].socketID === socket.id)
+				playerIndex = i;
+				break;
+		}
+		game.transferCard(opponentIndex, playerIndex, card)
+	});
+
+	socket.on("Card to give selected", async (card, opponentIndex, gameID) =>{
+		let game = await readfromDatabase(gameID)
+		if(game == null){
+			return;
+		}
+		let playerIndex = null
+		for(let i = 0; i < game.players.length; i++){
+			if(game.players[i].socketID === socket.id)
+				playerIndex = i;
+				break;
+		}
+		game.transferCard(playerIndex, opponentIndex, card)
+	});
 	
 	socket.on('cardPlayed', async (id, index, card) =>
 	{
@@ -208,7 +248,7 @@ socketIo.on('connection', (socket) => {
 		}
 		let player = game.players[index];
 		// console.log(player);
-		var win = game.playCard(player, card);
+		var win = game.playCard(player, card, socket);
 		// if (win != -1)
 		// {
 		// 	socket.emit("results", win);
