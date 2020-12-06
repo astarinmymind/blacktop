@@ -74,6 +74,7 @@ socketIo.on('connection', (socket) => {
 			return;
 		// if the lobby is valid, connect the new Player to the associated Game, and update database.
 		game.connect(socket.id, "", 0);
+		socket.emit('playerIndex', game.players.length - 1);
 		await updateDatabase(game);
 	});
 	
@@ -275,6 +276,20 @@ socketIo.on('connection', (socket) => {
 		else
 		{
 			socket.to(socketID).emit('playerHand', pack);
+		}
+		for (let i = 0, i < playerlist; i++)
+		{
+			if (playerlist[i].socketID != socketID)
+			{
+				if (socketID == socket.id)
+				{
+					socket.emit('otherHand', hand.length);
+				}
+				else
+				{
+					socket.to(socketID).emit('otherHand', hand.length);
+				}
+			}
 		}
 	}
 });
