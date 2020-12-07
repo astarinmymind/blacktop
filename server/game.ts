@@ -184,6 +184,7 @@ var gameConverter = {
 		game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
 		game.isGameOver = data.isGameOver;
 		game.turnNumber = data.turnNumber;
+		game.finalTurnNumber = data.finalTurnNumber;
 		return game;
 	}
 }
