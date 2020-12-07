@@ -249,7 +249,7 @@ Notes:
       // event notification: nope, give, see, draw event
       gs.socket.on("eventNotification", function(data) {
           var name = playerStore.players[data[0]].name
-          textLog.push(name + ' ' + 'played ' + data[1].type + '\n')
+          textLog.push(name + ' ' + 'played ' + data[1] + '\n')
           setDummy({});
       });
 
@@ -344,7 +344,7 @@ Notes:
             </div>
             <div className="hand">
               {Array.from(playerStore.getPlayerHand()).map(card => 
-                  <Card name={card.type} src={setImage(card)}/>
+                  <Card type={card.type} points={card.points} src={setImage(card)}/>
               )}
             </div>
           </div>

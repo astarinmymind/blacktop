@@ -187,6 +187,7 @@ socketIo.on('connection', (socket) => {
 	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
 	{
 		let game = await readfromDatabase(id);
+		console.log(card);
 		let winnerIndex = game.playCard(playerIndex, card, socket, opponentIndex);
 		//if (winnerIndex !== -1) 
 			//socket.emit('results', winnerIndex);
@@ -203,12 +204,12 @@ socketIo.on('connection', (socket) => {
 			if (playerlist[i].socketID == socket.id)
 			{
 				socket.emit('allScores', pack);
-				socket.emit('eventNotification', [playerIndex, card]);
+				socket.emit('eventNotification', [playerIndex, card.type]);
 			}
 			else
 			{
 				socket.to(playerlist[i].socketID).emit('allScores', pack);
-				socket.to(playerlist[i].socketID).emit('eventNotification', [playerIndex, card]);
+				socket.to(playerlist[i].socketID).emit('eventNotification', [playerIndex, card.type]);
 			}
 		}
 	});

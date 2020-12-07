@@ -6,6 +6,7 @@ import './lobby.css';
 import TestLogo     from '../../images/TestLogo.png';
 import ChalkLine    from '../../images/ChalkLine.png';
 import Brickshay    from '../../images/Brickshay.gif';
+import Bruin        from '../../images/Bruin.gif';
 import Dragon       from '../../images/Dragon.gif';
 import Frog         from '../../images/Frog.gif';
 import Goblin       from '../../images/Goblin.gif';
@@ -49,7 +50,7 @@ export const Lobby = () => {
             case 10:
                 return Werewolf;
             case 11:
-                return Brickshay;
+                return Bruin;
             case 12:
                 return Detective;
             default:
@@ -170,7 +171,7 @@ export const Lobby = () => {
                             <img alt="" src={Slug} onClick={() => updateIcon(8)}/>
                             <img alt="" src={Tangerine}  onClick={() => updateIcon(9)}/>
                             <img alt="" src={Werewolf}  onClick={() => updateIcon(10)}/>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(11)}/>
+                            <img alt="" src={Bruin} onClick={() => updateIcon(11)}/>
                         </>
                     </div>
                 </div>

@@ -63,40 +63,42 @@ const gs = new GameService();
 // export const useCardStore = () => React.useContext(CardContext)
 
 interface CardProps {
-  name: string
-  src: any
+  type: string;
+  points: number;
+  src: any;
 }
 
-export const Card: React.FC<CardProps> = ({ name: card, src }) => {
+export const Card: React.FC<CardProps> = ({ type, points, src }) => {
   const {playerStore} = usePlayerStore();
 
   // emits socket event that player has played a card
   function playCard() {
-    if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex && card['type'] !== 'nope') {
+    // console.log(name);
+    if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex && type !== 'nope') {
       alert('You can only play a card on your turn, unless you are playing a NOPE card!');
       return;
     }
 
-    console.log(card['type']);
-    if ((card['type'] === 'steal' || card['type'] === 'give') && (playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'steal' &&
+    console.log(type);
+    if ((type === 'steal' || type === 'give') && (playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'steal' &&
     playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'give')) {
       if (playerStore.opponentIndex >= 0) {
-        playerStore.setLastPlayed(card['type'], playerStore.currentPlayerIndex);
-        gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, card, playerStore.opponentIndex);
+        playerStore.setLastPlayed(type, playerStore.currentPlayerIndex);
+        gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, {type, points}, playerStore.opponentIndex);
       }
       else {
         alert('You must select an opponent to play give/steal cards! Click an icon on the right.');
       }
     }
     else {
-      playerStore.setLastPlayed(card['type'], playerStore.currentPlayerIndex);
-      gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, card, playerStore.opponentIndex);
+      playerStore.setLastPlayed(type, playerStore.currentPlayerIndex);
+      gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, {type, points}, playerStore.opponentIndex);
     }
   }
 
   // implementation od react-dnd based on their dustbin example
   const [{ isDragging }, drag] = useDrag({
-    item: { name: card, type: CardTypes.CARD },
+    item: { name: type, type: CardTypes.CARD },
     end: (card: { name: string } | undefined, monitor: DragSourceMonitor) => {
       const dropResult = monitor.getDropResult()
       if (card && dropResult) {
