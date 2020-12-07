@@ -60,15 +60,15 @@ Notes:
         return;
       }
   
-      gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
-      gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex);
-  
-      textLog.push(playerStore.players[playerStore.currentPlayerIndex].name, ' ended their turn. \n')
-  
       let nextPlayer: string = playerStore.players[playerStore.currentPlayerIndex+1] ? 
         playerStore.players[playerStore.currentPlayerIndex+1].name : 
         playerStore.players[0].name;
-      textLog.push('It is now ', nextPlayer, '\'s turn. \n')
+
+      let endTurnNotification: string = playerStore.players[playerStore.currentPlayerIndex].name + ' ended their turn. \n'
+        + 'It is now ' + nextPlayer + '\'s turn. \n';
+  
+      gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
+      gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex, endTurnNotification);
     }
   
     function setImage(cardname) 
@@ -93,22 +93,7 @@ Notes:
       }
       return;
     }
-  
-    function sendNotification(event: string) 
-    {
-      switch (event) {
-        case "nopeEvent":
-            break;
-        case "giveEvent":
-            break;
-        case "seefutureEvent":
-            break;
-        default: 
-            break;
-      }
-    }
      
-     const [gameEvent, setGameEvent] = React.useState({});
      const [lastFive, setLastFive] = React.useState([{}, {}, {}, {}, {}]);
      const [victorIndex, setVictorIndex] = React.useState(0);
      const [gameFinished, setGameFinished] = React.useState(false);
@@ -136,6 +121,11 @@ Notes:
           textLog.push(name, ' ', 'played ', data[1].type, '\n')
           setDummy({});
       });
+
+      gs.socket.on("endTurnNotification", function(data) {
+        textLog.push(data);
+        setDummy({});
+      })
   
       // @NICK: last card played for display
       gs.socket.on("lastCardPlayed", function(data) {
@@ -179,7 +169,7 @@ Notes:
         </div>
       );
     }
-    
+
     function gamePage() {
       return (
         // renders an unordered list of cards
