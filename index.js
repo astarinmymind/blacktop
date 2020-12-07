@@ -48,16 +48,10 @@ socketIo.on('connection', (socket) => {
 	socket.on('makeLobby', async (id) => {	
 		let game = new Game(parseInt(id)); // create a new Game associated with this lobby	
 		game.connect(socket.id, "", 0); // connect first Player to the Game
-		let success = await addtoDatabase(game); // add to the database
-		// console.log(success);
+		await addtoDatabase(game); // add to the database
 		let result = await readfromDatabase(id);
 		if (result === null)
 			return;
-		// log every Lobby + its players for debugging
-		let playerlist = result.players;
-		// for (let i = 0; i < playerlist.length; i++)
-			// console.log('Player: ', playerlist[i].socketID);
-		// console.log('----------');
 	});
 	
 	// a player has joined an existing lobby
@@ -152,14 +146,9 @@ socketIo.on('connection', (socket) => {
 		{
 			let player = playerlist[i];
 			if (player.socketID === socket.id)
-			{
 				socket.emit('startGame', 0);
-				// console.log('reached here');
-			}
-			else {
+			else
 				socket.to(player.socketID).emit('startGame', 0);
-				// console.log('reached here 2');
-			}
 			sendHand(player.socketID, id, player.hand, i); 
 		}
 		await updateDatabase(game);
@@ -168,8 +157,6 @@ socketIo.on('connection', (socket) => {
 	
 	socket.on('cardDrawn', async (gameID, index) =>
 	{
-		console.log("Draw card");
-		console.log(index);
 		let game = await readfromDatabase(gameID);
 		if (game === null)
 			return;
@@ -187,12 +174,27 @@ socketIo.on('connection', (socket) => {
 	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
 	{
 		let game = await readfromDatabase(id);
-		console.log(card);
+		let playerlist = game.players;
+
+		let player = playerlist[playerIndex];
+		let lastPlayed = player.lastPlayed;
+		let opponentName = '';
+		if (player.opponentIndex >= 0)
+			opponentName = playerlist[player.opponentIndex].name;
+
 		let winnerIndex = game.playCard(playerIndex, card, socket, opponentIndex);
 		//if (winnerIndex !== -1) 
 			//socket.emit('results', winnerIndex);
 		await updateDatabase(game);
-		let playerlist = game.players;
+		
+		let msg = "";
+		if (lastPlayed === 'give')
+            msg = player.name + " gave '" + card.type + "' to " + opponentName + ".\n";
+		else if (lastPlayed === 'steal')
+            msg = player.name + " stole '" + card.type + "' from " + opponentName + ".\n";
+		else
+            msg = player.name + " played '" + card.type + "'.\n";
+		
 		let pack = [];
 		for (let i = 0; i < playerlist.length; i++)
 		{
@@ -204,12 +206,12 @@ socketIo.on('connection', (socket) => {
 			if (playerlist[i].socketID == socket.id)
 			{
 				socket.emit('allScores', pack);
-				socket.emit('eventNotification', [playerIndex, card.type]);
+				socket.emit('eventNotification', msg);
 			}
 			else
 			{
 				socket.to(playerlist[i].socketID).emit('allScores', pack);
-				socket.to(playerlist[i].socketID).emit('eventNotification', [playerIndex, card.type]);
+				socket.to(playerlist[i].socketID).emit('eventNotification', msg);
 			}
 		}
 	});
@@ -247,18 +249,15 @@ socketIo.on('connection', (socket) => {
 		if (game === null)
 			return;
 		let playerlist = game.players;
-		// console.log(playerlist);
 		for (let i = 0; i < playerlist.length; i++)
 		{
 			if (playerlist[i].socketID == socketID) {
 				if (socketID === socket.id) {
 					socket.emit('playerHand', pack);
 				}
-				//console.log(`Sending ${playerlist[i].socketID} hand to themself: ${hand}`);
 				socket.to(playerlist[i].socketID).emit('playerHand', pack);
 			}
 			else {
-				// console.log(`Sending ${playerlist[i].socketID} hand to ${socket.id}: ${hand}`);
 				socket.to(playerlist[i].socketID).emit('otherHand', pack);
 			}
 		}

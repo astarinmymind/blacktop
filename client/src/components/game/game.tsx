@@ -103,7 +103,6 @@ Notes:
   
     function setImage(card) 
     {
-      // console.log(card);
       switch (card.type) {
           case "nope":
               return NopeCard;
@@ -248,8 +247,7 @@ Notes:
   
       // event notification: nope, give, see, draw event
       gs.socket.on("eventNotification", function(data) {
-          var name = playerStore.players[data[0]].name
-          textLog.push(name + ' ' + 'played ' + data[1] + '\n')
+          textLog.push(data);
           setDummy({});
       });
 
