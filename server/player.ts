@@ -7,6 +7,8 @@ class Player {
 	pointTotal;
 	isDead;
 	icon;
+	opponentIndex;
+	lastPlayed;
 
 	static fromFirestore(player){ //pass in a simple JSON object, it returns a player object
 		let p = new Player(player.socketID, player.name, player.icon);
@@ -24,6 +26,8 @@ class Player {
 		this.isDead = false;
 		this.hand = [];
 		this.icon = icon;
+		this.opponentIndex = -1;
+		this.lastPlayed = '';
 	}
 
 	toFirestore() {
@@ -38,7 +42,6 @@ class Player {
     }
 
 	removeCard(card) {
-		console.log(this.hand);
 		for (let i = 0; i < this.hand.length; i++) {
 			if (this.hand[i].type === card.type && this.hand[i].points === card.points) {
 				this.hand.splice(i, 1);

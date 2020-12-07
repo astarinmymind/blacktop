@@ -105,7 +105,7 @@ socketIo.on('connection', (socket) => {
 		// package that will be sent to every player (display name + icon)
 		let pack = {};
 		let game = await readfromDatabase(parseInt(data[1]));
-		if(game === null) {
+		if (game === null) {
 			// console.log("Failed to retrieve Game instance ", id, " from database.");
 			return;
 		}
@@ -221,16 +221,12 @@ socketIo.on('connection', (socket) => {
 	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
 	{
 		let game = await readfromDatabase(id);
-
-		console.log(playerIndex);
-		var winnerIndex = game.playCard(game.players[playerIndex], socket, card);
-
-		if (winnerIndex !== -1) 
-			socket.emit('results', winnerIndex);
-		
+		let winnerIndex = game.playCard(playerIndex, card, socket, opponentIndex);
+		//if (winnerIndex !== -1) 
+			//socket.emit('results', winnerIndex);
 		await updateDatabase(game);
 		let playerlist = game.players;
-		var pack = {};
+		let pack = {};
 		for (let i = 0; i < playerlist.length; i++)
 		{
 			sendHand(playerlist[i].socketID, parseInt(id), playerlist[i].hand, i);
@@ -287,7 +283,7 @@ socketIo.on('connection', (socket) => {
 				if (socketID === socket.id) {
 					socket.emit('playerHand', pack);
 				}
-				console.log(`Sending ${playerlist[i].socketID} hand to themself: ${hand}`);
+				//console.log(`Sending ${playerlist[i].socketID} hand to themself: ${hand}`);
 				socket.to(playerlist[i].socketID).emit('playerHand', pack);
 			}
 			else {

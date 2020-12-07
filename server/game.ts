@@ -92,37 +92,44 @@ class Game {
 		this.players[recipientIndex].addCard(card);
 	}
 
-	playCard(player, card, socket, opponent) {
-		
+	playCard(playerIndex, card, socket, opponentIndex) {
 		let cardType = card.type;
-		player.removeCard(card);
-		
-		if (cardType === 'give' || cardType === 'steal') {
-			let opponentIndices = [];
-			for (let i = 0; i< this.players.length; i++){
-				if(this.players[i].socketID!== socket.id)
-				opponentIndices.push(i);
+		let player = this.players[playerIndex];
+		if (player.lastPlayed == 'give') {
+			this.transferCard(playerIndex, player.opponentIndex, card);
+			console.log("Player", player.name, "gave card", cardType, "to", this.players[opponentIndex].name);
+			player.lastPlayed = 'bruh';
+			player.opponentIndex = -2;
+		}
+		else if (player.lastPlayed === 'steal') {
+			// TODO
+		}
+		else {
+			player.removeCard(card);
+			console.log("Player", player.name, "played card:", cardType);
+			if (cardType === 'give' || cardType === 'steal') {
+				player.opponentIndex = opponentIndex;
+				player.lastPlayed = cardType;
 			}
-			// socket.emit("selectOpponent", opponentIndices)
-		}
-		else if (cardType === 'draw 2') {
-			player.addCard(this.mainDeck[0]); // get first card in main deck
-			this.mainDeck.shift();
-			this.mainDeck.push(this.getRandomCard());
-			player.addCard(this.mainDeck[0]); // again, get first card in main deck
-			this.mainDeck.shift();
-			this.mainDeck.push(this.getRandomCard());
-		}
-		else if (cardType === 'see future') {
-			let cardsToDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
-			socket.emit('seeFuture', cardsToDisplay)
-		}
-		else if (cardType === 'add' || cardType === 'subtract') {
-			player.pointTotal += card.points;
-			if (player.pointTotal >= 100) {
-				player.isDead = true;
-				if (this.finalTurnNumber === -1)
-					this.finalTurnNumber = Math.ceil(this.turnNumber / this.players.length + 1) * this.players.length;
+			else if (cardType === 'draw 2') {
+				player.addCard(this.mainDeck[0]); // get first card in main deck
+				this.mainDeck.shift();
+				this.mainDeck.push(this.getRandomCard());
+				player.addCard(this.mainDeck[0]); // again, get first card in main deck
+				this.mainDeck.shift();
+				this.mainDeck.push(this.getRandomCard());
+			}
+			else if (cardType === 'see future') {
+				let cardsToDisplay = [this.mainDeck[0], this.mainDeck[1], this.mainDeck[2]];
+				socket.emit('seeFuture', cardsToDisplay)
+			}
+			else if (cardType === 'add' || cardType === 'subtract') {
+				player.pointTotal += card.points;
+				if (player.pointTotal >= 100) {
+					player.isDead = true;
+					if (this.finalTurnNumber === -1)
+						this.finalTurnNumber = Math.ceil(this.turnNumber / this.players.length + 1) * this.players.length;
+				}
 			}
 		}
 		if (this.finalTurnNumber === this.turnNumber)

@@ -78,8 +78,10 @@ export const Card: React.FC<CardProps> = ({ name: card, src }) => {
     }
 
     console.log(card['type']);
-    if (card['type'] === 'steal' || card['type'] === 'give') {
+    if ((card['type'] === 'steal' || card['type'] === 'give') && (playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'steal' &&
+    playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'give')) {
       if (playerStore.opponentIndex >= 0) {
+        playerStore.setLastPlayed(card['type'], playerStore.currentPlayerIndex);
         gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, card, playerStore.opponentIndex);
       }
       else {
@@ -87,7 +89,8 @@ export const Card: React.FC<CardProps> = ({ name: card, src }) => {
       }
     }
     else {
-      gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, card, -1);
+      playerStore.setLastPlayed(card['type'], playerStore.currentPlayerIndex);
+      gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, card, playerStore.opponentIndex);
     }
   }
 

@@ -155,6 +155,10 @@ Notes:
       gs.socket.on("turnCount", function(data) {
         playerStore.turnNumber = data;
       });
+
+      gs.socket.on("seeFuture", function(data) {
+        console.log("yay see future!");
+      });
     }, []);
   
     function selectOpponent(newOpponentIndex: number)
