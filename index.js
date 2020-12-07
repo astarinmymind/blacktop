@@ -247,7 +247,7 @@ socketIo.on('connection', (socket) => {
 		}
 	});
 	
-	socket.on('turnEnded', async(id, index) =>
+	socket.on('turnEnded', async(id, index, endTurnNotification) =>
 	{
 		let game = await readfromDatabase(id);
 		game.turnNumber++;
@@ -262,10 +262,14 @@ socketIo.on('connection', (socket) => {
 		await updateDatabase(game);
 		for (let i = 0; i < game.players.length; i++)
 		{
-			if (game.players[i].socketID === socket.id)
+			if (game.players[i].socketID === socket.id) {
 				socket.emit('turnCount', game.turnNumber);
-			else
+				socket.emit('endTurnNotification', endTurnNotification)
+			}
+			else {
 				socket.to(game.players[i].socketID).emit('turnCount', game.turnNumber);
+				socket.to(game.players[i].socketID).emit('endTurnNotification', endTurnNotification)
+			}
 		}
 	});
 	
