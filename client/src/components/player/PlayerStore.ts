@@ -8,6 +8,7 @@ class Player {
     name: string;
     icon: any;
     index: number;
+    lastPlayed: string;
     //hand: CardStore;
     //pointTotal: number;
    // isDead: boolean;
@@ -17,6 +18,7 @@ class Player {
         this.name = "";
         this.icon = Brickshay;
         this.index = index;
+        this.lastPlayed = "";
         //this.hand = new CardStore();
         //this.pointTotal = 0;
         //this.isDead = false;
@@ -34,7 +36,7 @@ export class PlayerStore {
     // array of Card Objects
     playerHand: string[] = [/*"nope", "give", "add1", "sub1", "nope", "draw", "see" */];
 
-    point: number[] = [5, 7, 8];
+    point: number[] = [];
 
     @observable lobbyId: number = 0;
 
@@ -43,6 +45,8 @@ export class PlayerStore {
     @observable gameStarted: boolean = false;
 
     @observable turnNumber: number = 0;
+
+    @observable opponentIndex: number = -1;
 
     @action
     getPlayerHand = () => {
@@ -62,7 +66,7 @@ export class PlayerStore {
     // pushes player onto player array 
     @action 
     addPlayer = () => {
-        console.log(this.players);
+        //console.log(this.players);
         this.players.push(new Player(this.players.length));
     }
 
@@ -83,9 +87,17 @@ export class PlayerStore {
         this.players[index].icon = newIcon;
     }
 
+    @action
+    setLastPlayed = (lastPlayed: string, index: number) => {
+        this.players[index].lastPlayed = lastPlayed;
+    }
+
     @action 
     drawCard = (card: string) => {
         this.playerHand.push(card);
-        console.log(this.playerHand);
+        //console.log(this.playerHand);
     }
+
+    
+
 }
