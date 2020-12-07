@@ -8,6 +8,7 @@ class Player {
     name: string;
     icon: any;
     index: number;
+    lastPlayed: string;
     //hand: CardStore;
     //pointTotal: number;
    // isDead: boolean;
@@ -17,6 +18,7 @@ class Player {
         this.name = "";
         this.icon = Brickshay;
         this.index = index;
+        this.lastPlayed = "";
         //this.hand = new CardStore();
         //this.pointTotal = 0;
         //this.isDead = false;
@@ -64,7 +66,7 @@ export class PlayerStore {
     // pushes player onto player array 
     @action 
     addPlayer = () => {
-        console.log(this.players);
+        //console.log(this.players);
         this.players.push(new Player(this.players.length));
     }
 
@@ -85,9 +87,17 @@ export class PlayerStore {
         this.players[index].icon = newIcon;
     }
 
+    @action
+    setLastPlayed = (lastPlayed: string, index: number) => {
+        this.players[index].lastPlayed = lastPlayed;
+    }
+
     @action 
     drawCard = (card: string) => {
         this.playerHand.push(card);
-        console.log(this.playerHand);
+        //console.log(this.playerHand);
     }
+
+    
+
 }
