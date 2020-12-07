@@ -108,6 +108,7 @@ Notes:
   
       // update player points 
       gs.socket.on("allScores", function(data) {
+        console.log("scores:")
         console.log(data)
         playerStore.point = data;
         setDummy({});
@@ -115,8 +116,6 @@ Notes:
   
       // event notification: nope, give, see, draw event
       gs.socket.on("eventNotification", function(data) {
-          console.log(data[0])
-          console.log(data[1])
           var name = playerStore.players[data[0]].name
           textLog.push(name, ' ', 'played ', data[1].type, '\n')
           setDummy({});
@@ -147,8 +146,13 @@ Notes:
       });
 
       gs.socket.on("seeFuture", function(data) {
-        console.log("see future card played")
-        console.log(data)
+        textLog.push('the next three cards are: \n')
+        for (let card of data) {
+          if (card.type === "add" || card.type === "subtract")
+            textLog.push(card.type, ' ', card.points, '\n')
+          else
+            textLog.push(card.type, '\n')
+        }
       });
 
 
@@ -199,12 +203,13 @@ Notes:
                 {playerStore.getPlayers().map((element, i) => 
                   <li style={{ listStyleType: "none" }} key={i}>
                     <img alt="icon" src={element.icon} onClick={() => selectOpponent(i)}/>
-                    {element.name}
+                    {[element.name, '     ']}
+                    {playerStore.getPoints()[i]}
                   </li>
                 )}
               </div>
               {/* <div>
-                {playerStore.getPoints().map((point) => 
+                {playerStore.getPoints().map(point => 
                   <li>{point}</li>
                 )}
               </div> */}
