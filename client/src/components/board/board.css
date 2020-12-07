@@ -1,10 +1,11 @@
 .rectangle {
     display: flex;
-    width: 25vw;
+    width: 20vw;
     height: 30vw;
     background: rgb(36, 36, 36);
     border-radius: 10%;
     justify-content: center;
     align-items: center;
     margin: 1vw;
+    margin-left: 0px;
 }

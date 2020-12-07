@@ -16,6 +16,7 @@ import Seagull      from '../../images/Seagull.gif';
 import Slug         from '../../images/Slug.gif';
 import Tangerine    from '../../images/Tangerine.gif';
 import Werewolf     from '../../images/Werewolf.gif';
+import Detective    from '../../images/Detective.gif';
 // import src from '*.avif';
 import GameService from '../../services/GameService';
 
@@ -49,6 +50,8 @@ export const Lobby = () => {
                 return Werewolf;
             case 11:
                 return Brickshay;
+            case 12:
+                return Detective;
             default:
                 return Brickshay;
         }
@@ -132,7 +135,7 @@ export const Lobby = () => {
 
     return useObserver(() => (
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, minHeight: '100vh'}}>
-            <img src={ TestLogo } alt="logo" className="logo" />
+            <img src={ TestLogo } alt="logo" className="logo" onClick={() => updateIcon(12)} style={{cursor:'zoom-in'}} />
             <img src={ ChalkLine } alt="line" className="line" />
             <div className="lobby-columns">
                 <div style={{textAlign: "right"}}>

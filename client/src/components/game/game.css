@@ -2,7 +2,7 @@
 
 .game-columns {
     display: grid;
-    grid-template-columns: 5fr 6fr 3fr;
+    grid-template-columns: 1.5fr 2fr 2fr;
     color: #ffffff;
     font-family: 'Schoolbell', cursive;
     font-size: 1.8vw;
@@ -20,12 +20,7 @@
     margin-bottom: 1vw;
 }
 
-.game-columns button {
-    margin-left: 1vw;
-}
-
 .game-columns img {
-    width: 50%;
     margin: 1vw;
     vertical-align: middle;
     justify-content: left;
@@ -33,6 +28,7 @@
 
 .game-columns .flip-img {
     /* -webkit-transform: scaleX(-1); */
+    width: 16.25vw;
     transform: scaleX(-1);
     border: 0.3vw solid white;
 }
@@ -62,7 +58,8 @@
 }
 
 .game-columns .list img {
-    width: 30%;
+    float: left;
+    width: 20%;
     margin-top: 0px;
     cursor: pointer;
 }
@@ -70,6 +67,7 @@
 .hand {
     display: flex;
     justify-content: center;
+    margin: 0px;
 }
 
 .results {

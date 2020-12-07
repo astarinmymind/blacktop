@@ -20,18 +20,18 @@ Notes:
   import './game.css';
   import NopeCard from '../../images/TestCard.png';
   import SkipCard from '../../images/SkipCard.png';
-  import AddCard from '../../images/ADD1.png';
-  import SubCard from '../../images/Minus10.png';
+  import Add1Card from '../../images/ADD1.png';
+  import Add10Card from '../../images/Add10.png';
+  import Sub1Card from '../../images/SUB1.png';
+  import Sub10Card from '../../images/Minus10.png';
   import DrawCard from '../../images/DrawCard.png';
   import GiveCard from '../../images/GiveCard.png';
   import SeeCard from '../../images/PeekCard.png';
   import StealCard from '../../images/StealCard.png'
   import TestLogo from '../../images/TestLogo.png';
   import ChalkLine from '../../images/ChalkLine.png';
-  import Brickshay from '../../images/Brickshay.gif'
   
   import GameService from '../../services/GameService';
-  import { getPositionOfLineAndCharacter } from "typescript";
   
   const gs = new GameService();
   
@@ -45,12 +45,6 @@ Notes:
     // gets store
     // const {cardStore} = useCardStore()
     const {playerStore} = usePlayerStore();
-  
-    // emits socket event that player has pressed start game
-    function startGame() 
-    {
-      gs.socket.emit("gameStarted", playerStore.lobbyId);
-    }
   
     // emits socket event that player has pressed end turn
     function endTurn() 
@@ -76,10 +70,14 @@ Notes:
       switch (cardname.type) {
           case "nope":
               return NopeCard;
-          case "add":
-              return AddCard;
-          case "subtract":
-              return SubCard;
+          case "add 1":
+              return Add1Card;
+          case "add 10":
+              return Add10Card;
+          case "subtract 1":
+              return Sub1Card;
+          case "subtract 10":
+              return Sub10Card;
           case "give":
               return GiveCard;
           case "see future":
@@ -88,6 +86,8 @@ Notes:
               return DrawCard;
           case "skip":
               return SkipCard;
+          case "steal":
+              return StealCard;
           default: 
               break;
       }
@@ -124,7 +124,7 @@ Notes:
       // event notification: nope, give, see, draw event
       gs.socket.on("eventNotification", function(data) {
           var name = playerStore.players[data[0]].name
-          textLog.push(name, ' ', 'played ', data[1].type, '\n')
+          textLog.push(name + ' ' + 'played ' + data[1].type + '\n')
           setDummy({});
       });
 
@@ -156,9 +156,9 @@ Notes:
         textLog.push('the next three cards are: \n')
         for (let card of data) {
           if (card.type === "add" || card.type === "subtract")
-            textLog.push(card.type, ' ', card.points, '\n')
+            textLog.push(card.type + ' ' + card.points + '\n')
           else
-            textLog.push(card.type, '\n')
+            textLog.push(card.type + '\n')
         }
       });
 
@@ -199,7 +199,7 @@ Notes:
                 <img src={playerStore.players[playerStore.currentPlayerIndex].icon} className="flip-img" alt="Current Player" />
                 <h1>{playerStore.players[playerStore.currentPlayerIndex].name}</h1>
                 <div>
-                  <button onClick={endTurn}>Draw & End Turn</button>
+                  <button onClick={endTurn}> Draw & <br />End Turn</button>
                 </div>
               </div>
               <div style={{display: 'flex'}}>
@@ -208,16 +208,15 @@ Notes:
               </div>
               <div className="list">
                 {playerStore.getPlayers().map((element, i) => 
-                  <li style={{ listStyleType: "none" }} key={i}>
+                  <div style={{marginBottom: '3vw'}}>
                     <img alt="icon" src={element.icon} onClick={() => selectOpponent(i)}/>
-                    {[element.name, '     ']}
-                    {playerStore.getPoints()[i]}
-                  </li>
+                    {element.name}
+                    <p>Score: {playerStore.getPoints()[i] ? playerStore.getPoints()[i] : 0}</p>
+                  </div>
                 )}
               </div>
             </div>
             <div className="hand">
-              {/* <img src={NopeCard} alt="icon"/> */}
               {playerStore.getPlayerHand().map((card) => 
                   <Card name={card} src={setImage(card)}/>
               )}
@@ -229,14 +228,25 @@ Notes:
   
     function resultsPage() {
       // playerStore.gameStarted = false;
+
+      let winStatus: string;
+      if (gameTied) {
+        winStatus = 'Draw!'
+      }
+      else if (playerStore.players[victorIndex].name === playerStore.players[playerStore.currentPlayerIndex].name) {
+        winStatus = 'Victory!'
+      }
+      else {
+        winStatus = "Defeat!"
+      }
       
       return(
         <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, minHeight: '100vh'}}>
           <img src={ TestLogo } alt="logo" className="logo" />
           <img src={ ChalkLine } alt="line" className="line" />
           <div className="results">
-            <h1>{playerStore.players[victorIndex].name === playerStore.players[playerStore.currentPlayerIndex].name ? "Victory!" : "Defeat!"}</h1>
-            <img src={playerStore.players[victorIndex].icon} alt="Victor" />
+            <h1>{winStatus}</h1>
+            { !gameTied ? <img src={playerStore.players[victorIndex].icon} alt="Victor"/> : null }
             <h1>{playerStore.players[victorIndex].name}</h1>
             <Link to={{ pathname: '/', state:{ consent:'true'} }} >
               <button>Go Home</button>
@@ -247,7 +257,7 @@ Notes:
     }
   
     return useObserver(() => (
-      gameFinished ? resultsPage() : gamePage()
+      (gameFinished || gameTied) ? resultsPage() : gamePage()
     ));
   }
   export default Game;
