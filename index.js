@@ -183,40 +183,6 @@ socketIo.on('connection', (socket) => {
 			sendHand(playerlist[i].socketID, parseInt(gameID), playerlist[i].hand, i); 
 		await updateDatabase(game);
 	});
-
-	socket.on('giveOpponentSelected', async (gameID, opponentIndex) => {
-		let game = await readfromDatabase(gameID);
-		socket.emit('selectCardToGive', opponentIndex, game.findPlayerByID(socket.ID).hand);
-	});
-
-	socket.on('giveCardSelected', async (card, opponentIndex, gameID) => {
-		let game = await readfromDatabase(gameID);
-		if (game == null)
-			return;
-		for (let i = 0; i < game.players.length; i++) {
-			if (game.players[i].socketID === socket.id) {
-				game.transferCard(i, opponentIndex, card);
-				return;
-			}
-		}
-	});
-
-	socket.on('stealOpponentSelected', async (opponentIndex) => {
-		let game = await readfromDatabase(gameID);
-		socket.emit('selectCardToSteal', opponentIndex, game.players[opponentIndex].hand);
-	});
-
-	socket.on('stealCardSelected', async (card, opponentIndex, gameID) => {
-		let game = await readfromDatabase(gameID);
-		if (game == null)
-			return; 
-		for (let i = 0; i < game.players.length; i++) {
-			if (game.players[i].socketID === socket.id) {
-				game.transferCard(opponentIndex, i, card);
-				return;
-			}
-		}
-	});
 	
 	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
 	{
@@ -262,7 +228,7 @@ socketIo.on('connection', (socket) => {
 		await updateDatabase(game);
 		for (let i = 0; i < game.players.length; i++)
 		{
-			if (game.players[i].socketID === socket.id) {
+			if (i == index) {
 				socket.emit('turnCount', game.turnNumber);
 				socket.emit('endTurnNotification', endTurnNotification)
 			}

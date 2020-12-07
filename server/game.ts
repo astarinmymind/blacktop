@@ -88,8 +88,8 @@ class Game {
 	}
 
 	transferCard(senderIndex, recipientIndex, card) {
-		this.players[senderIndex].removeCard(card);
 		this.players[recipientIndex].addCard(card);
+		this.players[senderIndex].removeCard(card);
 	}
 
 	playCard(playerIndex, card, socket, opponentIndex) {
@@ -97,19 +97,19 @@ class Game {
 		let player = this.players[playerIndex];
 		if (player.lastPlayed == 'give') {
 			this.transferCard(playerIndex, player.opponentIndex, card);
-			console.log("Player", player.name, "gave card", cardType, "to", this.players[opponentIndex].name);
-			player.lastPlayed = 'bruh';
-			player.opponentIndex = -2;
+			//console.log("Player", player.name, "gave card", cardType, "to", this.players[opponentIndex].name);
+			player.lastPlayed = '';
+			player.opponentIndex = -1;
 		}
 		else if (player.lastPlayed === 'steal') {
 			// TODO
 		}
 		else {
 			player.removeCard(card);
-			console.log("Player", player.name, "played card:", cardType);
+			//console.log("Player", player.name, "played card:", cardType);
 			if (cardType === 'give' || cardType === 'steal') {
-				player.opponentIndex = opponentIndex;
 				player.lastPlayed = cardType;
+				player.opponentIndex = opponentIndex;
 			}
 			else if (cardType === 'draw 2') {
 				player.addCard(this.mainDeck[0]); // get first card in main deck
@@ -159,7 +159,7 @@ class Game {
 
 	logPlayers() {
 		for (let i = 0; i < this.players.length; i++) {
-			console.log('Player in game ', this.id, ': ', this.players[i]);
+			console.log(this.players[i]);
 		}
 	}
 	

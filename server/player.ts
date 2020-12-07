@@ -15,6 +15,8 @@ class Player {
 		p.pointTotal = player.pointTotal;
 		p.isDead = player.isDead;
 		p.hand = player.hand.map(c => Card.fromFirestore(c));
+		p.opponentIndex = player.opponentIndex;
+		p.lastPlayed = player.lastPlayed;
 		return p;
 		//add a modification to add back the functions and other things into socket.
 	}
@@ -38,7 +40,9 @@ class Player {
 	}
 
 	addCard(card) {
-		this.hand.push(card);
+		let newCard = new Card(card.type);
+		newCard.points = card.points;
+		this.hand.push(newCard);
     }
 
 	removeCard(card) {
