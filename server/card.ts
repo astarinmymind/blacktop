@@ -20,10 +20,10 @@
 
 	generateCardPoints() {
 		if (this.type === 'add') {
-			this.points = Math.floor(Math.random() * 20);
+			this.points = Math.floor(1 + Math.random() * 19);
 		}
 		else if (this.type === 'subtract') {
-			this.points = -1 * Math.floor(Math.random() * 20);
+			this.points = -1 * Math.floor(1 + Math.random() * 19);
 		}
 		else
 			this.points = 0;

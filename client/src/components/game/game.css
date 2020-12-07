@@ -45,7 +45,7 @@
     margin-top: 1vw;
 }
 
-.game-columns .events-box html {
+.game-columns .events-box p {
     margin: 0.5vw;
     font-size: medium;
     overflow-y: auto;
@@ -68,6 +68,7 @@
     display: flex;
     justify-content: center;
     margin: 0px;
+    margin-top: -1.5vw;
 }
 
 .results {

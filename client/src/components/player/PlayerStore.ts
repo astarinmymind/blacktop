@@ -34,7 +34,7 @@ export class PlayerStore {
     // array of Player Objects
     players: Player[] = [];
     // array of Card Objects
-    playerHand: string[] = [/*"nope", "give", "add1", "sub1", "nope", "draw", "see" */];
+    playerHand: {type: string, points: number}[] = [/*"nope", "give", "add1", "sub1", "nope", "draw", "see" */];
 
     point: number[] = [];
 
@@ -91,13 +91,4 @@ export class PlayerStore {
     setLastPlayed = (lastPlayed: string, index: number) => {
         this.players[index].lastPlayed = lastPlayed;
     }
-
-    @action 
-    drawCard = (card: string) => {
-        this.playerHand.push(card);
-        //console.log(this.playerHand);
-    }
-
-    
-
 }
