@@ -97,6 +97,7 @@ Notes:
      const [lastFive, setLastFive] = React.useState([{}, {}, {}, {}, {}]);
      const [victorIndex, setVictorIndex] = React.useState(0);
      const [gameFinished, setGameFinished] = React.useState(false);
+     const [gameTied, setGameTied] = React.useState(false);
      const [dummy, setDummy] = React.useState({});
      React.useEffect(() => {
   
@@ -108,9 +109,15 @@ Notes:
   
       // update player points 
       gs.socket.on("allScores", function(data) {
-        console.log("scores:")
-        console.log(data)
         playerStore.point = data;
+        let count = 0;
+        for (let point of data) {
+          if (point > 100)
+            count = count + 1
+        } 
+        if (count === data.length) {
+          setGameTied(true);
+        }
         setDummy({});
       });
   
@@ -208,11 +215,6 @@ Notes:
                   </li>
                 )}
               </div>
-              {/* <div>
-                {playerStore.getPoints().map(point => 
-                  <li>{point}</li>
-                )}
-              </div> */}
             </div>
             <div className="hand">
               {/* <img src={NopeCard} alt="icon"/> */}
@@ -245,7 +247,7 @@ Notes:
     }
   
     return useObserver(() => (
-      false ? resultsPage() : gamePage()
+      gameFinished ? resultsPage() : gamePage()
     ));
   }
   export default Game;
