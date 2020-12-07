@@ -145,6 +145,13 @@ Notes:
       gs.socket.on("turnCount", function(data) {
         playerStore.turnNumber = data;
       });
+
+      gs.socket.on("seeFuture", function(data) {
+        console.log("see future card played")
+        console.log(data)
+      });
+
+
     }, []);
   
     function selectOpponent(newOpponentIndex: number)
