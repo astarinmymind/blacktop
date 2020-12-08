@@ -18,6 +18,7 @@ class Game {
 	mainDeck;
 	isGameOver;
 	turnNumber;
+	skipTurnNumber;
 	finalTurnNumber;
 
 	constructor(id) {
@@ -26,6 +27,7 @@ class Game {
 		this.players = new Array();
 		this.mainDeck = new Array();
 		this.turnNumber = 0;
+		this.skipTurnNumber = -1;
 		this.finalTurnNumber = -1;
 	}
 
@@ -70,13 +72,6 @@ class Game {
 		this.players = this.players.filter(p => p.socketID !== playerID);
 	}
 
-	drawTopCard(player) {
-		let card = this.mainDeck[0]; // get first card in main deck
-		player.addCard(card);
-		this.mainDeck.shift();
-		this.mainDeck.push(this.getRandomCard());
-	}
-
 	specialAction(pointTotal) {
 		switch (pointTotal) {
 			case 10:
@@ -95,24 +90,23 @@ class Game {
 	playCard(playerIndex, card, socket, opponentIndex) {
 		let cardType = card.type;
 		let player = this.players[playerIndex];
-		if (player.lastPlayed == 'give') {
+		if (player.lastPlayed === 'give') {
 			this.transferCard(playerIndex, player.opponentIndex, card);
-			//console.log("Player", player.name, "gave card", cardType, "to", this.players[opponentIndex].name);
 			player.lastPlayed = '';
-			player.opponentIndex = -1;
-		}
-		else if (player.lastPlayed === 'steal') {
-			// TODO
-		}
-		else if (player.lastPlayed === 'skip') {
-			// TODO
 		}
 		else {
 			player.removeCard(card);
-			//console.log("Player", player.name, "played card:", cardType);
-			if (cardType === 'give' || cardType === 'steal') {
-				player.lastPlayed = cardType;
+			player.lastPlayed = cardType;
+			if (cardType === 'give') {
 				player.opponentIndex = opponentIndex;
+			}
+			else if (cardType === 'steal') {
+				let opponentHand = this.players[opponentIndex].hand;
+				let randomCard = opponentHand[Math.floor(Math.random() * opponentHand.length)];
+				this.transferCard(opponentIndex, playerIndex, randomCard);
+			}
+			else if (cardType === 'skip') {
+				this.skipTurnNumber = this.turnNumber + 1;
 			}
 			else if (cardType === 'draw 2') {
 				player.addCard(this.mainDeck[0]); // get first card in main deck
@@ -187,6 +181,7 @@ var gameConverter = {
 		game.mainDeck = data.mainDeck.map(card => Card.fromFirestore(card));
 		game.isGameOver = data.isGameOver;
 		game.turnNumber = data.turnNumber;
+		game.skipTurnNumber = data.skipTurnNumber;
 		game.finalTurnNumber = data.finalTurnNumber;
 		return game;
 	}

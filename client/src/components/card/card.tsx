@@ -78,8 +78,7 @@ export const Card: React.FC<CardProps> = ({ type, points, src }) => {
       alert('You can only play a card on your turn, unless you are playing a NOPE card!');
       return;
     }
-    if ((type === 'steal' || type === 'give') && (playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'steal' &&
-    playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'give')) {
+    if ((type === 'steal' || type === 'give') && playerStore.players[playerStore.currentPlayerIndex].lastPlayed !== 'give') {
       if (playerStore.opponentIndex >= 0) {
         playerStore.setLastPlayed(type, playerStore.currentPlayerIndex);
         gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, {type, points}, playerStore.opponentIndex);
@@ -90,7 +89,7 @@ export const Card: React.FC<CardProps> = ({ type, points, src }) => {
     }
     else {
       playerStore.setLastPlayed(type, playerStore.currentPlayerIndex);
-      gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, {type, points}, -1);
+      gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, {type, points}, playerStore.opponentIndex);
     }
   }
 
