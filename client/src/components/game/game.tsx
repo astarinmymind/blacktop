@@ -68,6 +68,7 @@ Notes:
   import ChalkLine from '../../images/ChalkLine.png';
   
   import GameService from '../../services/GameService';
+import { wait } from "@testing-library/react";
   
   const gs = new GameService();
   
@@ -83,7 +84,8 @@ Notes:
     const {playerStore} = usePlayerStore();
   
     // emits socket event that player has pressed end turn
-    function endTurn() 
+
+    async function endTurn() 
     {
       if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex) {
         alert("It is not your turn!");
@@ -98,6 +100,7 @@ Notes:
         + 'It is now ' + nextPlayer + '\'s turn. \n';
   
       gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
+      await new Promise(r => setTimeout(r, 2000));
       gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex, endTurnNotification);
     }
   

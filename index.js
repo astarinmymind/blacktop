@@ -164,11 +164,16 @@ socketIo.on('connection', (socket) => {
 		if (player === null)
 			return;
 
-		game.drawTopCard(player);
+		let card = game.mainDeck[0]; // get first card in main deck
+		game.players[index].hand.push(card);
+		game.mainDeck.shift();
+
+		await updateDatabase(game);
+
 		let playerlist = game.players;
 		for (let i = 0; i < playerlist.length; i++)
 			sendHand(playerlist[i].socketID, parseInt(gameID), playerlist[i].hand, i); 
-		await updateDatabase(game);
+
 	});
 	
 	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
