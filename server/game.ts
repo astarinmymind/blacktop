@@ -104,6 +104,9 @@ class Game {
 		else if (player.lastPlayed === 'steal') {
 			// TODO
 		}
+		else if (player.lastPlayed === 'skip') {
+			// TODO
+		}
 		else {
 			player.removeCard(card);
 			//console.log("Player", player.name, "played card:", cardType);

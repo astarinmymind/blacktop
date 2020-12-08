@@ -89,6 +89,7 @@ export const Card: React.FC<CardProps> = ({ type, points, src }) => {
       }
     }
     else {
+      playerStore.setLastPlayed(type, playerStore.currentPlayerIndex);
       gs.socket.emit('cardPlayed', playerStore.lobbyId, playerStore.currentPlayerIndex, {type, points}, -1);
     }
   }

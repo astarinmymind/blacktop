@@ -98,9 +98,7 @@ import { wait } from "@testing-library/react";
 
       let endTurnNotification: string = playerStore.players[playerStore.currentPlayerIndex].name + ' ended their turn. \n'
         + 'It is now ' + nextPlayer + '\'s turn. \n';
-  
-      gs.socket.emit("cardDrawn", playerStore.lobbyId, playerStore.currentPlayerIndex);
-      await new Promise(r => setTimeout(r, 2000));
+
       gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex, endTurnNotification);
     }
   

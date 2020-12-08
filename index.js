@@ -155,27 +155,6 @@ socketIo.on('connection', (socket) => {
 		 //maybe put this inside the loop later
 	});
 	
-	socket.on('cardDrawn', async (gameID, index) =>
-	{
-		let game = await readfromDatabase(gameID);
-		if (game === null)
-			return;
-		let player = game.players[index];
-		if (player === null)
-			return;
-
-		let card = game.mainDeck[0]; // get first card in main deck
-		game.players[index].hand.push(card);
-		game.mainDeck.shift();
-
-		await updateDatabase(game);
-
-		let playerlist = game.players;
-		for (let i = 0; i < playerlist.length; i++)
-			sendHand(playerlist[i].socketID, parseInt(gameID), playerlist[i].hand, i); 
-
-	});
-	
 	socket.on('cardPlayed', async (id, playerIndex, card, opponentIndex) =>
 	{
 		let game = await readfromDatabase(id);
@@ -233,7 +212,12 @@ socketIo.on('connection', (socket) => {
 				socket.emit('finalRound', deadPlayers);
 			}
 		}
+		game.players[index].hand.push(game.mainDeck[0]);
+		game.mainDeck.shift();
 		await updateDatabase(game);
+		let playerlist = game.players;
+		for (let i = 0; i < playerlist.length; i++)
+			sendHand(playerlist[i].socketID, parseInt(id), playerlist[i].hand, i); 
 		for (let i = 0; i < game.players.length; i++)
 		{
 			if (i == index) {
