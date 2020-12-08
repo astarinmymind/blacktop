@@ -3,12 +3,16 @@ import { useObserver } from 'mobx-react-lite'
 import { Link } from "react-router-dom";
 import './home.css';
 import TestLogo from '../../images/TestLogo.png';
-import TestCard from '../../images/TestCard.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import PlushCat from '../../images/PlushCat.gif';
 import Werewolf from '../../images/Werewolf.gif';
 import GameService from '../../services/GameService';
 import { usePlayerStore } from '../player/player'
+import NopeCard from '../../images/TestCard.png';
+import DrawCard from '../../images/DrawCard.png';
+import GiveCard from '../../images/GiveCard.png';
+import SeeCard from '../../images/PeekCard.png';
+import StealCard from '../../images/StealCard.png'
 
 const gs = new GameService();
 
@@ -89,9 +93,8 @@ export const Home = () => {
                 </div>
                 <div>
                     <h1>Welcome to Blacktop!</h1>
-                    Blacktop is a game about deception, strategy, and sabotage! 
-                    <br />Each player brings with them a personalized side deck to assist them as they try to not get kazaap'd!
-                    <br />You can join a public game or play a private game with your friends!
+                    Blacktop is a game of deception, strategy, and sabotage! 
+                    <br />Grab some friends and hop in a game!
                     <br />
                 </div>
                 <div>
@@ -103,17 +106,18 @@ export const Home = () => {
                     <img src={Werewolf} alt="" />
                 </div>
                 <div>
-                    <h1>Rules</h1>
-                    The goal of the game is to get your point total as close to 100 at the end of the final round without going over. 
-                    The game is split up into rounds, with each round consisting of 3 turns. 
-                    There are point cards, action cards, and bomb cards. 
-                    During a turn, each player has the option to play cards, and then they must draw. 
-                    At the end of each round, if a player’s point total is a multiple of ten, a special effect happens based on which ten they are on. 
-                    The final round starts the first time a player’s point total is over a hundred at the end of the round.
+                    <h1>How It Works</h1>
+                    <br /> Every player takes turns drawing and playing cards.
+                    <br /> The goal is to be the first one to get to 100 points.
+                    <br /> But if you go over, you lose!
+                    <br /> All other cards help you or harm others! 
+                    <br /> Play as many cards as you want, then draw and end turn. 
+                    <br /> Play various cards to add and subtract your points, 
+                    <br /> give and steal cards,
+                    <br /> peek the deck or skip the next player's turn!
+                    <br /> NOPE cards can be played at ANY TIME! And cancels the effect of any card. 
                     <br />
-                    <h2>Play Cards</h2>
                     <br />
-                    <h2>Special Effects</h2>
                     <br />
                 </div>
                 <div>
@@ -126,9 +130,25 @@ export const Home = () => {
                     <h1>Cards</h1>
                     <br />
                 </div>
-                <div>
-                    <img src={TestCard} alt="" />
+            </div>
+            <div className="cards">
+            <div className="row">
+                <div className="column">
+                    <img src={NopeCard} alt=""/>
                 </div>
+                <div className="column">
+                    <img src={DrawCard} alt=""/>
+                </div>
+                <div className="column">
+                    <img src={GiveCard} alt=""/>
+                </div>
+                <div className="column">
+                    <img src={StealCard} alt=""/>
+                </div>
+                <div className="column">
+                    <img src={SeeCard} alt=""/>
+                </div>
+            </div>
             </div>
         </div>
     ));
