@@ -163,20 +163,46 @@ socketIo.on('connection', (socket) => {
 		let player = playerlist[playerIndex];
 		let lastPlayed = player.lastPlayed;
 
-		let winnerIndex = game.playCard(playerIndex, card, socket, opponentIndex);
-		//if (winnerIndex !== -1) 
-			//socket.emit('results', winnerIndex);
+		if (player.isDead) {
+			socket.emit('eventNotification', "You can't play anymore since you are dead!\n");
+			return;
+		}
+		if (lastPlayed !== 'give' && card.type === 'give' && player.hand.length <= 1) {
+			socket.emit('eventNotification', "You don't have any cards left to give!\n");
+			return;
+		}
+		if (card.type === 'steal' && playerlist[opponentIndex].hand.length === 0) {
+			socket.emit('eventNotification', game.players[opponentIndex].name + " doesn't have any cards left to steal!\n");
+			return;
+		}
+
+		game.playCard(playerIndex, card, socket, opponentIndex);
 		await updateDatabase(game);
-		
-		let msg = "";
+		let nextPlayerIndex = (playerIndex + 1) % playerlist.length;
+		while (playerlist[nextPlayerIndex].isDead) {
+			nextPlayerIndex = (nextPlayerIndex + 1) % playerlist.length;
+			game.turnNumber++;
+			if (nextPlayerIndex === playerIndex) {
+				let winnerIndex = game.findWinnerIndex();
+				console.log(winnerIndex);
+				for (let i = 0; i < playerlist.length; i++) {
+					if (i === playerIndex)
+						socket.emit('results', winnerIndex);
+					else
+						socket.to(playerlist[i].socketID).emit('results', winnerIndex);
+				}
+			}
+		}
+
+		let msg = player.name;
 		if (lastPlayed === 'give')
-            msg = player.name + " gave '" + card.type + "' to " + playerlist[player.opponentIndex].name + ".\n";
+            msg += " gave '" + card.type + "' to " + playerlist[player.opponentIndex].name + ".\n";
 		else if (card.type === 'steal')
-            msg = player.name + " stole '" + player.hand[player.hand.length - 1].type + "' from " + playerlist[opponentIndex].name + ".\n";
+            msg += " stole '" + player.hand[player.hand.length - 1].type + "' from " + playerlist[opponentIndex].name + ".\n";
 		else if (card.type === 'skip')
-			msg = player.name + " played 'skip', so " + playerlist[(playerIndex + 1) % playerlist.length].name + " will be skipped.\n";
+			msg += " played 'skip', so " + playerlist[nextPlayerIndex].name + " will be skipped.\n";
 		else
-			msg = player.name + " played '" + card.type + "'.\n";
+			msg += " played '" + card.type + "'.\n";
 			
 		let pack = [];
 		for (let i = 0; i < playerlist.length; i++)
@@ -204,41 +230,62 @@ socketIo.on('connection', (socket) => {
 		let game = await readfromDatabase(id);
 		game.turnNumber++;
 		let playerlist = game.players;
-		if (game.turnNumber % playerlist.length === 0)
-		{
-			if (game.isFinalRound)
-			{
-				let deadPlayers = playerlist.filter(p => p.isDead);
-				socket.emit('finalRound', deadPlayers);
-			}
+
+		if (!playerlist[index].isDead) {
+			playerlist[index].addCard(game.mainDeck[0]);
+			game.mainDeck.shift();
+			game.mainDeck.push(game.getRandomCard());
 		}
-		let endTurnNotification = playerlist[index].name + ' ended their turn. \n'
-		+ 'It is now ' + playerlist[(index + 1) % playerlist.length].name + '\'s turn. \n';
+
+		if (game.finalTurnNumber !== -1 && game.finalTurnNumber > game.turnNumber)
+		{
+			let deadPlayers = playerlist.filter(p => p.isDead);
+			socket.emit('finalRound', deadPlayers);
+		}
+
+		if (game.finalTurnNumber !== -1 && game.turnNumber >= game.finalTurnNumber) {
+			let winnerIndex = game.findWinnerIndex();
+			console.log(winnerIndex);
+			for (let i = 0; i < playerlist.length; i++) {
+				if (i === index)
+					socket.emit('results', winnerIndex);
+				else
+					socket.to(playerlist[i].socketID).emit('results', winnerIndex);
+			}
+			
+		}
+
+		let nextPlayerIndex = (index + 1) % playerlist.length;
 		if (game.skipTurnNumber == game.turnNumber)
 		{
 			game.turnNumber++;
 			game.skipTurnNumber = -1;
-			endTurnNotification = playerlist[index].name + ' ended their turn. \n'
-			+ 'It is now ' + playerlist[(index + 2) % playerlist.length].name + '\'s turn. \n';
+			nextPlayerIndex = (index + 2) % playerlist.length;
 		}
-		game.players[index].hand.push(game.mainDeck[0]);
-		game.mainDeck.shift();
-		game.mainDeck.push(game.getRandomCard());
+		while (playerlist[nextPlayerIndex].isDead) {
+			nextPlayerIndex = (nextPlayerIndex + 1) % playerlist.length;
+			game.turnNumber++;
+			if (nextPlayerIndex === index) {
+				winnerIndex = game.findWinnerIndex();
+				socket.emit('results', winnerIndex);
+			}
+		}
+		let endTurnNotification = playerlist[index].name + " ended their turn. \nIt is now " + playerlist[nextPlayerIndex].name + "'s turn. \n";
+		
 		await updateDatabase(game);
 		
 		for (let i = 0; i < playerlist.length; i++)
 			sendHand(playerlist[i].socketID, parseInt(id), playerlist[i].hand, i); 
 
-
-		for (let i = 0; i < game.players.length; i++)
+		for (let i = 0; i < playerlist.length; i++)
 		{
 			if (i == index) {
 				socket.emit('turnCount', game.turnNumber);
 				socket.emit('endTurnNotification', endTurnNotification);
 			}
 			else {
-				socket.to(game.players[i].socketID).emit('turnCount', game.turnNumber);
-				socket.to(game.players[i].socketID).emit('endTurnNotification', endTurnNotification);
+				socket.to(playerlist[i].socketID).emit('turnCount', game.turnNumber);
+				socket.to(playerlist[i].socketID).emit('endTurnNotification', endTurnNotification);
 			}
 		}
 	});

@@ -56,7 +56,7 @@ class Game {
 	}
 
 	getRandomCard() {
-		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', "add", 'add', 'add', 'subtract', 'subtract', 'subtract', "subtract", 'draw 2', 'see future'];
+		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'add', 'add','add', 'subtract', 'subtract', 'subtract', 'draw 2', 'see future'];
 		let cardType = cardTypes[Math.floor(Math.random() * cardTypes.length)];
 		let card = new Card(cardType);
 		return card;
@@ -124,18 +124,20 @@ class Game {
 				player.pointTotal += card.points;
 				if (player.pointTotal >= 100) {
 					player.isDead = true;
+					console.log("player", player.name, "just died!")
+					this.isGameOver = true;
 					if (this.finalTurnNumber === -1)
 						this.finalTurnNumber = Math.ceil(this.turnNumber / this.players.length + 1) * this.players.length;
 				}
 			}
 		}
-		if (this.finalTurnNumber === this.turnNumber)
+		if (this.finalTurnNumber <= this.turnNumber)
 			return this.findWinnerIndex();
 		return -1;
 	}
 
 	findWinnerIndex() {
-		let maxScore = -1;
+		let maxScore = -10000;
 		let winnerIndex = -1;
 		for (let i = 0; i < this.players.length; i++) {
 			if (!this.players[i].isDead && this.players[i].pointTotal > maxScore) {

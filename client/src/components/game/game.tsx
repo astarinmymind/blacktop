@@ -230,7 +230,7 @@ import { wait } from "@testing-library/react";
         playerStore.point = data;
         let count = 0;
         for (let point of data) {
-          if (point > 100)
+          if (point >= 100)
             count = count + 1
         } 
         if (count === data.length) {
@@ -261,7 +261,10 @@ import { wait } from "@testing-library/react";
   
       // A winner is decided and the index of the victorious player is passed in
       gs.socket.on("results", function(data) {
-        setVictorIndex(data);
+        if (data === -1)
+          setGameTied(true);
+        else
+          setVictorIndex(data);
         setGameFinished(true);
       });
   
@@ -278,7 +281,6 @@ import { wait } from "@testing-library/react";
             textLog.push(card.type + '\n')
         }
       });
-
 
     }, []);
   
