@@ -1,27 +1,27 @@
+/* Notes: 
+Mobx:
+    - store: (1) stores state properties (2) contains functions that modify state
+    - creating observable state: 
+        - @observable: defines trackable field that stores state
+        - @action: marks method as modifying state 
+*/
+
 import { observable, action } from 'mobx'
-// import { CardStore } from '../card/CardStore';
 import Brickshay from '../../images/Brickshay.gif'
 
 class Player {
     playerId: number;
-    //lobbyId: number = 0;
     name: string;
     icon: any;
     index: number;
     lastPlayed: string;
-    //hand: CardStore;
-    //pointTotal: number;
-   // isDead: boolean;
-    
+
     constructor(index: number) {
         this.playerId = -1;
         this.name = "";
         this.icon = Brickshay;
         this.index = index;
         this.lastPlayed = "";
-        //this.hand = new CardStore();
-        //this.pointTotal = 0;
-        //this.isDead = false;
     }
 
     setPlayer(newName: string, newIcon: string) {
@@ -66,7 +66,6 @@ export class PlayerStore {
     // pushes player onto player array 
     @action 
     addPlayer = () => {
-        //console.log(this.players);
         this.players.push(new Player(this.players.length));
     }
 
@@ -77,13 +76,11 @@ export class PlayerStore {
 
     @action
     setName = (newName: any, index: number) => {
-        // console.log(newName + " goes to " + this.players[index].name);
         this.players[index].name = newName;
     }
 
     @action
     setIcon = (newIcon: any, index: number) => {
-        // console.log(newIcon + " goes to " + this.players[index].icon);
         this.players[index].icon = newIcon;
     }
 
