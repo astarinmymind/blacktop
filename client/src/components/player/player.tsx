@@ -1,3 +1,10 @@
+/* Notes: 
+
+Context: used when data needs to be accessible by many components at different nesting levels 
+Provider: allows components to subscribe to context changes 
+
+*/
+
 import React from "react"
 import { PlayerStore } from './PlayerStore'
 
