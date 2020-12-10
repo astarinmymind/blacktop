@@ -9,58 +9,11 @@ import React from 'react'
 import { usePlayerStore } from '../player/player';
 import { useDrag, DragSourceMonitor } from 'react-dnd'
 import { CardTypes } from '../card/CardTypes'
-// import NopeCard from './images/NOPE.png'
-// import AddCard from './images/ADD1.png'
-// import SubCard from './images/SUB1.png'
-// import DrawCard from './images/DRAW.png'
-// import GiveCard from './images/GIVE.png'
-// import SeeCard from './images/SEE.png'
-// import { CardStore } from './CardStore'
 import './card.css'
 
 import GameService from '../../services/GameService';
 
 const gs = new GameService();
-
-// // defines type for context value 
-// // note: typescript allows classes as types
-// type CardContextValue = {
-//     cardStore: CardStore
-// }
-
-// // defines context with React.createContext
-// // pass in type argument and default value {}
-// const CardContext = React.createContext<CardContextValue>({} as CardContextValue)
-
-// // initialize store
-// const cardStore = new CardStore() 
-
-// // exports context provider 
-// /* A Note on Syntax: 
-//     - we are annotating function type: 'This variable holds a function: React Functional Component'
-//     - child is of type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
-// */
-// export const CardProvider: React.FC<React.PropsWithChildren<{}>> = ({children}) => {
-//     return (
-//         <CardContext.Provider value ={{ cardStore }}>
-//             {children}
-//         </CardContext.Provider>
-//     );
-// };
-
-// // defines helper hook
-// /*
-// useContext: 
-//     - accepts a context object (the value returned from React.createContext) 
-//     - returns current context value for that context
-//     - current context value is determined by the value prop of the nearest 
-//       <MyContext.Provider> above the calling component in the tree
-
-// When the nearest <MyContext.Provider> above the component updates, 
-// this Hook will trigger a rerender with the latest context value passed to that 
-// MyContext provider. 
-// */
-// export const useCardStore = () => React.useContext(CardContext)
 
 interface CardProps {
   type: string;
@@ -115,31 +68,3 @@ export const Card: React.FC<CardProps> = ({ type, points, src }) => {
     </div>
   )
 }
-
-
-// function setImage(Card c) 
-// {
-//     let cardType : string = c.name
-//     switch (cardType) {
-//         case 'nope':
-//             c.picture = NopeCard;
-//             break;
-//         case 'add1':
-//             c.picture = AddCard;
-//             break;
-//         case 'sub1':
-//             c.picture = SubCard;
-//             break;
-//         case 'give':
-//             c.picture = GiveCard;
-//             break;
-//         case 'see':
-//             c.picture = SeeCard;
-//             break;
-//         case 'draw':
-//             c.picture = DrawCard;
-//             break;
-//         default: 
-//             break;
-//     }
-// }
