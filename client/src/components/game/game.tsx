@@ -21,45 +21,9 @@ Notes:
   import NopeCard from '../../images/TestCard.png';
   import SkipCard from '../../images/SkipCard.png';
   import Add1Card from '../../images/ADD1.png';
-  import Add2Card from '../../images/ADD1.png';
-  import Add3Card from '../../images/ADD1.png';
-  import Add4Card from '../../images/ADD1.png';
-  import Add5Card from '../../images/ADD1.png';
-  import Add6Card from '../../images/ADD1.png';
-  import Add7Card from '../../images/ADD1.png';
-  import Add8Card from '../../images/ADD1.png';
-  import Add9Card from '../../images/ADD1.png';
   import Add10Card from '../../images/Add10.png';
-  import Add11Card from '../../images/Add10.png';
-  import Add12Card from '../../images/Add10.png';
-  import Add13Card from '../../images/Add10.png';
-  import Add14Card from '../../images/Add10.png';
-  import Add15Card from '../../images/Add10.png';
-  import Add16Card from '../../images/Add10.png';
-  import Add17Card from '../../images/Add10.png';
-  import Add18Card from '../../images/Add10.png';
-  import Add19Card from '../../images/Add10.png';
-  import Add20Card from '../../images/Add10.png';
   import Sub1Card from '../../images/SUB1.png';
-  import Sub2Card from '../../images/SUB1.png';
-  import Sub3Card from '../../images/SUB1.png';
-  import Sub4Card from '../../images/SUB1.png';
-  import Sub5Card from '../../images/SUB1.png';
-  import Sub6Card from '../../images/SUB1.png';
-  import Sub7Card from '../../images/SUB1.png';
-  import Sub8Card from '../../images/SUB1.png';
-  import Sub9Card from '../../images/SUB1.png';
   import Sub10Card from '../../images/Sub10.png';
-  import Sub11Card from '../../images/Sub10.png';
-  import Sub12Card from '../../images/Sub10.png';
-  import Sub13Card from '../../images/Sub10.png';
-  import Sub14Card from '../../images/Sub10.png';
-  import Sub15Card from '../../images/Sub10.png';
-  import Sub16Card from '../../images/Sub10.png';
-  import Sub17Card from '../../images/Sub10.png';
-  import Sub18Card from '../../images/Sub10.png';
-  import Sub19Card from '../../images/Sub10.png';
-  import Sub20Card from '../../images/Sub10.png';
   import DrawCard from '../../images/DrawCard.png';
   import GiveCard from '../../images/GiveCard.png';
   import SeeCard from '../../images/PeekCard.png';
@@ -120,95 +84,19 @@ import { wait } from "@testing-library/react";
       return;
     }
     function setImageAdd(card) {
-      switch (card.points) {
-        case 1:
-          return Add1Card;
-        case 2:
-          return Add2Card;
-        case 3:
-          return Add3Card;
-        case 4:
-          return Add4Card;
-        case 5:
-          return Add5Card;
-        case 6:
-          return Add6Card;
-        case 7:
-          return Add7Card;
-        case 8:
-          return Add8Card;
-        case 9:
-          return Add9Card;
-        case 10:
-          return Add10Card;
-        case 11:
-          return Add11Card;
-        case 12:
-          return Add12Card;
-        case 13:
-          return Add13Card;
-        case 14:
-          return Add14Card;
-        case 15:
-          return Add15Card;
-        case 16:
-          return Add16Card;
-        case 17:
-          return Add17Card;
-        case 18:
-          return Add18Card;
-        case 19:
-          return Add19Card;
-        case 20:
-          return Add20Card;
-        default:
-          return;
+      if (card.points < 10) {
+        return Add1Card;
+      }
+      else {
+        return Add10Card
       }
     }
     function setImageSub(card) {
-      switch (card.points) {
-        case -1:
-          return Sub1Card;
-        case -2:
-          return Sub2Card;
-        case -3:
-          return Sub3Card;
-        case -4:
-          return Sub4Card;
-        case -5:
-          return Sub5Card;
-        case -6:
-          return Sub6Card;
-        case -7:
-          return Sub7Card;
-        case -8:
-          return Sub8Card;
-        case -9:
-          return Sub9Card;
-        case -10:
-          return Sub10Card;
-        case -11:
-          return Sub11Card;
-        case -12:
-          return Sub12Card;
-        case -13:
-          return Sub13Card;
-        case -14:
-          return Sub14Card;
-        case -15:
-          return Sub15Card;
-        case -16:
-          return Sub16Card;
-        case -17:
-          return Sub17Card;
-        case -18:
-          return Sub18Card;
-        case -19:
-          return Sub19Card;
-        case -20:
-          return Sub20Card;
-        default:
-          return;
+      if (card.points > -10) {
+        return Sub1Card;
+      }
+      else {
+        return Sub10Card
       }
     }
      
@@ -367,7 +255,7 @@ import { wait } from "@testing-library/react";
           <div className="results">
             <h1>{winStatus}</h1>
             { !gameTied ? <img src={playerStore.players[victorIndex].icon} alt="Victor"/> : null }
-            <h1>{playerStore.players[victorIndex].name}</h1>
+            <h1>{gameTied ? null : playerStore.players[victorIndex].name}</h1>
             <Link to={{ pathname: '/', state:{ consent:'true'} }} >
               <button>Go Home</button>
             </Link>

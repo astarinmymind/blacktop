@@ -188,7 +188,7 @@ socketIo.on('connection', (socket) => {
 			game.turnNumber++;
 			if (nextPlayerIndex === playerIndex) {
 				let winnerIndex = game.findWinnerIndex();
-				console.log(winnerIndex);
+				// console.log(winnerIndex);
 				for (let i = 0; i < playerlist.length; i++) {
 					if (i === playerIndex)
 						socket.emit('results', winnerIndex);
@@ -205,6 +205,8 @@ socketIo.on('connection', (socket) => {
             msg += " stole '" + player.hand[player.hand.length - 1].type + "' from " + playerlist[opponentIndex].name + ".\n";
 		else if (card.type === 'skip')
 			msg += " played 'skip', so " + playerlist[nextPlayerIndex].name + " will be skipped.\n";
+		else if (card.points !== 0)
+			msg += " played '" + card.type + "' worth " + card.points + ".\n";
 		else
 			msg += " played '" + card.type + "'.\n";
 			

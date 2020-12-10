@@ -56,7 +56,7 @@ class Game {
 	}
 
 	getRandomCard() {
-		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'add', 'add','add', 'subtract', 'subtract', 'subtract', 'draw 2', 'see future'];
+		let cardTypes = ['nope', 'give', 'steal', 'skip', 'add', 'add', 'add','add', 'subtract', 'subtract', 'draw 2', 'see future'];
 		let cardType = cardTypes[Math.floor(Math.random() * cardTypes.length)];
 		let card = new Card(cardType);
 		return card;
