@@ -94,9 +94,27 @@ class Game {
 			this.transferCard(playerIndex, player.opponentIndex, card);
 			player.lastPlayed = '';
 		}
+		else if (cardType === 'nope') {
+			player.removeCard(card);
+			let lastPlayedCard = new Card(player.lastPlayed);
+			lastPlayedCard.points = player.lastPlayedPoints;
+			if (player.lastPlayed === 'steal') {
+				this.transferCard(playerIndex, player.opponentIndex, player.hand.pop());
+			}
+			else if (player.lastPlayed === 'draw 2') {
+				this.mainDeck.unshift(player.hand.pop());
+				this.mainDeck.unshift(player.hand.pop());
+			}
+			console.log(player.lastPlayedPoints);
+			player.pointTotal -= player.lastPlayedPoints;
+			player.lastPlayed = '';
+			player.lastPlayedPoints = 0;
+			player.hand.push(lastPlayedCard);
+		}
 		else {
 			player.removeCard(card);
 			player.lastPlayed = cardType;
+			player.lastPlayedPoints = card.points;
 			if (cardType === 'give') {
 				player.opponentIndex = opponentIndex;
 			}
@@ -122,6 +140,7 @@ class Game {
 			}
 			else if (cardType === 'add' || cardType === 'subtract') {
 				player.pointTotal += card.points;
+				player.lastPlayedPoints = card.points;
 				if (player.pointTotal >= 100) {
 					player.isDead = true;
 					console.log("player", player.name, "just died!")
@@ -131,9 +150,6 @@ class Game {
 				}
 			}
 		}
-		if (this.finalTurnNumber <= this.turnNumber)
-			return this.findWinnerIndex();
-		return -1;
 	}
 
 	findWinnerIndex() {

@@ -175,6 +175,10 @@ socketIo.on('connection', (socket) => {
 			socket.emit('eventNotification', game.players[opponentIndex].name + " doesn't have any cards left to steal!\n");
 			return;
 		}
+		if (card.type === 'nope' && (lastPlayed === '' || lastPlayed === 'skip' || lastPlayed === 'nope' || lastPlayed === 'see future')) {
+			socket.emit('eventNotification', "You must play a valid card before using 'nope'!\n")
+			return;
+		}
 
 		game.playCard(playerIndex, card, socket, opponentIndex);
 		await updateDatabase(game);
@@ -270,6 +274,7 @@ socketIo.on('connection', (socket) => {
 				socket.emit('results', winnerIndex);
 			}
 		}
+		console.log(nextPlayerIndex);
 		let endTurnNotification = playerlist[index].name + " ended their turn. \nIt is now " + playerlist[nextPlayerIndex].name + "'s turn. \n";
 		
 		await updateDatabase(game);

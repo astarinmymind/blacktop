@@ -9,6 +9,7 @@ class Player {
 	icon;
 	opponentIndex;
 	lastPlayed;
+	lastPlayedPoints;
 
 	static fromFirestore(player){ //pass in a simple JSON object, it returns a player object
 		let p = new Player(player.socketID, player.name, player.icon);
@@ -17,6 +18,7 @@ class Player {
 		p.hand = player.hand.map(c => Card.fromFirestore(c));
 		p.opponentIndex = player.opponentIndex;
 		p.lastPlayed = player.lastPlayed;
+		p.lastPlayedPoints = player.lastPlayedPoints;
 		return p;
 		//add a modification to add back the functions and other things into socket.
 	}
@@ -30,13 +32,13 @@ class Player {
 		this.icon = icon;
 		this.opponentIndex = -1;
 		this.lastPlayed = '';
+		this.lastPlayedPoints = 0;
 	}
 
 	toFirestore() {
 		let temp = Object.assign({}, this);
 		temp.hand = temp.hand.map(h => h.toFirestore());
 		return temp;
-		//add a modification to strip socket everything but data.
 	}
 
 	addCard(card) {
