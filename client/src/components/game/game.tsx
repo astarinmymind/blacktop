@@ -53,10 +53,13 @@ import { wait } from "@testing-library/react";
     {
       if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex) {
         alert("It is not your turn!");
-        return;
       }
-
-      gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex);
+      else if (playerStore.playerHand.length >= 7) {
+        alert("You must play cards until you have less than 7 cards in your hand!");
+      }
+      else {
+        gs.socket.emit("turnEnded", playerStore.lobbyId, playerStore.currentPlayerIndex);
+      }
     }
   
     function setImage(card) 
@@ -225,7 +228,7 @@ import { wait } from "@testing-library/react";
               </div>
             </div>
             <div className="hand">
-              {Array.from(playerStore.getPlayerHand()).map(card => 
+              {Array.from(playerStore.playerHand).map(card => 
                   <Card type={card.type} points={card.points} src={setImage(card)}/>
               )}
             </div>
@@ -257,7 +260,7 @@ import { wait } from "@testing-library/react";
             { !gameTied ? <img src={playerStore.players[victorIndex].icon} alt="Victor"/> : null }
             <h1>{gameTied ? null : playerStore.players[victorIndex].name}</h1>
             <Link to={{ pathname: '/', state:{ consent:'true'} }} >
-              <button>Go Home</button>
+              <button onClick={playerStore.reset}>Go Home</button>
             </Link>
           </div>
         </div>

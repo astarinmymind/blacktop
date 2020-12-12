@@ -43,6 +43,7 @@
     align-items: flex-start;
     text-align: left;
     margin-top: 1vw;
+    margin-bottom: 2vw;
 }
 
 .game-columns .events-box p {

@@ -69,7 +69,8 @@ socketIo.on('connection', (socket) => {
 	// debug function
 	socket.on('validId', async (id) => {
 		let hit = await readfromDatabase(id);
-		if(hit === null)
+		console.log(hit)
+		if(hit === null || hit.players.length >= 4)
 			hit = false;
 		else
 			hit = true;

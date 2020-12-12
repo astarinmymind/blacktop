@@ -42,7 +42,7 @@ export const Home = () => {
     // If valid, send entered Lobby ID to socket to be checked if it is valid
     function sendLobbyId() {
         if (!lobbyId || !isVaildId) {
-            alert("You must enter a valid, 6-digit game code!");
+            alert("You must enter a valid, 6-digit game code and the lobby must have less than 4 players for you to join!");
         }
         else {
             gs.socket.emit("joinLobby", lobbyId);

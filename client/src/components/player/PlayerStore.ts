@@ -48,11 +48,6 @@ export class PlayerStore {
 
     @observable opponentIndex: number = -1;
 
-    @action
-    getPlayerHand = () => {
-        return this.playerHand;
-    }
-
     @action 
     getPlayers = () => {
         return this.players;
@@ -87,5 +82,17 @@ export class PlayerStore {
     @action
     setLastPlayed = (lastPlayed: string, index: number) => {
         this.players[index].lastPlayed = lastPlayed;
+    }
+
+    @action
+    reset = () => {
+        this.players = [];
+        this.playerHand = [];
+        this.point = [];
+        this.lobbyId = 0;
+        this.currentPlayerIndex = 0;
+        this.gameStarted = false;
+        this.turnNumber = 0;
+        this.opponentIndex = -1;
     }
 }
