@@ -7,7 +7,7 @@ Mobx:
 */
 
 import { observable, action } from 'mobx'
-import Brickshay from '../../images/Brickshay.gif'
+import Brick from '../../images/Brick.gif'
 
 class Player {
     playerId: number;
@@ -19,7 +19,7 @@ class Player {
     constructor(index: number) {
         this.playerId = -1;
         this.name = "";
-        this.icon = Brickshay;
+        this.icon = Brick;
         this.index = index;
         this.lastPlayed = "";
     }

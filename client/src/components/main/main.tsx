@@ -18,7 +18,7 @@ const Main = () => {
   const [dummy, setDummy] = React.useState({});
   React.useEffect(() => {
 	 
-    //This is for when the client recieves its own hand from the server
+    //This is for when the client recieves its own hand from the server, which can happen on the Lobby or Game page
     gs.socket.on("playerHand", function(data) {
       console.log("player hand rendered")
       playerStore.playerHand = data.hand;

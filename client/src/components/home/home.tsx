@@ -62,7 +62,7 @@ export const Home = () => {
         })
     }, []);
     
-    // A link that is only active if the lobby ID is valid
+    // A link that is only active if the input lobby ID is valid
     const ConditionalLink = () => isVaildId
       ? <Link to="/lobby"><button onClick={ sendLobbyId }>Join game</button></Link>
       : <><button onClick={ sendLobbyId }>Join game</button></>;
@@ -88,26 +88,25 @@ export const Home = () => {
             </div>
                 <br />
                 <br />
-            <div className="home-columns">
-                <div>
-                </div>
-                <div>
+            <div className="home-columns"> {/* In the home-columns style class, empty divs mean empty columns */}
+                <div />  {/* Column 1 */}
+                <div>  {/* Column 2 */}
                     <h1>Welcome to Blacktop!</h1>
                     Blacktop is a game of deception, strategy, and sabotage! 
                     <br />Grab some friends and hop in a game!
                     <br />
                 </div>
-                <div>
+                <div>  {/* Column 3 */}
                     <img src={PlushCat} alt="" />
                 </div>
             </div>
             <div className="home-columns">
-                <div>
+                <div>  {/* Column 1 */}
                     <img src={Werewolf} alt="" />
                 </div>
-                <div>
+                <div>  {/* Column 2 */}
                     <h1>How It Works</h1>
-                    <br /> Every player takes turns drawing and playing cards.
+                    Every player takes turns drawing and playing cards.
                     <br /> The goal is to be the first one to get to 100 points.
                     <br /> But if you go over, you lose!
                     <br /> All other cards help you or harm others! 
@@ -119,36 +118,42 @@ export const Home = () => {
                     <br />
                     <br />
                     <br />
-                </div>
-                <div>
-                </div>
-            </div>
-            <div className="home-columns">
-                <div>
-                </div>
-                <div>
                     <h1>Cards</h1>
                     <br />
                 </div>
+                <div />  {/* Column 3 */}
             </div>
             <div className="cards">
-            <div className="row">
-                <div className="column">
-                    <img src={NopeCard} alt=""/>
-                </div>
-                <div className="column">
-                    <img src={DrawCard} alt=""/>
-                </div>
-                <div className="column">
-                    <img src={GiveCard} alt=""/>
-                </div>
-                <div className="column">
-                    <img src={StealCard} alt=""/>
-                </div>
-                <div className="column">
-                    <img src={SeeCard} alt=""/>
+                <div className="row">
+                    <div className="column">
+                        <img src={NopeCard} alt=""/>
+                    </div>
+                    <div className="column">
+                        <img src={DrawCard} alt=""/>
+                    </div>
+                    <div className="column">
+                        <img src={GiveCard} alt=""/>
+                    </div>
+                    <div className="column">
+                        <img src={StealCard} alt=""/>
+                    </div>
+                    <div className="column">
+                        <img src={SeeCard} alt=""/>
+                    </div>
                 </div>
             </div>
+            <div className="home-columns">
+                <div />  {/* Column 1 */}
+                <div>
+                    <h1>Credits</h1>  {/* Column 2 */}
+                    Angela Lu - Frontend / React, State Management
+                    <br />Aryaman Ladha - Backend / Database
+                    <br />Cole Strain - Frontend / React, UI, Art
+                    <br />Lenny Wu - Backend / Game Logic
+                    <br />Nicholas Browning - Networking / Socket, Art
+                    <br />
+                </div>
+                <div />  {/* Column 3 */}
             </div>
         </div>
     ));

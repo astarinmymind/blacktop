@@ -32,23 +32,15 @@ Notes:
   import ChalkLine from '../../images/ChalkLine.png';
   
   import GameService from '../../services/GameService';
-import { wait } from "@testing-library/react";
   
   const gs = new GameService();
   
-  //Just a random ID i used to test that each client was different
-  // var id = Math.floor(Math.random() * 100);
-  
   //address of the server
   export const Game = () => {
-    //this is syntax I use to set variables, setTitle being the way to change them
-  
     // gets store
-    // const {cardStore} = useCardStore()
     const {playerStore} = usePlayerStore();
   
     // emits socket event that player has pressed end turn
-
     async function endTurn() 
     {
       if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex) {
@@ -103,7 +95,7 @@ import { wait } from "@testing-library/react";
       }
     }
      
-     const [lastFive, setLastFive] = React.useState([{}, {}, {}, {}, {}]);
+    //  const [lastFive, setLastFive] = React.useState([{}, {}, {}, {}, {}]);
      const [victorIndex, setVictorIndex] = React.useState(0);
      const [gameFinished, setGameFinished] = React.useState(false);
      const [gameTied, setGameTied] = React.useState(false);
@@ -130,25 +122,26 @@ import { wait } from "@testing-library/react";
         setDummy({});
       });
   
-      // event notification: nope, give, see, draw event
+      // event notification: nope, give, see, draw2 event
       gs.socket.on("eventNotification", function(data) {
           textLog.push(data);
           setDummy({});
       });
 
+      // event notification: end of turn event
       gs.socket.on("endTurnNotification", function(data) {
         textLog.push(data);
         setDummy({});
       })
   
-      // @NICK: last card played for display
-      gs.socket.on("lastCardPlayed", function(data) {
-        setLastFive([data, lastFive[0], lastFive[1], lastFive[2], lastFive[3]]);
-      });
+      // last card played for display (UNUSED)
+      // gs.socket.on("lastCardPlayed", function(data) {
+      //   setLastFive([data, lastFive[0], lastFive[1], lastFive[2], lastFive[3]]);
+      // });
       
-      // This is for when the client recieves another hand from the server
-      gs.socket.on("otherHand", function(data) {
-      });
+      // This is for when the client recieves another hand from the server (UNUSED)
+      // gs.socket.on("otherHand", function(data) {
+      // });
   
       // A winner is decided and the index of the victorious player is passed in
       gs.socket.on("results", function(data) {
@@ -175,6 +168,7 @@ import { wait } from "@testing-library/react";
 
     }, []);
   
+    // When a player clicks an icon on the list of players, their opponent is set to the selected player (unless it's themself)
     function selectOpponent(newOpponentIndex: number)
     {
       if (newOpponentIndex !== playerStore.currentPlayerIndex) {
@@ -201,23 +195,21 @@ import { wait } from "@testing-library/react";
     function gamePage() {
       console.log(playerStore.playerHand);
       return (
-        // renders an unordered list of cards
-        //button with the variable grabbed from the server
         <DndProvider backend={HTML5Backend}>
           <div style={{backgroundColor: "rgb(14, 14, 14)", margin: 0, height: '100vh'}} className="sendNotification">
             <div className="game-columns">
-              <div>
+              <div> {/* Column 1 */}
                 <img src={playerStore.players[playerStore.currentPlayerIndex].icon} className="flip-img" alt="Current Player" />
                 <h1>{playerStore.players[playerStore.currentPlayerIndex].name}</h1>
                 <div>
-                  <button onClick={endTurn}> Draw & <br />End Turn</button>
+                  <button onClick={endTurn}> Draw and <br />End Turn</button>
                 </div>
               </div>
-              <div style={{display: 'flex'}}>
+              <div style={{display: 'flex'}}> {/* Column 2 */}
                 <Board />
                 {eventsLog()}
               </div>
-              <div className="list">
+              <div className="list">  {/* Column 3 */}
                 {playerStore.getPlayers().map((element, i) => 
                   <div style={{marginBottom: '3vw'}}>
                     <img alt="icon" src={element.icon} onClick={() => selectOpponent(i)}/>
@@ -236,10 +228,9 @@ import { wait } from "@testing-library/react";
         </DndProvider>
       );
     }
-  
+    
+    // The results page that only displays if the game has finished
     function resultsPage() {
-      // playerStore.gameStarted = false;
-
       let winStatus: string;
       if (gameTied) {
         winStatus = 'Draw!'
@@ -272,8 +263,3 @@ import { wait } from "@testing-library/react";
     ));
   }
   export default Game;
-  
-  function sendId() {
-    //sending the ID to the server so you can print it
-    //socket.emit("ID", id);
-  }

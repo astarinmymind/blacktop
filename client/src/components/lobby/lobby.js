@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import './lobby.css';
 import TestLogo     from '../../images/TestLogo.png';
 import ChalkLine    from '../../images/ChalkLine.png';
-import Brickshay    from '../../images/Brickshay.gif';
+import Brick        from '../../images/Brick.gif';
 import Bruin        from '../../images/Bruin.gif';
 import Dragon       from '../../images/Dragon.gif';
 import Frog         from '../../images/Frog.gif';
@@ -54,12 +54,12 @@ export const Lobby = () => {
             case 12:
                 return Detective;
             default:
-                return Brickshay;
+                return Brick;
         }
     }
 
     const [name, setName] = React.useState("");
-    const [iconId, setIconId] = React.useState(Brickshay);
+    const [iconId, setIconId] = React.useState(Brick);
     const updateName = (event) => { 
         if (!playerStore.gameStarted) {
             sendPlayer(event.target.value, iconId);
@@ -122,10 +122,13 @@ export const Lobby = () => {
     // emits socket event that player has pressed start game
     function startGame() 
     {
-        console.log(playerStore.gameStarted);
         if (!name) {
             sendPlayer(" ", iconId);
             setName(" ");
+        }
+
+        if (playerStore.players.length <= 1) {
+            alert("There must be at least 2 players for the game to properly work!");
         }
 
         if (!playerStore.gameStarted) {
@@ -139,12 +142,12 @@ export const Lobby = () => {
             <img src={ TestLogo } alt="logo" className="logo" onClick={() => updateIcon(12)} style={{cursor:'zoom-in'}} />
             <img src={ ChalkLine } alt="line" className="line" />
             <div className="lobby-columns">
-                <div style={{textAlign: "right"}}>
+                <div style={{textAlign: "right"}}>  {/* Column 1 */}
                     <h1>Game Code: </h1>
                     <h1>Name: </h1>
                     <h1>Icon: </h1>
                 </div>
-                <div>
+                <div>  {/* Column 2 */}
                     <h1>{playerStore.lobbyId}</h1>
                     <input 
                         name="name" 
@@ -156,7 +159,7 @@ export const Lobby = () => {
                     />
                     <div className="icon-gallery">
                         <>
-                            <img alt="" src={Brickshay} onClick={() => updateIcon(0)}/>
+                            <img alt="" src={Brick} onClick={() => updateIcon(0)}/>
                             <img alt="" src={Dragon}    onClick={() => updateIcon(1)}/>
                             <img alt="" src={Frog}      onClick={() => updateIcon(2)}/>
                             <img alt="" src={Goblin}    onClick={() => updateIcon(3)}/>
@@ -175,7 +178,7 @@ export const Lobby = () => {
                         </>
                     </div>
                 </div>
-                <div>
+                <div>  {/* Column 3 */}
                     <div className="list">
                         {playerStore.getPlayers().map((element, i) => 
                             <li style={{ listStyleType: "none" }} key={i}>
