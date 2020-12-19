@@ -1,9 +1,9 @@
-// /* Notes: 
+/* Notes: 
 
-// Context: used when data needs to be accessible by many components at different nesting levels 
-// Provider: allows components to subscribe to context changes 
+Context: used when data needs to be accessible by many components at different nesting levels 
+Provider: allows components to subscribe to context changes 
 
-// */
+*/
 
 import React from 'react'
 import { usePlayerStore } from '../player/player';
@@ -26,7 +26,6 @@ export const Card: React.FC<CardProps> = ({ type, points, src }) => {
 
   // emits socket event that player has played a card
   function playCard() {
-    // console.log(name);
     if (playerStore.turnNumber % playerStore.players.length !== playerStore.currentPlayerIndex && type !== 'nope') {
       alert('You can only play a card on your turn, unless you are playing a NOPE card!');
       return;
@@ -52,7 +51,6 @@ export const Card: React.FC<CardProps> = ({ type, points, src }) => {
     end: (card: { name: string } | undefined, monitor: DragSourceMonitor) => {
       const dropResult = monitor.getDropResult()
       if (card && dropResult) {
-        // alert(`You used ${card.name}!`)
         playCard();
       }
     },

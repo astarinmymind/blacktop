@@ -1,6 +1,4 @@
 import React from "react";
-// import ReactDOM from "react-dom";
-// import { CardProvider } from "../card/card";
 import Main from "../main/main"
 import { PlayerProvider } from "../player/player";
 

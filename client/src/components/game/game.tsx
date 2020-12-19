@@ -6,9 +6,6 @@ Notes:
     - let you group a list of children without adding extra nodes to the DOM
 */
 
-// import { CardStore } from "../card/CardStore";
-  
-//export const Game = () => {
   import React from "react";
   import { usePlayerStore } from '../player/player';
   import { useObserver } from 'mobx-react-lite';
@@ -95,7 +92,6 @@ Notes:
       }
     }
      
-    //  const [lastFive, setLastFive] = React.useState([{}, {}, {}, {}, {}]);
      const [victorIndex, setVictorIndex] = React.useState(0);
      const [gameFinished, setGameFinished] = React.useState(false);
      const [gameTied, setGameTied] = React.useState(false);
@@ -133,15 +129,6 @@ Notes:
         textLog.push(data);
         setDummy({});
       })
-  
-      // last card played for display (UNUSED)
-      // gs.socket.on("lastCardPlayed", function(data) {
-      //   setLastFive([data, lastFive[0], lastFive[1], lastFive[2], lastFive[3]]);
-      // });
-      
-      // This is for when the client recieves another hand from the server (UNUSED)
-      // gs.socket.on("otherHand", function(data) {
-      // });
   
       // A winner is decided and the index of the victorious player is passed in
       gs.socket.on("results", function(data) {
