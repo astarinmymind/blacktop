@@ -18,7 +18,6 @@ import Slug         from '../../images/Slug.gif';
 import Tangerine    from '../../images/Tangerine.gif';
 import Werewolf     from '../../images/Werewolf.gif';
 import Detective    from '../../images/Detective.gif';
-// import src from '*.avif';
 import GameService from '../../services/GameService';
 
 const gs = new GameService();
