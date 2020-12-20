@@ -9,7 +9,8 @@ Prerequisites: Node (version 14 or later) and TypeScript Compiler. You can insta
 To install dependencies: 
 
 ```shell
-npm install
+npm install ./ ./client
+npm install mobx mobx-react-lite
 ```
 
 ## Executables
