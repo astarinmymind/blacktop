@@ -31,7 +31,7 @@
     "semantic-ui-css": "^2.4.1",
     "snapdragon": "^0.12.0",
     "socket.io": "^3.0.4",
-    "socket.io-client": "^3.0.1",
+    "socket.io-client": "^3.0.4",
     "typescript": "^4.1.3",
     "yarn": "^1.22.10"
   }
