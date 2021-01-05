@@ -11,7 +11,7 @@ import { useDrag, DragSourceMonitor } from 'react-dnd'
 import { CardTypes } from '../card/CardTypes'
 import './card.css'
 
-import GameService from '../../services/GameService.js';
+import { GameService } from '../../services/GameService.js';
 
 const gs = new GameService();
 

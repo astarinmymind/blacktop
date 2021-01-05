@@ -6,7 +6,7 @@ import TestLogo from '../../images/TestLogo.png';
 import ChalkLine from '../../images/ChalkLine.png';
 import PlushCat from '../../images/PlushCat.gif';
 import Werewolf from '../../images/Werewolf.gif';
-import GameService from '../../services/GameService.js';
+import { GameService } from '../../services/GameService.js';
 import { usePlayerStore } from '../player/player'
 import NopeCard from '../../images/TestCard.png';
 import DrawCard from '../../images/DrawCard.png';
