@@ -28,7 +28,7 @@ Notes:
   import TestLogo from '../../images/TestLogo.png';
   import ChalkLine from '../../images/ChalkLine.png';
   
-  import GameService from '../../services/GameService';
+  import GameService from '../../services/GameService.js';
   
   const gs = new GameService();
   

@@ -18,7 +18,7 @@ import Slug         from '../../images/Slug.gif';
 import Tangerine    from '../../images/Tangerine.gif';
 import Werewolf     from '../../images/Werewolf.gif';
 import Detective    from '../../images/Detective.gif';
-import GameService from '../../services/GameService';
+import GameService from '../../services/GameService.js';
 
 const gs = new GameService();
 
