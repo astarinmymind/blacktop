@@ -3,7 +3,7 @@ import { ChatMessage } from './types';
 import { fromEvent, Observable } from 'rxjs';
 
 export class SocketService {
-	private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
+	private socket: any = {} as SocketIOClient.Socket;
 	
 	public init (): SocketService {
 		this.socket = io('localhost:8080');
