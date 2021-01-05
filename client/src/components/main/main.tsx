@@ -7,7 +7,7 @@ import Game from '../game/game';
 
 import { usePlayerStore } from '../player/player';
 
-import { GameService } from '../../services/GameService.js';
+import GameService from '../../services/GameService.js';
 
 const gs = new GameService();
 
